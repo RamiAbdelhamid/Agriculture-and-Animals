@@ -75,13 +75,13 @@ export default App;
 // import OrderManagement from "../Dashboard/OrderManagement";
 // import Analytics from "../Dashboard/Analytics";
 // import Settings from '../Dashboard/Settings';
+// import VetDashboard from "../Dashboard/VetDashboard";
+// import DoctorReservations from "../Dashboard/DoctorReservations";
 
 // const App = () => {
 //   const [sidebarOpen, setSidebarOpen] = useState(true);
 
 //   return (
-
-
 //     <Router>
 //       <div className="flex h-screen bg-gray-100">
 //         <Sidebar isOpen={sidebarOpen} />
@@ -100,13 +100,16 @@ export default App;
 //               <Route path="/analytics" element={<Analytics />} />
 //               <Route path="/settings" element={<Settings />} />
 //               <Route path="/EditProductList" element={<EditProductList />} />
+//               <Route path="/vet" element={<VetDashboard />} />
+//               <Route
+//                 path="/DoctorReservations"
+//                 element={<DoctorReservations />}
+//               />
 //             </Routes>
 //           </main>
 //         </div>
 //       </div>
 //     </Router>
-
-
 //   );
 // };
 

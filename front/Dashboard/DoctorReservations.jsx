@@ -1,0 +1,343 @@
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+  Calendar,
+  AlertCircle,
+  CheckCircle,
+  ClipboardList,
+  User,
+  Clock,
+} from "lucide-react";
+
+const DoctorReservations = () => {
+  const [doctors, setDoctors] = useState([]);
+  const [reservations, setReservations] = useState([]);
+  const [selectedDoctor, setSelectedDoctor] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [activeTab, setActiveTab] = useState("pending"); // pending, completed, all
+
+  // Fetch all doctors and their reservations
+  useEffect(() => {
+    fetchDoctorsAndReservations();
+  }, []);
+
+  const fetchDoctorsAndReservations = async () => {
+    try {
+      setLoading(true);
+      // Fetch all bookings
+      const response = await axios.get("http://localhost:5000/bookings");
+
+      // Filter to get only bookings that have been notified to doctors
+      const doctorReservations = response.data.filter(
+        (booking) => booking.notified
+      );
+      setReservations(doctorReservations);
+
+      // Extract unique vet names
+      const uniqueDoctors = [
+        ...new Set(doctorReservations.map((booking) => booking.vet)),
+      ];
+      setDoctors(uniqueDoctors);
+
+      // Set first doctor as selected by default if available
+      if (uniqueDoctors.length > 0 && !selectedDoctor) {
+        setSelectedDoctor(uniqueDoctors[0]);
+      }
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError(
+        "Failed to load doctors and reservations. Please try again later."
+      );
+      setLoading(false);
+    }
+  };
+
+  // Mark reservation as completed
+  const markAsCompleted = async (bookingId) => {
+    try {
+      await axios.put(`http://localhost:5000/bookings/${bookingId}/complete`, {
+        completed: true,
+      });
+
+      // Update local state
+      setReservations(
+        reservations.map((reservation) =>
+          reservation._id === bookingId
+            ? { ...reservation, completed: true }
+            : reservation
+        )
+      );
+
+      alert("Reservation marked as completed!");
+    } catch (error) {
+      console.error("Error completing reservation:", error);
+      alert("Failed to mark reservation as completed. Please try again.");
+    }
+  };
+
+  // Filter reservations based on selected doctor and active tab
+  const filteredReservations = reservations.filter((reservation) => {
+    const matchesDoctor = reservation.vet === selectedDoctor;
+
+    if (activeTab === "all") {
+      return matchesDoctor;
+    } else if (activeTab === "pending") {
+      return matchesDoctor && !reservation.completed;
+    } else if (activeTab === "completed") {
+      return matchesDoctor && reservation.completed;
+    }
+
+    return false;
+  });
+
+  // Get status badge
+  const getStatusBadge = (status, emergency, completed) => {
+    if (completed) {
+      return (
+        <span className="px-2 py-1 bg-green-100 text-green-600 rounded-full text-sm flex items-center">
+          <CheckCircle className="w-4 h-4 mr-1" />
+          Completed
+        </span>
+      );
+    }
+
+    if (status === "approved") {
+      return (
+        <span className="px-2 py-1 bg-green-100 text-green-600 rounded-full text-sm">
+          Approved
+        </span>
+      );
+    } else if (status === "rejected") {
+      return (
+        <span className="px-2 py-1 bg-red-100 text-red-600 rounded-full text-sm">
+          Rejected
+        </span>
+      );
+    } else if (emergency) {
+      return (
+        <span className="px-2 py-1 bg-red-100 text-red-600 rounded-full text-sm flex items-center">
+          <AlertCircle className="w-4 h-4 mr-1" />
+          Emergency
+        </span>
+      );
+    } else {
+      return (
+        <span className="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-sm">
+          Pending
+        </span>
+      );
+    }
+  };
+
+  return (
+    <div className="max-w-6xl mx-auto p-6">
+      <div className="bg-white rounded-xl shadow-lg">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 rounded-t-xl">
+          <h1 className="text-2xl font-bold text-white">Doctor Reservations</h1>
+          <p className="text-indigo-100 mt-2">
+            View and manage all appointments assigned to doctors
+          </p>
+        </div>
+
+        {/* Content */}
+        <div className="p-6">
+          {loading ? (
+            <div className="text-center py-10">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading reservations...</p>
+            </div>
+          ) : error ? (
+            <div className="text-center py-10 text-red-500">
+              <AlertCircle className="w-12 h-12 mx-auto mb-4" />
+              <p>{error}</p>
+            </div>
+          ) : doctors.length === 0 ? (
+            <div className="text-center py-10 text-gray-500">
+              <User className="w-12 h-12 mx-auto mb-4" />
+              <p>No doctors with reservations found.</p>
+              <button
+                onClick={fetchDoctorsAndReservations}
+                className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+              >
+                Refresh
+              </button>
+            </div>
+          ) : (
+            <div>
+              {/* Doctor Selection */}
+              <div className="mb-6">
+                <label className="block text-gray-700 mb-2 font-medium">
+                  Select Doctor:
+                </label>
+                <div className="flex flex-wrap gap-3">
+                  {doctors.map((doctor) => (
+                    <button
+                      key={doctor}
+                      onClick={() => setSelectedDoctor(doctor)}
+                      className={`px-4 py-2 rounded-lg transition-colors flex items-center ${
+                        selectedDoctor === doctor
+                          ? "bg-indigo-100 text-indigo-600 border-2 border-indigo-300"
+                          : "bg-gray-100 text-gray-600 hover:bg-gray-200 border-2 border-transparent"
+                      }`}
+                    >
+                      <User className="w-4 h-4 mr-2" />
+                      Dr. {doctor}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Tabs */}
+              <div className="flex border-b mb-6">
+                <button
+                  onClick={() => setActiveTab("pending")}
+                  className={`px-4 py-2 font-medium ${
+                    activeTab === "pending"
+                      ? "text-indigo-600 border-b-2 border-indigo-600"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Pending
+                </button>
+                <button
+                  onClick={() => setActiveTab("completed")}
+                  className={`px-4 py-2 font-medium ${
+                    activeTab === "completed"
+                      ? "text-indigo-600 border-b-2 border-indigo-600"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  Completed
+                </button>
+                <button
+                  onClick={() => setActiveTab("all")}
+                  className={`px-4 py-2 font-medium ${
+                    activeTab === "all"
+                      ? "text-indigo-600 border-b-2 border-indigo-600"
+                      : "text-gray-500 hover:text-gray-700"
+                  }`}
+                >
+                  All Reservations
+                </button>
+              </div>
+
+              {/* Reservations List */}
+              {filteredReservations.length === 0 ? (
+                <div className="text-center py-10 text-gray-500">
+                  <ClipboardList className="w-12 h-12 mx-auto mb-4" />
+                  <p>
+                    No reservations found for Dr. {selectedDoctor} with the
+                    selected filter.
+                  </p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-6">
+                  {filteredReservations.map((reservation) => (
+                    <div
+                      key={reservation._id}
+                      className={`border rounded-lg p-4 ${
+                        reservation.completed
+                          ? "border-green-200 bg-green-50"
+                          : reservation.status === "approved"
+                          ? "border-indigo-200 bg-indigo-50"
+                          : reservation.status === "rejected"
+                          ? "border-red-200 bg-red-50"
+                          : reservation.emergency
+                          ? "border-yellow-200 bg-yellow-50"
+                          : "border-gray-200"
+                      }`}
+                    >
+                      <div className="flex flex-wrap justify-between items-start gap-4">
+                        {/* Left Side - Reservation Details */}
+                        <div className="space-y-3">
+                          <div className="flex items-center gap-2">
+                            <span className="text-lg font-medium text-gray-800">
+                              Appointment with Dr. {reservation.vet}
+                            </span>
+                            {getStatusBadge(
+                              reservation.status,
+                              reservation.emergency,
+                              reservation.completed
+                            )}
+                          </div>
+
+                          <div className="flex items-center gap-2 text-gray-600">
+                            <Calendar className="w-5 h-5" />
+                            <span>
+                              {new Date(reservation.date).toLocaleDateString(
+                                undefined,
+                                {
+                                  weekday: "long",
+                                  year: "numeric",
+                                  month: "long",
+                                  day: "numeric",
+                                }
+                              )}
+                            </span>
+                          </div>
+
+                       
+                          <div>
+                            <span className="font-medium text-gray-700">
+                              Department:
+                            </span>
+                            <span className="ml-2 px-2 py-1 bg-indigo-100 text-indigo-600 rounded-full text-sm">
+                              {reservation.department}
+                            </span>
+                          </div>
+
+                          <div>
+                            <span className="font-medium text-gray-700">
+                              Customer Phone:
+                            </span>
+                            <span className="ml-2 px-2 py-1 bg-indigo-100 text-indigo-600 rounded-full text-sm">
+                              {reservation.phoneNumber}
+                            </span>
+                          </div>
+
+                          <div>
+                            <h3 className="font-medium text-gray-700">
+                              Reason for Visit:
+                            </h3>
+                            <p className="mt-1 text-gray-600 bg-white p-3 rounded border">
+                              {reservation.reason}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* Right Side - Actions */}
+                        <div className="flex flex-col gap-3">
+                          <div className="text-right">
+                            <span className="text-sm text-gray-500">
+                              Booking ID: {reservation._id}
+                            </span>
+                          </div>
+
+                          {!reservation.completed && (
+                            <button
+                              onClick={() => markAsCompleted(reservation._id)}
+                              className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 mt-4"
+                            >
+                              <CheckCircle className="w-4 h-4" />
+                              Mark as Completed
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default DoctorReservations;

@@ -4,7 +4,7 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const productRoutes = require("./routes/productRoutes");
-const userRoutes = require("./routes/userRoutes");
+const bookingRoutes = require("./routes/bookingRoutes");
 
 
 
@@ -26,9 +26,12 @@ app.use("/uploads", express.static("uploads"));  // تأكد من أن هذا ا
 
 // Use Routes
 app.use("/api",productRoutes);
+app.use("/bookings", bookingRoutes);
 
 
-app.use("/api/users", userRoutes);
+app.use(bookingRoutes);  // توجيه المسارات الخاصة بالحجز
+
+
 //************************************************************************************************** */
 mongoose
   .connect(process.env.MONGODB_URI, {

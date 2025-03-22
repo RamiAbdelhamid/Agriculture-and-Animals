@@ -27,8 +27,12 @@ const Sidebar = ({ isOpen }) => {
       path: "/add-product",
     },
     { name: "Categories", icon: <List size={20} />, path: "/categories" },
-    { name: "Inventory", icon: <Layers size={20} />, path: "/inventory" },
-    { name: "Orders", icon: <ShoppingBag size={20} />, path: "/orders" },
+    { name: "Veterinarians", icon: <Layers size={20} />, path: "/vet" },
+    {
+      name: "DoctorReservations",
+      icon: <ShoppingBag size={20} />,
+      path: "/DoctorReservations",
+    },
     { name: "Analytics", icon: <BarChart2 size={20} />, path: "/analytics" },
     { name: "Settings", icon: <Settings size={20} />, path: "/settings" },
   ];

@@ -9,6 +9,9 @@ import {
   RefreshCw,
   Grid,
   List,
+  Check,
+  AlertTriangle,
+  X,
 } from "lucide-react";
 
 const EditProductList = () => {
@@ -16,10 +19,11 @@ const EditProductList = () => {
   const [loading, setLoading] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
-  const [viewMode, setViewMode] = useState("grid"); // grid or list view
+  const [viewMode, setViewMode] = useState("list"); // grid or list view
   const [sortBy, setSortBy] = useState("name"); // sorting option
   const [sortOrder, setSortOrder] = useState("asc"); // sorting direction
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(null); // product ID to delete or null
+  const [toast, setToast] = useState({ show: false, message: "", type: "" });
 
   // Categories list
   const categories = [
@@ -37,6 +41,24 @@ const EditProductList = () => {
     fetchProducts();
   }, []);
 
+  // Hide toast after 3 seconds
+  useEffect(() => {
+    if (toast.show) {
+      const timer = setTimeout(() => {
+        setToast({ ...toast, show: false });
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [toast]);
+
+  const showToast = (message, type = "success") => {
+    setToast({
+      show: true,
+      message,
+      type,
+    });
+  };
+
   const fetchProducts = async () => {
     setLoading(true);
     try {
@@ -45,8 +67,10 @@ const EditProductList = () => {
         (product) => !product.isDeleted
       );
       setProducts(activeProducts);
+      showToast("Products loaded successfully", "info");
     } catch (error) {
       console.error("Error fetching products:", error);
+      showToast("Failed to load products", "error");
     }
     setLoading(false);
   };
@@ -62,18 +86,10 @@ const EditProductList = () => {
         prevProducts.filter((product) => product._id !== id)
       );
       setShowDeleteConfirm(null);
-
-      // Show success message
-      const toast = document.createElement("div");
-      toast.className =
-        "fixed bottom-4 right-4 bg-green-500 text-white p-4 rounded shadow-lg";
-      toast.textContent =
-        response.data.message || "Product deleted successfully";
-      document.body.appendChild(toast);
-      setTimeout(() => document.body.removeChild(toast), 3000);
+      showToast(response.data.message || "Product deleted successfully");
     } catch (error) {
       console.error("Error deleting product:", error);
-      alert("Error deleting product");
+      showToast("Error deleting product", "error");
     }
   };
 
@@ -113,30 +129,66 @@ const EditProductList = () => {
     setSearchQuery("");
     setSortBy("name");
     setSortOrder("asc");
+    showToast("Filters have been reset", "info");
+  };
+
+  const handleViewModeChange = (mode) => {
+    setViewMode(mode);
+    showToast(`View changed to ${mode} mode`, "info");
   };
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-emerald-500"></div>
       </div>
     );
   }
 
   return (
     <div className="max-w-6xl mx-auto p-6">
+      {/* Toast notification */}
+      {toast.show && (
+        <div
+          className={`fixed top-4 right-4 z-50 flex items-center p-4 rounded-lg shadow-lg transition-all transform-gpu ${
+            toast.type === "success"
+              ? "bg-emerald-500 text-white"
+              : toast.type === "error"
+              ? "bg-red-500 text-white"
+              : "bg-blue-500 text-white"
+          }`}
+        >
+          <span className="mr-2">
+            {toast.type === "success" ? (
+              <Check size={20} />
+            ) : toast.type === "error" ? (
+              <AlertTriangle size={20} />
+            ) : (
+              <i className="fas fa-info-circle" />
+            )}
+          </span>
+          <p className="font-medium">{toast.message}</p>
+          <button
+            onClick={() => setToast({ ...toast, show: false })}
+            className="ml-4 text-white"
+          >
+            <X size={16} />
+          </button>
+        </div>
+      )}
+
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold">Manage Products</h2>
         <Link
           to="/add-product"
-          className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition-colors"
+          className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2 rounded-lg transition-colors shadow-md hover:shadow-lg font-medium flex items-center"
         >
-          Add New Product
+          <span className="mr-2">+</span> Add New Product
         </Link>
       </div>
 
       {/* Search and filter bar */}
-      <div className="bg-white p-4 rounded-lg shadow-md mb-6">
+      <div className="bg-white p-6 rounded-lg shadow-md mb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
           {/* Search input */}
           <div className="relative">
@@ -145,9 +197,12 @@ const EditProductList = () => {
               placeholder="Search products..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="p-2 pl-10 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="p-3 pl-10 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all"
             />
-            <Search className="absolute left-3 top-3 text-gray-400" size={16} />
+            <Search
+              className="absolute left-3 top-3.5 text-gray-400"
+              size={18}
+            />
           </div>
 
           {/* Category filter */}
@@ -155,7 +210,7 @@ const EditProductList = () => {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="p-2 pl-10 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-300 appearance-none"
+              className="p-3 pl-10 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all appearance-none"
             >
               {categories.map((category) => (
                 <option key={category} value={category}>
@@ -163,7 +218,10 @@ const EditProductList = () => {
                 </option>
               ))}
             </select>
-            <Filter className="absolute left-3 top-3 text-gray-400" size={16} />
+            <Filter
+              className="absolute left-3 top-3.5 text-gray-400"
+              size={18}
+            />
           </div>
 
           {/* Sort options */}
@@ -171,15 +229,23 @@ const EditProductList = () => {
             <select
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
-              className="p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-300"
+              className="p-3 border rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-emerald-300 transition-all"
             >
               <option value="name">Sort by Name</option>
               <option value="price">Sort by Price</option>
               <option value="category">Sort by Category</option>
             </select>
             <button
-              onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
-              className="p-2 border rounded bg-gray-100 hover:bg-gray-200"
+              onClick={() => {
+                setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+                showToast(
+                  `Order changed to ${
+                    sortOrder === "asc" ? "descending" : "ascending"
+                  }`,
+                  "info"
+                );
+              }}
+              className="p-3 border rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors w-12 flex justify-center"
               title={sortOrder === "asc" ? "Ascending" : "Descending"}
             >
               {sortOrder === "asc" ? "↑" : "↓"}
@@ -189,10 +255,10 @@ const EditProductList = () => {
 
         {/* Action buttons */}
         <div className="flex justify-between items-center">
-          <div className="flex space-x-2">
+          <div className="flex space-x-4">
             <button
               onClick={resetFilters}
-              className="flex items-center text-gray-600 hover:text-blue-500"
+              className="flex items-center text-gray-600 hover:text-emerald-600 transition-colors py-1"
             >
               <RefreshCw size={16} className="mr-1" /> Reset Filters
             </button>
@@ -202,26 +268,26 @@ const EditProductList = () => {
           </div>
           <div className="flex space-x-2">
             <button
-              onClick={() => setViewMode("grid")}
-              className={`p-2 rounded ${
-                viewMode === "grid"
-                  ? "bg-blue-100 text-blue-600"
-                  : "text-gray-500"
-              }`}
-              title="Grid View"
-            >
-              <Grid size={16} />
-            </button>
-            <button
-              onClick={() => setViewMode("list")}
-              className={`p-2 rounded ${
+              onClick={() => handleViewModeChange("list")}
+              className={`p-2 rounded-lg ${
                 viewMode === "list"
-                  ? "bg-blue-100 text-blue-600"
-                  : "text-gray-500"
-              }`}
+                  ? "bg-emerald-100 text-emerald-600"
+                  : "text-gray-500 hover:bg-gray-100"
+              } transition-colors`}
               title="List View"
             >
-              <List size={16} />
+              <List size={18} />
+            </button>
+            <button
+              onClick={() => handleViewModeChange("grid")}
+              className={`p-2 rounded-lg ${
+                viewMode === "grid"
+                  ? "bg-emerald-100 text-emerald-600"
+                  : "text-gray-500 hover:bg-gray-100"
+              } transition-colors`}
+              title="Grid View"
+            >
+              <Grid size={18} />
             </button>
           </div>
         </div>
@@ -235,7 +301,7 @@ const EditProductList = () => {
           </p>
           <button
             onClick={resetFilters}
-            className="mt-4 text-blue-500 hover:text-blue-700"
+            className="mt-4 text-emerald-500 hover:text-emerald-700 font-medium"
           >
             Clear filters
           </button>
@@ -245,7 +311,7 @@ const EditProductList = () => {
           {filteredProducts.map((product) => (
             <div
               key={product._id}
-              className="border rounded-lg overflow-hidden bg-white shadow-md hover:shadow-lg transition-shadow"
+              className="border rounded-lg overflow-hidden bg-white shadow-md hover:shadow-lg transition-all"
             >
               <div className="relative">
                 <img
@@ -253,13 +319,13 @@ const EditProductList = () => {
                   alt={product.name}
                   className="w-full h-48 object-cover"
                 />
-                <div className="absolute top-2 right-2 px-2 py-1 rounded bg-white text-sm font-medium shadow">
+                <div className="absolute top-2 right-2 px-2 py-1 rounded-full bg-white text-sm font-medium shadow">
                   {product.category}
                 </div>
               </div>
               <div className="p-4">
                 <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
-                <p className="text-blue-600 font-bold mb-2">
+                <p className="text-emerald-600 font-bold mb-2">
                   {product.price} JD
                 </p>
                 <p className="text-sm text-gray-600 mb-4 line-clamp-2">
@@ -269,7 +335,8 @@ const EditProductList = () => {
                 <div className="flex justify-between items-center">
                   <Link
                     to={`/edit-product/${product._id}`}
-                    className="flex items-center text-blue-600 hover:text-blue-800"
+                    onClick={() => showToast(`Editing ${product.name}`, "info")}
+                    className="flex items-center bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
                   >
                     <Edit size={16} className="mr-1" /> Edit
                   </Link>
@@ -278,13 +345,16 @@ const EditProductList = () => {
                     <div className="flex items-center space-x-2">
                       <button
                         onClick={() => handleSoftDelete(product._id)}
-                        className="text-red-600 hover:text-red-800 font-medium"
+                        className="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors font-medium"
                       >
                         Confirm
                       </button>
                       <button
-                        onClick={() => setShowDeleteConfirm(null)}
-                        className="text-gray-500 hover:text-gray-700"
+                        onClick={() => {
+                          setShowDeleteConfirm(null);
+                          showToast("Deletion cancelled", "info");
+                        }}
+                        className="bg-gray-50 text-gray-500 hover:bg-gray-100 px-3 py-1.5 rounded-lg transition-colors"
                       >
                         Cancel
                       </button>
@@ -292,7 +362,7 @@ const EditProductList = () => {
                   ) : (
                     <button
                       onClick={() => setShowDeleteConfirm(product._id)}
-                      className="flex items-center text-red-600 hover:text-red-800"
+                      className="flex items-center bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors"
                     >
                       <Trash2 size={16} className="mr-1" /> Delete
                     </button>
@@ -344,7 +414,7 @@ const EditProductList = () => {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-blue-100 text-blue-800">
+                    <span className="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-emerald-100 text-emerald-800">
                       {product.category}
                     </span>
                   </td>
@@ -355,21 +425,29 @@ const EditProductList = () => {
                     <div className="flex justify-end space-x-3">
                       <Link
                         to={`/edit-product/${product._id}`}
-                        className="text-blue-600 hover:text-blue-900"
+                        onClick={() =>
+                          showToast(`Editing ${product.name}`, "info")
+                        }
+                        className="bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1.5 rounded-lg transition-colors"
                       >
-                        Edit
+                        <span className="flex items-center">
+                          <Edit size={14} className="mr-1" /> Edit
+                        </span>
                       </Link>
                       {showDeleteConfirm === product._id ? (
                         <div className="flex items-center space-x-2">
                           <button
                             onClick={() => handleSoftDelete(product._id)}
-                            className="text-red-600 hover:text-red-800 font-medium"
+                            className="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors font-medium"
                           >
                             Confirm
                           </button>
                           <button
-                            onClick={() => setShowDeleteConfirm(null)}
-                            className="text-gray-500 hover:text-gray-700"
+                            onClick={() => {
+                              setShowDeleteConfirm(null);
+                              showToast("Deletion cancelled", "info");
+                            }}
+                            className="bg-gray-50 text-gray-500 hover:bg-gray-100 px-3 py-1.5 rounded-lg transition-colors"
                           >
                             Cancel
                           </button>
@@ -377,9 +455,11 @@ const EditProductList = () => {
                       ) : (
                         <button
                           onClick={() => setShowDeleteConfirm(product._id)}
-                          className="text-red-600 hover:text-red-800"
+                          className="bg-red-50 text-red-600 hover:bg-red-100 px-3 py-1.5 rounded-lg transition-colors"
                         >
-                          Delete
+                          <span className="flex items-center">
+                            <Trash2 size={14} className="mr-1" /> Delete
+                          </span>
                         </button>
                       )}
                     </div>
