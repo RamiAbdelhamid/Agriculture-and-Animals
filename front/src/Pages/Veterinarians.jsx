@@ -11,6 +11,7 @@ import {
   Phone,
 } from "lucide-react";
 
+
 const VetBooking = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
@@ -19,34 +20,41 @@ const VetBooking = () => {
   const [reason, setReason] = useState("");
   const [reservedDates, setReservedDates] = useState([]);
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [departments, setDepartments] = useState([]);
+  const [vets, setVets] = useState([]);
 
-  // Sample departments
-  const departments = [
-    { id: "poultry", name: "Poultry Care", icon: "🐔" },
-    { id: "cattle", name: "Cattle Care", icon: "🐄" },
-    { id: "sheep", name: "Sheep & Goats", icon: "🐑" },
-    { id: "pets", name: "Farm Pets", icon: "🐕" },
-  ];
+  // Fetch departments and vets on load
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      try {
+        const response = await axios.get(
+          "http://localhost:5000/api/departments"
+        );
+        setDepartments(response.data);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+      }
+    };
 
-  // Sample anonymous vet data with dynamic next available date
-  const vets = [
-    {
-      name: "Omar",
-      department: "poultry",
-      experience: 8,
-      rating: 4.8,
-      reviewCount: 156,
-      specializations: ["Disease Prevention", "Flock Health"],
-    },
-    {
-      name: "Ahmad",
-      department: "cattle",
-      experience: 12,
-      rating: 4.9,
-      reviewCount: 243,
-      specializations: ["Dairy Health", "Reproductive Health"],
-    },
-  ];
+    fetchDepartments();
+  }, []);
+
+  useEffect(() => {
+    if (selectedDepartment) {
+      const fetchVets = async () => {
+        try {
+          const response = await axios.get(
+            `http://localhost:5000/api/vets/by-department/${selectedDepartment}`
+          );
+          setVets(response.data);
+        } catch (error) {
+          console.error("Error fetching vets:", error);
+        }
+      };
+
+      fetchVets();
+    }
+  }, [selectedDepartment]);
 
   // Fetch reserved dates when a vet is selected
   useEffect(() => {
@@ -323,7 +331,7 @@ const VetBooking = () => {
                               <h3 className="font-semibold text-gray-800 text-lg">
                                 Dr. {vet.name}
                               </h3>
-                              <div className="flex items-center gap-1">
+                              {/* <div className="flex items-center gap-1">
                                 <Star className="w-4 h-4 text-yellow-500" />
                                 <span className="text-gray-600 text-sm">
                                   {vet.rating}{" "}
@@ -331,7 +339,7 @@ const VetBooking = () => {
                                     ({vet.reviewCount} reviews)
                                   </span>
                                 </span>
-                              </div>
+                              </div> */}
                             </div>
                           </div>
                         </div>

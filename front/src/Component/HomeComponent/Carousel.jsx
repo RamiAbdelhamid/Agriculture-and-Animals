@@ -8,7 +8,7 @@ function Carousel() {
   useEffect(() => {
     const interval = setInterval(() => {
       setCurrentSlide((current) => (current === totalSlides ? 1 : current + 1));
-    }, 5000);
+    }, 15000);
 
     return () => clearInterval(interval);
   }, []);
@@ -39,24 +39,31 @@ function Carousel() {
     <div className="relative">
       {/* Carousel */}
       <div className="carousel w-full">
-        {/* Slide 1 */}
+        {/* Slide 1 - Video of agricultural fields */}
         {currentSlide === 1 && (
           <div id="slide1" className="carousel-item relative w-full">
             <div className="absolute inset-0 bg-black/30 z-10"></div>
-            <img
-              src="/src/assets/pic/pexels-munkhbayar-dambajav-176526124-11122221.jpg"
+            <video
               className="w-full h-[600px] object-cover"
-              alt="Agricultural fields"
-            />
+              autoPlay
+              muted
+              loop
+            >
+              <source
+                src="../../../src/assets/videos/Untitled video - Made with Clipchamp.mp4"
+                type="video/mp4"
+              />
+              Your browser does not support the video tag.
+            </video>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center z-20">
               <h1 className="text-5xl md:text-7xl font-bold drop-shadow-lg mb-4">
-                Quality Agricultural Solutions
+                Complete Poultry Solutions
               </h1>
               <p className="text-xl max-w-2xl mx-auto mb-6 drop-shadow-lg">
-                Providing farmers with the best products for sustainable growth
+                Vaccines, equipment, and expertise for optimal poultry farming
               </p>
               <button className="px-6 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300">
-                Explore Products
+                View Solutions
               </button>
             </div>
 
@@ -77,15 +84,22 @@ function Carousel() {
           </div>
         )}
 
-        {/* Slide 2 */}
+        {/* Slide 2 - Video of farm equipment */}
         {currentSlide === 2 && (
           <div id="slide2" className="carousel-item relative w-full">
             <div className="absolute inset-0 bg-black/30 z-10"></div>
-            <img
-              src="/src/assets/pic/new headsection.jpg"
+            <video
               className="w-full h-[600px] object-cover"
-              alt="Agricultural equipment"
-            />
+              autoPlay
+              muted
+              loop
+            >
+              <source
+                src="../../../src/assets/videos/agricultuer.mp4"
+                type="video/mp4"
+              />
+              Your browser does not support the video tag.
+            </video>
             {/* Text overlay */}
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center z-20">
               <h1 className="text-5xl md:text-7xl font-bold drop-shadow-lg mb-4">
@@ -95,7 +109,7 @@ function Carousel() {
                 Modern solutions for traditional farming challenges
               </p>
               <button className="px-6 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300">
-                Shop Now
+                Explore Products
               </button>
             </div>
 
@@ -116,24 +130,31 @@ function Carousel() {
           </div>
         )}
 
-        {/* Slide 3 */}
+        {/* Slide 3 - Video of poultry farming */}
         {currentSlide === 3 && (
           <div id="slide3" className="carousel-item relative w-full">
             <div className="absolute inset-0 bg-black/30 z-10"></div>
-            <img
-              src="/src/assets/pic/HEADDD.webp"
+            <video
               className="w-full h-[600px] object-cover"
-              alt="Poultry farming"
-            />
+              autoPlay
+              muted
+              loop
+            >
+              <source
+                src="/src/assets/videos/poultry-farming.mp4"
+                type="video/mp4"
+              />
+              Your browser does not support the video tag.
+            </video>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center z-20">
               <h1 className="text-5xl md:text-7xl font-bold drop-shadow-lg mb-4">
-                Complete Poultry Solutions
+                Quality Agricultural Solutions
               </h1>
               <p className="text-xl max-w-2xl mx-auto mb-6 drop-shadow-lg">
-                Vaccines, equipment, and expertise for optimal poultry farming
+                Providing farmers with the best products for sustainable growth
               </p>
               <button className="px-6 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300">
-                View Solutions
+                Shop Now
               </button>
             </div>
 

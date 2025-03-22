@@ -16,15 +16,11 @@ import SignUp from "./Pages/SignUp";
 import ProceedToPayment from "./Pages/ProceedToPayment";
 import AddProduct from "../Dashboard/AddProduct";
 import Dashboard from "../Dashboard/Dashboard";
-import EditProduct from "../Dashboard/EditProduct"; 
+import EditProduct from "../Dashboard/EditProduct";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
-
-
 function App() {
-
-const [sidebarOpen, setSidebarOpen] = useState(true);
-
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
     <GoogleOAuthProvider clientId="708338751810-vs4526i07didjadt2vhqgrgu1vnr3ib8.apps.googleusercontent.com">
@@ -54,14 +50,6 @@ const [sidebarOpen, setSidebarOpen] = useState(true);
 
 export default App;
 
-
-
-
-
-
-
-
-
 // import React, { useState } from 'react';
 // import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 // import AddProduct from '../Dashboard/AddProduct';
@@ -77,6 +65,7 @@ export default App;
 // import Settings from '../Dashboard/Settings';
 // import VetDashboard from "../Dashboard/VetDashboard";
 // import DoctorReservations from "../Dashboard/DoctorReservations";
+// import VetAdmin from "../Dashboard/VetAdmin";
 
 // const App = () => {
 //   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -100,6 +89,7 @@ export default App;
 //               <Route path="/analytics" element={<Analytics />} />
 //               <Route path="/settings" element={<Settings />} />
 //               <Route path="/EditProductList" element={<EditProductList />} />
+//               <Route path="/VetAdmin" element={<VetAdmin />} />
 //               <Route path="/vet" element={<VetDashboard />} />
 //               <Route
 //                 path="/DoctorReservations"
@@ -114,4 +104,3 @@ export default App;
 // };
 
 // export default App;
-

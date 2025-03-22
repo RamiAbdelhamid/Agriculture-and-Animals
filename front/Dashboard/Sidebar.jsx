@@ -26,6 +26,11 @@ const Sidebar = ({ isOpen }) => {
       icon: <PlusCircle size={20} />,
       path: "/add-product",
     },
+    {
+      name: "Add Veterinarian",
+      icon: <PlusCircle size={20} />,
+      path: "/VetAdmin",
+    },
     { name: "Categories", icon: <List size={20} />, path: "/categories" },
     { name: "Veterinarians", icon: <Layers size={20} />, path: "/vet" },
     {
