@@ -6,29 +6,29 @@ import {
   CardFooter, 
   CardHeader, 
   CardTitle 
-} from '../src/Component/ui/card';
-import { Button } from '../src/Component/ui/Button';
-import { Input } from '../src/Component/ui/input';
-import { Label } from '../src/Component/ui/Label';
+} from '../Component/ui/card';
+import { Button } from '../Component/ui/Button';
+import { Input } from '../Component/ui/input';
+import { Label } from '../Component/ui/Label';
 import { 
   Tabs, 
   TabsContent, 
   TabsList, 
   TabsTrigger 
-} from '../src/Component/ui/tabs';
+} from '../Component/ui/tabs';
 import { 
   Switch
-} from '../src/Component/ui/Switch';
+} from '../Component/ui/Switch';
 import { 
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '../src/Component/ui/Select';
-import { RadioGroup, RadioGroupItem } from '../src/Component/ui/RadioGroup';
-import { Separator } from '../src/Component/ui/Separator';
-import { Textarea } from '../src/Component/ui/Textarea';
+} from '../Component/ui/Select';
+import { RadioGroup, RadioGroupItem } from '../Component/ui/RadioGroup';
+import { Separator } from '../Component/ui/Separator';
+import { Textarea } from '../Component/ui/Textarea';
 
 export const Settings = () => {
   const [saved, setSaved] = useState(false);

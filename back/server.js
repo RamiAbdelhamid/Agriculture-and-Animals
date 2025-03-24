@@ -7,6 +7,7 @@ const productRoutes = require("./routes/productRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const vetRoutes = require("./routes/vetRoutes");
 const departmentRoutes = require('./routes/departmentRoutes'); // Import department routes
+const contactusRoutes = require("./routes/contactusRoutes"); // Import contact routes
 
 
 
@@ -34,7 +35,7 @@ app.use("/bookings", bookingRoutes);
 app.use(bookingRoutes);  // توجيه المسارات الخاصة بالحجز
 app.use("/api/vets", vetRoutes);
 app.use('/api/departments', departmentRoutes); // Use department routes
-
+app.use("/contact", contactusRoutes); // Use contact routes
 
 //************************************************************************************************** */
 mongoose

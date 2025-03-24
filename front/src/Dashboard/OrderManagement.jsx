@@ -6,16 +6,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "../src/Component/ui/Table";
+} from "../Component/ui/Table";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../src/Component/ui/card";
-import { Button } from "../src/Component/ui/Button";
-import { Input } from "../src/Component/ui/input";
+} from "../Component/ui/card";
+import { Button } from "../Component/ui/Button";
+import { Input } from "../Component/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -23,15 +23,15 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "../src/Component/ui/Dialog";
+} from "../Component/ui/Dialog";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../src/Component/ui/Select";
-import { Badge } from "../src/Component/ui/badge";
+} from "../Component/ui/Select";
+import { Badge } from "../Component/ui/badge";
 import {
   Search,
   Filter,
@@ -42,7 +42,7 @@ import {
   DollarSign,
   Calendar,
 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../src/Component/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../Component/ui/tabs";
 
 export const OrderManagement = () => {
   const [openNewOrderDialog, setOpenNewOrderDialog] = useState(false);

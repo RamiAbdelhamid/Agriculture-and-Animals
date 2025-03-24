@@ -2,13 +2,13 @@ import React from "react";
 
 const AboutUs = () => {
   return (
-    <section className="py-16 bg-gradient-to-b from-gray-50 to-gray-100">
+    <section className="py-16 bg-gradient-to-b from-green-50 to-green-100">
       <div className="container mx-auto px-4">
         {/* Main content section with improved layout and spacing */}
         <div className="flex flex-col md:flex-row items-center gap-12">
           {/* Left content area with improved typography and spacing */}
           <div className="w-full md:w-1/2">
-            <h5 className="text-blue-600 font-medium mb-2 tracking-wider uppercase text-sm">
+            <h5 className="text-green-600 font-medium mb-2 tracking-wider uppercase text-sm">
               About Our Company
             </h5>
             <h2 className="font-bold text-4xl mb-6 text-gray-800">
@@ -25,13 +25,13 @@ const AboutUs = () => {
             {/* Services and Vision with improved grid layout */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
               <div>
-                <h5 className="text-blue-600 font-semibold mb-4">
+                <h5 className="text-green-700 font-semibold mb-4">
                   Our Services
                 </h5>
                 <ul className="space-y-2">
                   <li className="flex items-center">
                     <svg
-                      className="w-5 h-5 text-blue-500 mr-2"
+                      className="w-5 h-5 text-green-500 mr-2"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -46,7 +46,7 @@ const AboutUs = () => {
                   </li>
                   <li className="flex items-center">
                     <svg
-                      className="w-5 h-5 text-blue-500 mr-2"
+                      className="w-5 h-5 text-green-500 mr-2"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -61,7 +61,7 @@ const AboutUs = () => {
                   </li>
                   <li className="flex items-center">
                     <svg
-                      className="w-5 h-5 text-blue-500 mr-2"
+                      className="w-5 h-5 text-green-500 mr-2"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +76,7 @@ const AboutUs = () => {
                   </li>
                   <li className="flex items-center">
                     <svg
-                      className="w-5 h-5 text-blue-500 mr-2"
+                      className="w-5 h-5 text-green-500 mr-2"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
@@ -92,18 +92,20 @@ const AboutUs = () => {
                 </ul>
               </div>
               <div>
-                <h5 className="text-blue-600 font-semibold mb-4">Our Vision</h5>
+                <h5 className="text-green-700 font-semibold mb-4">
+                  Our Vision
+                </h5>
                 <ul className="space-y-2">
                   <li className="flex items-center">
                     <svg
-                      className="w-5 h-5 text-blue-500 mr-2"
+                      className="w-5 h-5 text-green-500 mr-2"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
                         fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.5a1 1 0 102 0V5zM10 9a1 1 0 100-2 1 1 0 000 2z"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z"
                         clipRule="evenodd"
                       ></path>
                     </svg>
@@ -111,14 +113,14 @@ const AboutUs = () => {
                   </li>
                   <li className="flex items-center">
                     <svg
-                      className="w-5 h-5 text-blue-500 mr-2"
+                      className="w-5 h-5 text-green-500 mr-2"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
                         fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.5a1 1 0 102 0V5zM10 9a1 1 0 100-2 1 1 0 000 2z"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z"
                         clipRule="evenodd"
                       ></path>
                     </svg>
@@ -126,18 +128,18 @@ const AboutUs = () => {
                   </li>
                   <li className="flex items-center">
                     <svg
-                      className="w-5 h-5 text-blue-500 mr-2"
+                      className="w-5 h-5 text-green-500 mr-2"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                       xmlns="http://www.w3.org/2000/svg"
                     >
                       <path
                         fillRule="evenodd"
-                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.5a1 1 0 102 0V5zM10 9a1 1 0 100-2 1 1 0 000 2z"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v3.586L7.707 9.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 10.586V7z"
                         clipRule="evenodd"
                       ></path>
                     </svg>
-                    <span>Continuous Innovation</span>
+                    <span>Sustainable Innovation</span>
                   </li>
                 </ul>
               </div>
@@ -146,7 +148,7 @@ const AboutUs = () => {
             {/* CTA button with improved styling */}
             <a
               href="#"
-              className="inline-flex items-center px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-lg transition-colors duration-200"
+              className="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200"
             >
               Learn More
               <svg
@@ -169,12 +171,12 @@ const AboutUs = () => {
           {/* Right image area with improved styling */}
           <div className="w-full md:w-1/2">
             <div className="relative">
-              <div className="absolute -top-4 -left-4 w-24 h-24 bg-blue-100 rounded-lg -z-10"></div>
-              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-blue-100 rounded-lg -z-10"></div>
+              <div className="absolute -top-4 -left-4 w-24 h-24 bg-green-200 rounded-lg -z-10"></div>
+              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-green-200 rounded-lg -z-10"></div>
               <img
                 src="/src/assets/pic/farmfusion7-scaled.webp"
                 alt="Farm Fusion Team"
-                className="w-full h-auto rounded-lg shadow-xl object-cover"
+                className="w-full h-auto rounded-lg shadow-xl object-cover border-4 border-green-100"
               />
             </div>
           </div>
@@ -183,11 +185,11 @@ const AboutUs = () => {
         {/* Stats section with improved styling */}
         <div className="mt-20">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="bg-white p-6 rounded-lg shadow-md transition-transform duration-300 hover:transform hover:scale-105">
+            <div className="bg-white p-6 rounded-lg shadow-md transition-transform duration-300 hover:transform hover:scale-105 border-t-4 border-green-500">
               <div className="flex flex-col items-center">
-                <div className="p-3 bg-blue-100 rounded-full mb-4">
+                <div className="p-3 bg-green-100 rounded-full mb-4">
                   <svg
-                    className="w-8 h-8 text-blue-600"
+                    className="w-8 h-8 text-green-600"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -200,11 +202,11 @@ const AboutUs = () => {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md transition-transform duration-300 hover:transform hover:scale-105">
+            <div className="bg-white p-6 rounded-lg shadow-md transition-transform duration-300 hover:transform hover:scale-105 border-t-4 border-green-500">
               <div className="flex flex-col items-center">
-                <div className="p-3 bg-blue-100 rounded-full mb-4">
+                <div className="p-3 bg-green-100 rounded-full mb-4">
                   <svg
-                    className="w-8 h-8 text-blue-600"
+                    className="w-8 h-8 text-green-600"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -217,11 +219,11 @@ const AboutUs = () => {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md transition-transform duration-300 hover:transform hover:scale-105">
+            <div className="bg-white p-6 rounded-lg shadow-md transition-transform duration-300 hover:transform hover:scale-105 border-t-4 border-green-500">
               <div className="flex flex-col items-center">
-                <div className="p-3 bg-blue-100 rounded-full mb-4">
+                <div className="p-3 bg-green-100 rounded-full mb-4">
                   <svg
-                    className="w-8 h-8 text-blue-600"
+                    className="w-8 h-8 text-green-600"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"
@@ -238,11 +240,11 @@ const AboutUs = () => {
               </div>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-md transition-transform duration-300 hover:transform hover:scale-105">
+            <div className="bg-white p-6 rounded-lg shadow-md transition-transform duration-300 hover:transform hover:scale-105 border-t-4 border-green-500">
               <div className="flex flex-col items-center">
-                <div className="p-3 bg-blue-100 rounded-full mb-4">
+                <div className="p-3 bg-green-100 rounded-full mb-4">
                   <svg
-                    className="w-8 h-8 text-blue-600"
+                    className="w-8 h-8 text-green-600"
                     fill="currentColor"
                     viewBox="0 0 20 20"
                     xmlns="http://www.w3.org/2000/svg"

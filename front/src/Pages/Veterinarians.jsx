@@ -175,7 +175,6 @@ const VetBooking = () => {
   const DatePicker = () => {
     return (
       <div className="relative">
-        <Calendar className="w-5 h-5 text-green-600 absolute left-3 top-1/2 transform -translate-y-1/2" />
         <input
           type="date"
           required
@@ -191,16 +190,18 @@ const VetBooking = () => {
               <Clock className="w-4 h-4 text-green-600 mr-2" />
               Reserved Dates:
             </h3>
-            <div className="flex flex-wrap gap-2">
+            <div className="flex overflow-x-auto gap-2">
               {reservedDates.length > 0 ? (
-                reservedDates.map((date, index) => (
-                  <span
-                    key={index}
-                    className="px-3 py-1 bg-red-100 text-red-600 rounded-full text-sm font-medium shadow-sm"
-                  >
-                    {new Date(date).toLocaleDateString()}
-                  </span>
-                ))
+                reservedDates
+                  .sort((a, b) => new Date(b) - new Date(a)) // ترتيب التواريخ من الأحدث إلى الأقدم
+                  .map((date, index) => (
+                    <span
+                      key={index}
+                      className="px-3 py-1 bg-red-100 text-red-600 rounded-full text-sm font-medium shadow-sm"
+                    >
+                      {new Date(date).toLocaleDateString()}
+                    </span>
+                  ))
               ) : (
                 <span className="text-sm text-gray-500 italic">
                   No reserved dates found for this vet

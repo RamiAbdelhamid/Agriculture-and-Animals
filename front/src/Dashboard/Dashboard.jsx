@@ -150,8 +150,6 @@
 //   return conditions[condition] || "sun";
 // };
 
-
-
 //   // Farm Tasks with actual state management
 //   const [farmTasks, setFarmTasks] = useState([
 //     {
@@ -626,9 +624,6 @@
 
 // export default Dashboard;
 
-
-
-
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -656,6 +651,7 @@ import {
   Check,
   X,
   Clock,
+  Sidebar,
 } from "lucide-react";
 
 const Dashboard = () => {
@@ -692,7 +688,6 @@ const Dashboard = () => {
   });
   const [reservedDates, setReservedDates] = useState([]);
 
-  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -704,7 +699,7 @@ const Dashboard = () => {
           (product) => !product.isDeleted
         );
         setProducts(activeProducts.slice(0, 5)); // Just get the first 5 for the dashboard
-setStats({
+        setStats({
           totalProducts: activeProducts.length,
         });
         // Fetch all bookings
@@ -1163,7 +1158,7 @@ setStats({
                 Recent Bookings
               </h2>
               <Link
-                to="/vet"
+                to="./vet"
                 className="text-blue-600 text-sm hover:text-blue-800 flex items-center"
               >
                 View All <ChevronRight size={16} />
@@ -1305,7 +1300,7 @@ setStats({
                 Recent Products
               </h2>
               <Link
-                to="/EditProductList"
+                to="./products"
                 className="text-blue-600 text-sm hover:text-blue-800 flex items-center"
               >
                 View All <ChevronRight size={16} />

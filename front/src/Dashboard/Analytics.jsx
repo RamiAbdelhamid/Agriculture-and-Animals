@@ -487,20 +487,20 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../src/Component/ui/card";
+} from "../Component/ui/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../src/Component/ui/Select";
+} from "../Component/ui/Select";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "../src/Component/ui/tabs";
+} from "../Component/ui/tabs";
 import {
   LineChart,
   Line,
