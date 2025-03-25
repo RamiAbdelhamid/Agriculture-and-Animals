@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { motion } from "framer-motion";
@@ -9,7 +7,17 @@ const Login = ({ switchForm }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [userRole, setUserRole] = useState(null);
+
+  useEffect(() => {
+    // استرجاع البريد الإلكتروني إذا كان "تذكرني" مفعلًا من localStorage
+    const savedEmail = localStorage.getItem("email");
+    if (savedEmail) {
+      setFormData({ ...formData, email: savedEmail });
+      setRememberMe(true);
+    }
+  }, []);
 
   const fetchUserRole = async () => {
     try {
@@ -30,9 +38,17 @@ const Login = ({ switchForm }) => {
     setError("");
 
     try {
+      // إذا كان تذكرني مفعلًا، قم بتخزين البريد الإلكتروني في localStorage
+      if (rememberMe) {
+        localStorage.setItem("email", formData.email);
+      } else {
+        localStorage.removeItem("email"); // إزالة البريد الإلكتروني إذا تم إلغاء التفعيل
+      }
+
       await axios.post("http://localhost:5000/api/users/login", formData, {
         withCredentials: true, // 🔥 Ensures cookies are stored
       });
+
       fetchUserRole();
 
       console.log(userRole);
@@ -68,6 +84,10 @@ const Login = ({ switchForm }) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleRememberMeChange = (e) => {
+    setRememberMe(e.target.checked);
   };
 
   return (
@@ -107,6 +127,7 @@ const Login = ({ switchForm }) => {
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
             }
+            value={formData.email}
             required
             dir="rtl"
           />
@@ -148,6 +169,8 @@ const Login = ({ switchForm }) => {
             id="remember-me"
             type="checkbox"
             className="h-4 w-4 text-[#51a31d] border-[#383838] rounded focus:ring-[#51a31d]"
+            checked={rememberMe}
+            onChange={handleRememberMeChange}
           />
         </div>
 

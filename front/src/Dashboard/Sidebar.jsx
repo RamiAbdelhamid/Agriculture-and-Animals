@@ -134,7 +134,7 @@ const Sidebar = ({ isOpen }) => {
     {
       name: "Add Veterinarian",
       icon: <PlusCircle size={20} />,
-      path: "/Dashboard/VetAdmin",
+      path: "/Dashboard/AddVeterinarians",
     },
     {
       name: "Categories",

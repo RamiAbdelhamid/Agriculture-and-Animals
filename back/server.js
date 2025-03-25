@@ -8,7 +8,7 @@ const bookingRoutes = require("./routes/bookingRoutes");
 const vetRoutes = require("./routes/vetRoutes");
 const departmentRoutes = require('./routes/departmentRoutes'); // Import department routes
 const contactusRoutes = require("./routes/contactusRoutes"); // Import contact routes
-
+const userRoutes = require("./routes/userRoutes");
 
 
 //************************************************************************************************** */
@@ -36,7 +36,7 @@ app.use(bookingRoutes);  // توجيه المسارات الخاصة بالحج�
 app.use("/api/vets", vetRoutes);
 app.use('/api/departments', departmentRoutes); // Use department routes
 app.use("/contact", contactusRoutes); // Use contact routes
-
+app.use("/api/users", userRoutes);
 //************************************************************************************************** */
 mongoose
   .connect(process.env.MONGODB_URI, {

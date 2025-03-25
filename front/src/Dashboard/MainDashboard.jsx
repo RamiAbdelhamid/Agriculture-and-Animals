@@ -11,7 +11,7 @@ import VetDashboard from './VetDashboard';
 import EditProduct from "./EditProduct";
 import InventoryTracking from "./InventoryTracking";
 import OrderManagement from "./OrderManagement";
-import VetAdmin from "./VetAdmin";
+import AddVeterinarians from "./AddVeterinarians";
 import DoctorReservations from "./DoctorReservations";
 
 const MainDash = () => {
@@ -32,11 +32,9 @@ const MainDash = () => {
           <Route path="/inventory" element={<InventoryTracking />} />
           <Route path="/orders" element={<OrderManagement />} />
 
-          <Route path="/VetAdmin" element={<VetAdmin />} />
+          <Route path="/AddVeterinarians" element={<AddVeterinarians />} />
           <Route path="/vet" element={<VetDashboard />} />
-            <Route path="/DoctorReservations" element={<DoctorReservations />} />
-
-
+          <Route path="/DoctorReservations" element={<DoctorReservations />} />
         </Routes>
       </div>
     </div>

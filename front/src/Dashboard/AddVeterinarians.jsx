@@ -13,7 +13,7 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
-const VetAdmin = ({ onBack, onDataUpdate, initialDepartments }) => {
+const AddVeterinarians = ({ onBack, onDataUpdate, initialDepartments }) => {
   const [vets, setVets] = useState([]); // بدأنا بدون بيانات للأطباء
   const [departments, setDepartments] = useState(initialDepartments || []);
   const [isAddingVet, setIsAddingVet] = useState(false);
@@ -544,4 +544,4 @@ const VetAdmin = ({ onBack, onDataUpdate, initialDepartments }) => {
   );
 };
 
-export default VetAdmin;
+export default AddVeterinarians;

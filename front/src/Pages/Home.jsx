@@ -5,16 +5,21 @@ import ChickenSection from "../Component/HomeComponent/ChickenSection";
 import Reviews from "../Component/HomeComponent/Reviews";
 import Carousel from "../Component/HomeComponent/Carousel";
 import Footer from "../Component/Shared/Footer";
-
+import { useRef } from "react";
 const Home = () => {
+
+
+    const categorySectionRef = useRef(null);
   return (
     <div className="min-h-screen bg-gray-50">
   
-
+ <div ref={categorySectionRef} id="category-section">
       {/* Hero Section with Carousel */}
       <section className="relative">
         <Carousel />
       </section>
+</div>
+
 
       {/* Categories Section with improved spacing */}
       <section className="py-16 container mx-auto px-4">
