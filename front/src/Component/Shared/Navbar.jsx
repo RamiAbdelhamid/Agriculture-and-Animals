@@ -18,11 +18,11 @@ import { toast } from "react-toastify";
 // Navigation items configuration
 const navigation = [
   { name: "Home", to: "/", icon: "🏡" },
-  { name: "About", to: "/about", icon: "🌱" },
-  { name: "Contact", to: "/contact", icon: "📞" },
+   { name: "Shop", to: "/Shop", icon: "🌱" },
   { name: "Veterinarians", to: "/veterinarians", icon: "🩺" },
-  { name: "Farm Products", to: "/products", icon: "🚜" },
-  { name: "Shop", to: "/Shop", icon: "🌱" },
+{ name: "About", to: "/about", icon: "🌱" },
+  { name: "Contact", to: "/contact", icon: "📞" },
+  // { name: "Farm Products", to: "/products", icon: "🚜" },
 ];
 
 export default function Navbar() {

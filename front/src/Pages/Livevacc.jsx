@@ -22,30 +22,38 @@ const Livevacc = () => {
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [products, setProducts] = useState([]);
+  const [categoryCounts, setCategoryCounts] = useState({});
   const [cartItems, setCartItems] = useState(() => {
     const savedCart = localStorage.getItem("cartItems");
     return savedCart ? JSON.parse(savedCart) : [];
   });
   const navigate = useNavigate();
-
   // Save cart to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
   // Fetch products from API
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get("http://localhost:5000/api/products");
-        setProducts(response.data);
-      } catch (error) {
-        console.error("Error fetching products:", error);
-      }
-    };
+ useEffect(() => {
+   const fetchProducts = async () => {
+     try {
+       const response = await axios.get("http://localhost:5000/api/products");
+       setProducts(response.data);
 
-    fetchProducts();
-  }, []);
+       // Calculate category counts
+       const counts = response.data.reduce((acc, product) => {
+         const category = product.category;
+         acc[category] = (acc[category] || 0) + 1;
+         return acc;
+       }, {});
+       setCategoryCounts(counts);
+     } catch (error) {
+       console.error("Error fetching products:", error);
+     }
+   };
+
+   fetchProducts();
+ }, []);
 
   // Add to cart with quantity
   const addToCart = (product) => {
@@ -90,7 +98,8 @@ const filteredProducts = products.filter((product) => {
   const matchesCategory =
     selectedCategory === "all" ||
     product.category.toLowerCase() === selectedCategory.toLowerCase();
-  return matchesSearch && matchesCategory;
+  const isNotDeleted = product.isDeleted === false; // Check if the product is not deleted
+  return matchesSearch && matchesCategory && isNotDeleted;
 });
 
 
@@ -149,20 +158,32 @@ const filteredProducts = products.filter((product) => {
         <div className="mb-8 p-4 border rounded-lg bg-gray-50">
           <h3 className="font-semibold mb-4">Animal Categories</h3>
           <div className="flex flex-wrap gap-4">
-            {["all", "chicken", "cow", "horse", "sheep", "pets"].map(
-              (category) => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-lg capitalize ${
-                    selectedCategory === category
-                      ? "bg-green-600 text-white"
-                      : "bg-white border hover:bg-gray-50"
-                  }`}
-                >
-                  {category}
-                </button>
-              )
+            {["all", "Live vaccines", "cow", "horse", "sheep", "pets"].map(
+              (category) => {
+                // تصفية المنتجات حسب الفئة والتحقق من أن المنتجات غير محذوفة
+                const categoryProducts = products.filter(
+                  (product) =>
+                    (category === "all" ||
+                      product.category.toLowerCase() ===
+                        category.toLowerCase()) &&
+                    product.isDeleted === false
+                );
+                return (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-4 py-2 rounded-lg capitalize ${
+                      selectedCategory === category
+                        ? "bg-green-600 text-white"
+                        : "bg-white border hover:bg-gray-50"
+                    }`}
+                  >
+                    {category === "all"
+                      ? "All"
+                      : `${category} (${categoryProducts.length})`}
+                  </button>
+                );
+              }
             )}
           </div>
         </div>

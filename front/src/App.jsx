@@ -19,6 +19,7 @@ import Dashboard from "../src/Dashboard/Dashboard";
 import EditProduct from "../src/Dashboard/EditProduct";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import MainDash from "./Dashboard/MainDashboard";
+import Shop from "./Pages/Shop";
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   return (
@@ -40,6 +41,8 @@ function App() {
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/Dashboard/*" element={<MainDash />} />
           <Route path="/edit-product/:id" element={<EditProduct />} />
+          <Route path="/Shop" element={<Shop />} />
+          
         </Routes>
         <Footer />
       </Router>
