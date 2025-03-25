@@ -30,6 +30,7 @@ app.use("/uploads", express.static("uploads"));  // تأكد من أن هذا ا
 // Use Routes
 app.use("/api",productRoutes);
 app.use("/bookings", bookingRoutes);
+app.use('/api', userRoutes); // Ensure that this is correctly set up
 
 
 app.use(bookingRoutes);  // توجيه المسارات الخاصة بالحجز

@@ -12,6 +12,14 @@ const bookingSchema = new mongoose.Schema({
     required: true,
     match: /^[0-9]{10}$/, // Regex to ensure the phone number is 10 digits (you can adjust the regex to suit your needs)
   },
+
+  userId: {
+    // Store the userId
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User", // This links to the User model
+    required: true,
+  },
+
   notified: { type: Boolean, default: false },
   completed: {
     type: Boolean,

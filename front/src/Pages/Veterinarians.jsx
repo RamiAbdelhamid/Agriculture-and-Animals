@@ -10,8 +10,7 @@ import {
   Leaf,
   Phone,
 } from "lucide-react";
-
-
+import cookies from "js-cookie";
 const VetBooking = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
@@ -28,7 +27,10 @@ const VetBooking = () => {
     const fetchDepartments = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/api/departments"
+          "http://localhost:5000/api/departments",
+          {
+            withCredentials: true,
+          }
         );
         setDepartments(response.data);
       } catch (error) {
@@ -44,7 +46,9 @@ const VetBooking = () => {
       const fetchVets = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:5000/api/vets/by-department/${selectedDepartment}`
+            `http://localhost:5000/api/vets/by-department/${selectedDepartment}`,
+              {
+        withCredentials: true,}
           );
           setVets(response.data);
         } catch (error) {
@@ -69,7 +73,9 @@ const VetBooking = () => {
   const fetchReservedDates = async (vetName) => {
     try {
       const response = await axios.get(
-        `http://localhost:5000/bookings/vet/${vetName}`
+        `http://localhost:5000/bookings/vet/${vetName}`,
+        {
+        withCredentials: true,}
       );
       setReservedDates(response.data);
     } catch (error) {
@@ -151,8 +157,11 @@ const VetBooking = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/bookings",
-        bookingData
+        "http://localhost:5000/bookings",bookingData,
+        {
+withCredentials: true,
+       }
+
       );
       alert("Booking successful!");
       // After successful booking, refresh the reserved dates
@@ -170,7 +179,7 @@ const VetBooking = () => {
       }
     }
   };
-
+console.log(cookies.get("authToken"));
   // Custom date input component to highlight reserved dates
   const DatePicker = () => {
     return (

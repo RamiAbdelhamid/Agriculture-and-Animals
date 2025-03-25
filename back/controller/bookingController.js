@@ -1,58 +1,3 @@
-// // booking controller
-
-// const Booking = require("../model/bookingModel");
-
-// // دالة لحفظ الحجز
-// const createBooking = async (req, res) => {
-//   const { department, vet, date, emergency, reason } = req.body;
-
-//   if (!vet) {
-//     return res.status(400).json({ message: "Vet is required" });
-//   }
-
-//   try {
-//     // التحقق إذا كان الطبيب محجوزًا في نفس اليوم
-//     const existingBooking = await Booking.findOne({
-//       vet: vet, // التحقق من الطبيب
-//       date: date, // التحقق من التاريخ
-//     });
-
-//     if (existingBooking) {
-//       return res
-//         .status(400)
-//         .json({ message: "This vet is already booked on the selected date." });
-//     }
-
-//     // إنشاء حجز جديد
-//     const newBooking = new Booking({
-//       department,
-//       vet,
-//       date,
-//       emergency,
-//       reason,
-//     });
-
-//     // حفظ الحجز في قاعدة البيانات
-//     await newBooking.save();
-//     res
-//       .status(201)
-//       .json({ message: "Booking created successfully", booking: newBooking });
-//   } catch (error) {
-//     console.error(error);
-//     res
-//       .status(500)
-//       .json({ message: "Error saving booking", error: error.message });
-//   }
-// };
-
-// module.exports = {
-//   createBooking,
-// };
-
-
-
-
-
 const Booking = require("../model/bookingModel"); // استيراد نموذج الحجز
 
 // دالة لحفظ الحجز
@@ -64,6 +9,9 @@ const createBooking = async (req, res) => {
   }
 
   try {
+    // Extract the userId from the request object (this is available if the user is authenticated)
+    const userId = req.user.id; // Assuming you have a middleware to verify JWT and add user info to req
+
     // التحقق إذا كان الطبيب محجوزًا في نفس اليوم
     const existingBooking = await Booking.findOne({
       vet: vet, // التحقق من الطبيب
@@ -84,6 +32,7 @@ const createBooking = async (req, res) => {
       emergency,
       reason,
       phoneNumber,
+      userId, // Save the userId along with the booking
     });
 
     // حفظ الحجز في قاعدة البيانات
@@ -226,6 +175,44 @@ const completeBooking = async (req, res) => {
   }
 };
 
+// Add this in the bookingController.js file
+const getUserBookings = async (req, res) => {
+  try {
+    const userId = req.user.id; // User ID from authenticated token
+
+    // Pagination parameters with defaults
+    const page = parseInt(req.query.page) || 1; // Current page, default to 1
+    const limit = parseInt(req.query.limit) || 10; // Items per page, default to 10
+    const skipIndex = (page - 1) * limit; // Calculate skip index
+
+    // Find total number of bookings for this user
+    const totalBookings = await Booking.countDocuments({
+      userId,
+      completed: true,
+    });
+
+    // Calculate total pages
+    const totalPages = Math.ceil(totalBookings / limit);
+
+    // Fetch paginated bookings
+    const bookings = await Booking.find({ userId, completed: true })
+      .sort({ date: -1 })
+      .skip(skipIndex)
+      .limit(limit);
+
+    res.status(200).json({
+      bookings,
+      currentPage: page,
+      totalPages,
+      totalBookings,
+      pageSize: limit,
+    });
+  } catch (error) {
+    console.error("Error fetching bookings:", error);
+    res.status(500).json({ message: "Error fetching bookings" });
+  }
+};
+
 
 
 
@@ -241,4 +228,5 @@ module.exports = {
   notifyDoctor,
   updateBookingStatus,
   completeBooking,
+  getUserBookings,
 };

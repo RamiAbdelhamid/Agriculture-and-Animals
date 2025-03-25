@@ -12,6 +12,20 @@ const Profile = () => {
     email: "",
     profilePicture: null,
   });
+  const [bookings, setBookings] = useState([]);
+  const [pagination, setPagination] = useState({
+    currentPage: 1,
+    totalPages: 1,
+    totalBookings: 0,
+    pageSize: 2,
+  });
+
+
+
+
+
+
+
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -27,7 +41,7 @@ const Profile = () => {
         });
       } catch (error) {
         toast.error(
-          error.response?.data?.message || "فشل في جلب بيانات المستخدم"
+          error.response?.data?.message || "Failed to fetch user data"
         );
       } finally {
         setLoading(false);
@@ -35,6 +49,40 @@ const Profile = () => {
     };
     fetchUserProfile();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      const fetchBookings = async () => {
+        try {
+          const res = await axios.get(
+            `http://localhost:5000/api/bookings/user?page=${pagination.currentPage}&limit=${pagination.pageSize}`,
+            {
+              withCredentials: true,
+            }
+          );
+          setBookings(res.data.bookings);
+          setPagination({
+            currentPage: res.data.currentPage,
+            totalPages: res.data.totalPages,
+            totalBookings: res.data.totalBookings,
+            pageSize: res.data.pageSize,
+          });
+        } catch (error) {
+          toast.error("Failed to fetch bookings");
+        }
+      };
+      fetchBookings();
+    }
+  }, [user, pagination.currentPage]);
+
+
+  const handlePageChange = (newPage) => {
+    setPagination((prev) => ({ ...prev, currentPage: newPage }));
+  };
+
+
+
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -64,9 +112,11 @@ const Profile = () => {
       );
       setUser(res.data.user);
       setIsEditing(false);
-      toast.success("تم تحديث المعلومات بنجاح");
+      toast.success("Information updated successfully");
     } catch (error) {
-      toast.error(error.response?.data?.message || "فشل في تحديث المعلومات");
+      toast.error(
+        error.response?.data?.message || "Failed to update information"
+      );
     }
   };
 
@@ -79,16 +129,16 @@ const Profile = () => {
       );
       window.location.href = "/auth";
     } catch (error) {
-      toast.error("فشل في تسجيل الخروج");
+      toast.error("Logout failed");
     }
   };
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-xl text-[#383838]">
+      <div className="flex items-center justify-center h-screen bg-gradient-to-br from-green-100 to-green-200">
+        <div className="flex items-center space-x-4 p-6 bg-white rounded-xl shadow-lg">
           <svg
-            className="animate-spin -ml-1 mr-3 h-8 w-8 text-[#51a31d]"
+            className="animate-spin h-8 w-8 text-green-600"
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
@@ -107,150 +157,301 @@ const Profile = () => {
               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
             ></path>
           </svg>
-          جاري التحميل...
+          <span className="text-green-800 font-semibold">
+            Loading Farm Profile...
+          </span>
         </div>
       </div>
     );
   }
 
   return (
-    <div
-      className="bg-[#f9f9fb] min-h-screen py-8 px-4 sm:px-6 lg:px-8"
-      dir="rtl"
-    >
-      <div className="max-w-4xl mx-auto">
-        <div className="bg-white shadow-lg rounded-lg overflow-hidden">
-          {/* Header Section */}
-          <div className="bg-[#51a31d] px-6 py-8">
-            <div className="flex flex-col md:flex-row items-center">
-              {user.profilePicture ? (
-                <img
-                  src={`http://localhost:5000${user.profilePicture}`}
-                  alt="الصورة الشخصية"
-                  className="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-white shadow-md object-cover"
-                />
-              ) : (
-                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full bg-gray-300 flex items-center justify-center border-4 border-white shadow-md">
-                  <span className="text-4xl text-[#383838]">
-                    {user.name?.charAt(0).toUpperCase() || "؟"}
-                  </span>
-                </div>
-              )}
-              <div className="mt-4 md:mt-0 md:mr-6 text-center md:text-right flex-grow">
-                <h1 className="text-2xl md:text-3xl font-bold text-white">
-                  {user.name}
-                </h1>
-                <p className="text-[#f9f9fb]">{user.email}</p>
-                <span className="inline-block mt-2 px-3 py-1 bg-[#383838] text-white rounded-full text-sm">
-                  {user.role}
-                </span>
+    <div className="min-h-screen bg-gradient-to-br from-green-50 to-green-100 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-5xl mx-auto bg-white shadow-2xl rounded-3xl overflow-hidden border-4 border-green-600">
+        {/* Header Section */}
+        <div className="bg-gradient-to-r from-green-600 to-green-800 text-white p-8">
+          <div className="flex flex-col md:flex-row items-center space-y-4 md:space-y-0 md:space-x-6">
+            {user.profilePicture ? (
+              <img
+                src={`http://localhost:5000${user.profilePicture}`}
+                alt="Profile"
+                className="w-32 h-32 rounded-full border-4 border-white object-cover shadow-lg transform hover:scale-105 transition-transform"
+              />
+            ) : (
+              <div className="w-32 h-32 bg-green-300 rounded-full flex items-center justify-center text-5xl text-green-800 font-bold border-4 border-white shadow-lg">
+                {user.name?.charAt(0).toUpperCase()}
               </div>
-              <div className="mt-4 md:mt-0">
-                <button
-                  onClick={handleLogout}
-                  className="bg-[#383838] hover:bg-[#51a31d] text-white px-4 py-2 rounded-lg transition-colors"
-                >
-                  تسجيل الخروج
-                </button>
-              </div>
+            )}
+            <div className="text-center md:text-left flex-grow">
+              <h1 className="text-3xl font-bold mb-2">{user.name}</h1>
+              <p className="text-green-200 mb-2">{user.email}</p>
+             
             </div>
+            <button
+              onClick={handleLogout}
+              className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg transition-colors flex items-center space-x-2 shadow-md"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L14.586 11H7a1 1 0 110-2h7.586l-1.293-1.293a1 1 0 010-1.414z"
+                  clipRule="evenodd"
+                />
+              </svg>
+              <span>Logout</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Personal Information Section */}
+        <div className="p-8">
+          <div className="border-b border-green-200 pb-6 mb-6">
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-2xl font-bold text-green-800">
+                Personal Information
+              </h2>
+              <button
+                onClick={() => setIsEditing(!isEditing)}
+                className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg transition-colors flex items-center space-x-2"
+              >
+                {isEditing ? (
+                  <>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span>Cancel</span>
+                  </>
+                ) : (
+                  <>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.83-2.828z" />
+                    </svg>
+                    <span>Edit</span>
+                  </>
+                )}
+              </button>
+            </div>
+
+            {isEditing ? (
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="bg-green-50 p-5 rounded-lg shadow-md">
+                    <label className="block text-green-700 font-semibold mb-2">
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      name="name"
+                      value={updatedUser.name}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      required
+                    />
+                  </div>
+                  <div className="bg-green-50 p-5 rounded-lg shadow-md">
+                    <label className="block text-green-700 font-semibold mb-2">
+                      Email
+                    </label>
+                    <input
+                      type="email"
+                      name="email"
+                      readOnly
+                      value={updatedUser.email}
+                      onChange={handleInputChange}
+                      className="w-full px-4 py-2 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+                      required
+                    />
+                  </div>
+                  <div className="bg-green-50 p-5 rounded-lg shadow-md md:col-span-2">
+                    <label className="block text-green-700 font-semibold mb-2">
+                      Profile Picture
+                    </label>
+                    <input
+                      type="file"
+                      name="profilePicture"
+                      onChange={handleFileChange}
+                      className="w-full px-4 py-2 border border-green-300 rounded-lg file:mr-4 file:rounded-full file:border-0 file:bg-green-50 file:px-4 file:py-2 file:text-green-700 hover:file:bg-green-100"
+                    />
+                  </div>
+                </div>
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg transition-colors flex items-center space-x-2"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                    <span>Save Changes</span>
+                  </button>
+                </div>
+              </form>
+            ) : (
+              <div className="grid md:grid-cols-2 gap-6">
+                {[
+                  { label: "Name", value: user.name },
+                  { label: "Email", value: user.email },
+                  { label: "Role", value: user.role },
+                  {
+                    label: "Creation Date",
+                    value: new Date(user.createdAt).toLocaleDateString(),
+                  },
+                ].map((item, index) => (
+                  <div
+                    key={index}
+                    className="bg-green-50 p-5 rounded-lg shadow-md"
+                  >
+                    <label className="block text-green-700 font-semibold mb-2">
+                      {item.label}
+                    </label>
+                    <p className="text-green-900 font-medium">{item.value}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
-          {/* Personal Information Section */}
-          <div className="p-6">
-            <div className="border-b border-gray-200 pb-4 mb-4">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-semibold text-[#383838]">
-                  المعلومات الشخصية
-                </h2>
-                <button
-                  onClick={() => setIsEditing(!isEditing)}
-                  className="bg-[#51a31d] hover:bg-[#383838] text-white px-4 py-1 rounded-lg transition-colors text-sm"
+          {/* Bookings Section */}
+          <div>
+            <h2 className="text-2xl font-bold text-green-800 mb-6">
+              Veterinary Bookings
+            </h2>
+            {bookings.length === 0 ? (
+              <div className="bg-green-50 p-6 rounded-lg text-center">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-16 w-16 mx-auto mb-4 text-green-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  {isEditing ? "إلغاء" : "تعديل المعلومات"}
-                </button>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"
+                  />
+                </svg>
+                <p className="text-green-800">No veterinary bookings yet</p>
               </div>
-              {isEditing ? (
-                <form
-                  onSubmit={handleSubmit}
-                  className="space-y-4"
-                  encType="multipart/form-data"
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="bg-[#f9f9fb] p-4 rounded-lg shadow-sm">
-                      <label className="text-sm text-[#383838] block mb-1">
-                        الاسم
-                      </label>
-                      <input
-                        type="text"
-                        name="name"
-                        value={updatedUser.name}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border border-[#51a31d] rounded-md bg-[#f9f9fb] focus:outline-none focus:border-[#383838]"
-                        required
-                      />
+            ) : (
+              <div className="grid md:grid-cols-2 gap-6">
+                {bookings.map((booking) => (
+                  <div
+                    key={booking._id}
+                    className="bg-green-50 p-5 rounded-lg shadow-md hover:shadow-xl transition-shadow"
+                  >
+                    <div className="flex justify-between items-center mb-4">
+                      <h3 className="text-lg font-bold text-green-800">
+                        Veterinary Consultation
+                      </h3>
+                      <span
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          booking.emergency
+                            ? "bg-red-500 text-white"
+                            : "bg-green-200 text-green-800"
+                        }`}
+                      >
+                        {booking.emergency ? "Emergency" : "Routine"}
+                      </span>
                     </div>
-                    <div className="bg-[#f9f9fb] p-4 rounded-lg shadow-sm">
-                      <label className="text-sm text-[#383838] block mb-1">
-                        البريد الإلكتروني
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={updatedUser.email}
-                        onChange={handleInputChange}
-                        className="w-full p-2 border border-[#51a31d] rounded-md bg-[#f9f9fb] focus:outline-none focus:border-[#383838]"
-                        required
-                      />
-                    </div>
-                    <div className="bg-[#f9f9fb] p-4 rounded-lg shadow-sm md:col-span-2">
-                      <label className="text-sm text-[#383838] block mb-1">
-                        الصورة الشخصية
-                      </label>
-                      <input
-                        type="file"
-                        name="profilePicture"
-                        onChange={handleFileChange}
-                        className="w-full p-2 border border-[#51a31d] rounded-md bg-[#f9f9fb] focus:outline-none focus:border-[#383838]"
-                      />
+                    <div className="space-y-2">
+                      <p>
+                        <strong className="text-green-700">
+                          Veterinarian:
+                        </strong>{" "}
+                        {booking.vet}
+                      </p>
+                      <p>
+                        <strong className="text-green-700">Date:</strong>{" "}
+                        {new Date(booking.date).toLocaleDateString()}
+                      </p>
+                      <p>
+                        <strong className="text-green-700">Reason:</strong>{" "}
+                        {booking.reason}
+                      </p>
                     </div>
                   </div>
-                  <div className="flex justify-end">
-                    <button
-                      type="submit"
-                      className="bg-[#51a31d] hover:bg-[#383838] text-white px-6 py-2 rounded-lg transition-colors"
-                    >
-                      حفظ التغييرات
-                    </button>
-                  </div>
-                </form>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-[#f9f9fb] p-4 rounded-lg shadow-sm">
-                    <label className="text-sm text-[#383838]">الاسم</label>
-                    <p className="font-medium text-[#383838]">{user.name}</p>
-                  </div>
-                  <div className="bg-[#f9f9fb] p-4 rounded-lg shadow-sm">
-                    <label className="text-sm text-[#383838]">
-                      البريد الإلكتروني
-                    </label>
-                    <p className="font-medium text-[#383838]">{user.email}</p>
-                  </div>
-                  <div className="bg-[#f9f9fb] p-4 rounded-lg shadow-sm">
-                    <label className="text-sm text-[#383838]">الدور</label>
-                    <p className="font-medium text-[#383838]">{user.role}</p>
-                  </div>
-                  <div className="bg-[#f9f9fb] p-4 rounded-lg shadow-sm">
-                    <label className="text-sm text-[#383838]">
-                      تاريخ الإنشاء
-                    </label>
-                    <p className="font-medium text-[#383838]">
-                      {new Date(user.createdAt).toLocaleDateString("ar-EG")}
-                    </p>
-                  </div>
-                </div>
-              )}
-            </div>
+                ))}
+              </div>
+
+)}
+
+
+  {/* Pagination Controls */}
+            <div className="flex justify-center items-center space-x-4 mt-6">
+              <button
+                onClick={() => handlePageChange(pagination.currentPage - 1)}
+                disabled={pagination.currentPage === 1}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Previous
+              </button>
+              <span className="text-green-800">
+                Page {pagination.currentPage} of {pagination.totalPages}
+              </span>
+              <button
+                onClick={() => handlePageChange(pagination.currentPage + 1)}
+                disabled={pagination.currentPage === pagination.totalPages}
+                className="px-4 py-2 bg-green-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Next
+              </button>
+            </div>  
+           
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
           </div>
         </div>
       </div>

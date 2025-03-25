@@ -22,14 +22,12 @@ const navigation = [
   { name: "Contact", to: "/contact", icon: "📞" },
   { name: "Veterinarians", to: "/veterinarians", icon: "🩺" },
   { name: "Farm Products", to: "/products", icon: "🚜" },
+  { name: "Shop", to: "/Shop", icon: "🌱" },
 ];
 
 export default function Navbar() {
   // State declarations
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userProfilePicture, setUserProfilePicture] = useState(
-    "/api/placeholder/40/40"
-  );
   const [scrolled, setScrolled] = useState(false);
   const [activeLink, setActiveLink] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -37,8 +35,6 @@ export default function Navbar() {
   const [user, setUser] = useState(null);
   const [updatedUser, setUpdatedUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
-
 
   // Hooks
   const location = useLocation();
@@ -75,12 +71,11 @@ export default function Navbar() {
     }
   };
 
+  //***********************************************************************//
+  // Fetch user profile data
+  //***********************************************************************//
 
-
-
-
-
-useEffect(() => {
+  useEffect(() => {
     const fetchUserProfile = async () => {
       try {
         const res = await axios.get("http://localhost:5000/api/users/profile", {
@@ -102,19 +97,6 @@ useEffect(() => {
     };
     fetchUserProfile();
   }, []);
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   //***********************************************************************//
   // Initialize user data and active link

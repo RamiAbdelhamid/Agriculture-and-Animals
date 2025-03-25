@@ -42,7 +42,7 @@ exports.googleLogin = async (req, res) => {
         email: payload.email,
         googleId: payload.sub,
         profilePicture: payload.picture,
-        role: "reader",
+        role: "user",
       });
       await user.save();
     }

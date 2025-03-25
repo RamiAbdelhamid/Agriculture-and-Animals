@@ -3,6 +3,7 @@ const express = require("express");
 const multer = require("multer");
 const upload = multer({ dest: "uploads/" });
 const router = express.Router();
+const bookingController = require("../controller/bookingController");
 
 
 const {
@@ -34,4 +35,7 @@ router.put(
 );router.get("/get-role", getUserRoleFromToken);
 router.post("/logout", logoutUser);
 router.get("/get-user", getUserFromToken);
+
+router.get("/bookings/user", verifyToken, bookingController.getUserBookings);
+
 module.exports = router;
