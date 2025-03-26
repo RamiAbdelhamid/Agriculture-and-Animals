@@ -28,7 +28,7 @@ const EditProductList = () => {
   // Categories list
   const categories = [
     "all",
-    "Live vaccines",
+    "Poultry",
     "vitamins",
     "Disinfectants",
     "Fertilizers",

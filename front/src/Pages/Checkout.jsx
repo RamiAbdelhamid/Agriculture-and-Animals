@@ -1,23 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-
-
-
-
-  /************************************************************************************************ */
-  /************************************************************************************************ */
-
-
-
 const Checkout = () => {
   const [cartItems, setCartItems] = useState([]);
   const [shippingAddress, setShippingAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("credit-card");
   const navigate = useNavigate();
-
-  /************************************************************************************************ */
-  /************************************************************************************************ */
 
   useEffect(() => {
     // Get cart data from localStorage
@@ -36,12 +24,10 @@ const Checkout = () => {
     });
   };
 
+  // Calculate total amount considering quantity
   const totalAmount = cartItems
-    .reduce((sum, item) => sum + item.price, 0)
+    .reduce((sum, item) => sum + item.price * (item.quantity || 1), 0)
     .toFixed(2);
-
-  /************************************************************************************************ */
-  /************************************************************************************************ */
 
   return (
     <div className="max-w-6xl mx-auto p-6">
@@ -85,14 +71,23 @@ const Checkout = () => {
               {cartItems.map((item) => (
                 <li key={item.id} className="flex justify-between items-center">
                   <div>
-                    <p className="font-medium">{item.name}</p>
-                    <p className="text-sm text-gray-500">${item.price}</p>
+                    <p className="font-medium">
+                      {item.name}
+                      {item.quantity > 1 && ` (x${item.quantity})`}
+                    </p>
+                    <p className="text-sm text-gray-500">
+                      {item.price} JD{" "}
+                      {item.quantity > 1 &&
+                        `× ${item.quantity} = ${(
+                          item.price * item.quantity
+                        ).toFixed(2)} JD`}
+                    </p>
                   </div>
                 </li>
               ))}
             </ul>
             <div className="pt-4">
-              <p className="font-semibold">Total: ${totalAmount}</p>
+              <p className="font-semibold">Total: {totalAmount} JD</p>
             </div>
           </div>
         )}
@@ -102,6 +97,7 @@ const Checkout = () => {
       <button
         onClick={handleCheckout}
         className="w-full mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700"
+        disabled={cartItems.length === 0}
       >
         Proceed to Payment
       </button>

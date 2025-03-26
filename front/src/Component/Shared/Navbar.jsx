@@ -18,9 +18,9 @@ import { toast } from "react-toastify";
 // Navigation items configuration
 const navigation = [
   { name: "Home", to: "/", icon: "🏡" },
-   { name: "Shop", to: "/Shop", icon: "🌱" },
+  { name: "Shop", to: "/Shop", icon: "🛍️" },
   { name: "Veterinarians", to: "/veterinarians", icon: "🩺" },
-{ name: "About", to: "/about", icon: "🌱" },
+  { name: "About", to: "/about", icon: "🌱" },
   { name: "Contact", to: "/contact", icon: "📞" },
   // { name: "Farm Products", to: "/products", icon: "🚜" },
 ];
@@ -239,7 +239,7 @@ export default function Navbar() {
                             </Link>
                           )}
                         </MenuItem>
-                        <MenuItem>
+                        {/* <MenuItem>
                           {({ active }) => (
                             <Link
                               to="/settings"
@@ -250,7 +250,7 @@ export default function Navbar() {
                               Settings
                             </Link>
                           )}
-                        </MenuItem>
+                        </MenuItem> */}
                         <MenuItem>
                           {({ active }) => (
                             <button

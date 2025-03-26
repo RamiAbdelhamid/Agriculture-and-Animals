@@ -8,6 +8,9 @@ import {
   Plus,
   Eye,
   MapPin,
+  Minus,
+  Trash2,
+  Loader2,
 } from "lucide-react";
 import {
   HoverCard,
@@ -23,85 +26,101 @@ const Livevacc = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [products, setProducts] = useState([]);
   const [categoryCounts, setCategoryCounts] = useState({});
+  const [loading, setLoading] = useState(true);
   const [cartItems, setCartItems] = useState(() => {
-    const savedCart = localStorage.getItem("cartItems");
-    return savedCart ? JSON.parse(savedCart) : [];
+    try {
+      const savedCart = localStorage.getItem("cartItems");
+      return savedCart ? JSON.parse(savedCart) : [];
+    } catch (error) {
+      console.error("Error parsing cart items:", error);
+      return [];
+    }
   });
+
   const navigate = useNavigate();
+
   // Save cart to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem("cartItems", JSON.stringify(cartItems));
   }, [cartItems]);
 
   // Fetch products from API
- useEffect(() => {
-   const fetchProducts = async () => {
-     try {
-       const response = await axios.get("http://localhost:5000/api/products");
-       setProducts(response.data);
+  // Fetch products from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        setLoading(true); // بدء التحميل
+        const response = await axios.get("http://localhost:5000/api/products");
+        setProducts(response.data);
 
-       // Calculate category counts
-       const counts = response.data.reduce((acc, product) => {
-         const category = product.category;
-         acc[category] = (acc[category] || 0) + 1;
-         return acc;
-       }, {});
-       setCategoryCounts(counts);
-     } catch (error) {
-       console.error("Error fetching products:", error);
-     }
-   };
+        // Calculate category counts
+        const counts = response.data.reduce((acc, product) => {
+          const category = product.category;
+          acc[category] = (acc[category] || 0) + 1;
+          return acc;
+        }, {});
+        setCategoryCounts(counts);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false); // انتهاء التحميل بغض النظر عن النتيجة
+      }
+    };
 
-   fetchProducts();
- }, []);
+    fetchProducts();
+  }, []);
 
   // Add to cart with quantity
   const addToCart = (product) => {
-    // Check if product already exists in cart
-    const existingItem = cartItems.find((item) => item.id === product.id);
+    setCartItems((prevItems) => {
+      const existingItem = prevItems.find((item) => item._id === product._id);
 
-    if (existingItem) {
-      // Update quantity if product exists
-      setCartItems(
-        cartItems.map((item) =>
-          item.id === product.id
+      if (existingItem) {
+        return prevItems.map((item) =>
+          item._id === product._id
             ? { ...item, quantity: item.quantity + 1 }
             : item
-        )
-      );
-    } else {
-      // Add new product with quantity 1
-      setCartItems([...cartItems, { ...product, quantity: 1 }]);
-    }
+        );
+      } else {
+        return [...prevItems, { ...product, quantity: 1 }];
+      }
+    });
   };
 
   const removeFromCart = (productId) => {
-    setCartItems(cartItems.filter((item) => item.id !== productId));
+    setCartItems((prevItems) =>
+      prevItems.filter((item) => item._id !== productId)
+    );
   };
 
   const updateQuantity = (productId, newQuantity) => {
-    if (newQuantity < 1) return;
+    if (newQuantity < 1) {
+      removeFromCart(productId);
+      return;
+    }
 
-    setCartItems(
-      cartItems.map((item) =>
-        item.id === productId ? { ...item, quantity: newQuantity } : item
+    setCartItems((prevItems) =>
+      prevItems.map((item) =>
+        item._id === productId ? { ...item, quantity: newQuantity } : item
       )
     );
   };
 
-  // Filtered products based on search and category
-  // Filtered products based on search and category
-const filteredProducts = products.filter((product) => {
-  const matchesSearch = product.name
-    .toLowerCase()
-    .includes(searchQuery.toLowerCase());
-  const matchesCategory =
-    selectedCategory === "all" ||
-    product.category.toLowerCase() === selectedCategory.toLowerCase();
-  const isNotDeleted = product.isDeleted === false; // Check if the product is not deleted
-  return matchesSearch && matchesCategory && isNotDeleted;
-});
+  const clearCart = () => {
+    setCartItems([]);
+  };
 
+  // Filtered products based on search and category
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "all" ||
+      product.category.toLowerCase() === selectedCategory.toLowerCase();
+    const isNotDeleted = product.isDeleted === false;
+    return matchesSearch && matchesCategory && isNotDeleted;
+  });
 
   // Calculate total items in cart (counting quantities)
   const totalItemsInCart = cartItems.reduce(
@@ -113,9 +132,18 @@ const filteredProducts = products.filter((product) => {
   const cartTotal = cartItems
     .reduce((sum, item) => sum + item.price * (item.quantity || 1), 0)
     .toFixed(2);
-
+  if (loading) {
+    return (
+      <div className="max-w-6xl mx-auto p-6 min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <Loader2 className="w-12 h-12 mx-auto animate-spin text-green-600" />
+          <p className="mt-4 text-lg text-gray-600">Loading products...</p>
+        </div>
+      </div>
+    );
+  }
   return (
-    <div className="max-w-6xl mx-auto p-6">
+    <div className="max-w-6xl mx-auto p-6 relative">
       {/* Header with Search and Cart */}
       <div className="flex flex-col md:flex-row gap-4 mb-8 justify-between items-center">
         <div className="relative flex-1 max-w-md">
@@ -158,9 +186,8 @@ const filteredProducts = products.filter((product) => {
         <div className="mb-8 p-4 border rounded-lg bg-gray-50">
           <h3 className="font-semibold mb-4">Animal Categories</h3>
           <div className="flex flex-wrap gap-4">
-            {["all", "Live vaccines", "cow", "horse", "sheep", "pets"].map(
+            {["all", "Poultry", "cow", "horse", "sheep", "pets"].map(
               (category) => {
-                // تصفية المنتجات حسب الفئة والتحقق من أن المنتجات غير محذوفة
                 const categoryProducts = products.filter(
                   (product) =>
                     (category === "all" ||
@@ -191,173 +218,244 @@ const filteredProducts = products.filter((product) => {
 
       {/* Cart Sidebar */}
       {showCart && (
-        <div className="fixed right-0 top-0 h-full w-80 bg-white shadow-lg p-6 z-50 overflow-y-auto">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-xl font-semibold">Shopping Cart</h2>
-            <button onClick={() => setShowCart(false)}>
-              <X className="w-5 h-5" />
-            </button>
-          </div>
-          {cartItems.length === 0 ? (
-            <p className="text-gray-500">Your cart is empty</p>
-          ) : (
-            <div className="space-y-4">
-              {cartItems.map((item) => (
-                <div key={item.id} className="flex flex-col border-b pb-4">
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <p className="font-medium">{item.name}</p>
-                      <p className="text-sm text-gray-500">{item.price} JD</p>
-                      <div className="flex items-center mt-2">
-                        <button
-                          onClick={() =>
-                            updateQuantity(item.id, (item.quantity || 1) - 1)
-                          }
-                          className="w-8 h-8 border rounded-l-lg flex items-center justify-center"
-                        >
-                          -
-                        </button>
-                        <span className="w-10 h-8 border-t border-b flex items-center justify-center">
-                          {item.quantity || 1}
-                        </span>
-                        <button
-                          onClick={() =>
-                            updateQuantity(item.id, (item.quantity || 1) + 1)
-                          }
-                          className="w-8 h-8 border rounded-r-lg flex items-center justify-center"
-                        >
-                          +
-                        </button>
-                      </div>
-                    </div>
+        <div className="fixed inset-0 z-50 overflow-hidden">
+          <div
+            className="absolute inset-0 bg-black bg-opacity-50 transition-opacity"
+            onClick={() => setShowCart(false)}
+          ></div>
+          <div className="absolute inset-y-0 right-0 max-w-full flex">
+            <div className="relative w-screen max-w-md">
+              <div className="h-full flex flex-col bg-white shadow-xl overflow-y-scroll">
+                <div className="flex-1 py-6 overflow-y-auto px-4 sm:px-6">
+                  <div className="flex items-start justify-between">
+                    <h2 className="text-lg font-medium text-gray-900">
+                      Shopping Cart
+                    </h2>
                     <button
-                      onClick={() => removeFromCart(item.id)}
-                      className="text-red-500 hover:text-red-600"
+                      type="button"
+                      className="-mr-2 p-2 text-gray-400 hover:text-gray-500"
+                      onClick={() => setShowCart(false)}
                     >
-                      Remove
+                      <X className="h-6 w-6" aria-hidden="true" />
                     </button>
                   </div>
-                  <p className="self-end mt-2 text-gray-700 font-medium">
-                    Subtotal: {((item.quantity || 1) * item.price).toFixed(2)}{" "}
-                    JD
-                  </p>
+
+                  <div className="mt-8">
+                    {cartItems.length === 0 ? (
+                      <div className="text-center py-12">
+                        <ShoppingCart className="mx-auto h-12 w-12 text-gray-400" />
+                        <h3 className="mt-2 text-lg font-medium text-gray-900">
+                          Your cart is empty
+                        </h3>
+                        <p className="mt-1 text-gray-500">
+                          Start adding some items to your cart
+                        </p>
+                        <div className="mt-6">
+                          <button
+                            onClick={() => setShowCart(false)}
+                            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
+                          >
+                            Continue Shopping
+                          </button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flow-root">
+                        <ul className="-my-6 divide-y divide-gray-200">
+                          {cartItems.map((item) => (
+                            <li key={item._id} className="py-6 flex">
+                              <div className="flex-shrink-0 w-24 h-24 border border-gray-200 rounded-md overflow-hidden">
+                                <img
+                                  src={`http://localhost:5000${item.image}`}
+                                  alt={item.name}
+                                  className="w-full h-full object-cover object-center"
+                                />
+                              </div>
+
+                              <div className="ml-4 flex-1 flex flex-col">
+                                <div>
+                                  <div className="flex justify-between text-base font-medium text-gray-900">
+                                    <h3>{item.name}</h3>
+                                    <p className="ml-4">
+                                      {(item.price * item.quantity).toFixed(2)}{" "}
+                                      JD
+                                    </p>
+                                  </div>
+                                  <p className="mt-1 text-sm text-gray-500">
+                                    {item.category}
+                                  </p>
+                                </div>
+                                <div className="flex-1 flex items-end justify-between text-sm">
+                                  <div className="flex items-center border rounded-lg">
+                                    <button
+                                      onClick={() =>
+                                        updateQuantity(
+                                          item._id,
+                                          item.quantity - 1
+                                        )
+                                      }
+                                      className="px-3 py-1 text-gray-600 hover:bg-gray-100"
+                                    >
+                                      <Minus className="w-4 h-4" />
+                                    </button>
+                                    <span className="px-3 py-1">
+                                      {item.quantity}
+                                    </span>
+                                    <button
+                                      onClick={() =>
+                                        updateQuantity(
+                                          item._id,
+                                          item.quantity + 1
+                                        )
+                                      }
+                                      className="px-3 py-1 text-gray-600 hover:bg-gray-100"
+                                    >
+                                      <Plus className="w-4 h-4" />
+                                    </button>
+                                  </div>
+
+                                  <div className="flex">
+                                    <button
+                                      onClick={() => removeFromCart(item._id)}
+                                      type="button"
+                                      className="font-medium text-red-600 hover:text-red-500 flex items-center"
+                                    >
+                                      <Trash2 className="w-4 h-4 mr-1" />
+                                      Remove
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              ))}
-              <div className="pt-4 border-t">
-                <p className="font-semibold text-lg">Total: {cartTotal} JD</p>
-                <button
-                  onClick={() => navigate("/checkout")}
-                  className="w-full mt-4 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700"
-                >
-                  Proceed to Checkout
-                </button>
+
+                {cartItems.length > 0 && (
+                  <div className="border-t border-gray-200 py-6 px-4 sm:px-6">
+                    <div className="flex justify-between text-base font-medium text-gray-900">
+                      <p>Subtotal</p>
+                      <p>{cartTotal} JD</p>
+                    </div>
+                    <p className="mt-0.5 text-sm text-gray-500">
+                      Shipping and taxes calculated at checkout.
+                    </p>
+                    <div className="mt-6">
+                      <button
+                        onClick={() => navigate("/checkout")}
+                        className="w-full flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700"
+                      >
+                        Checkout
+                      </button>
+                    </div>
+                    <div className="mt-4 flex justify-center text-sm text-gray-500">
+                      <button
+                        onClick={clearCart}
+                        className="text-red-600 hover:text-red-500 font-medium"
+                      >
+                        Clear Cart
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
-          )}
+          </div>
         </div>
       )}
 
-      {/* Product Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredProducts.map((product) => (
-          <HoverCard key={product.id} openDelay={200} closeDelay={100}>
-            <HoverCardTrigger>
-              <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow bg-white">
-                <div className="relative">
-                  <img
-                    src={`http://localhost:5000${product.image}`}
-                    alt={product.name}
-                    className="w-full h-64 object-cover"
-                  />
-                  <span className="absolute top-2 right-2 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                    {product.category}
-                  </span>
-                </div>
-                <div className="p-4">
-                  <h3 className="font-semibold text-lg mb-2">{product.name}</h3>
-                  <p className="text-gray-600 mb-2 line-clamp-2">
-                    {product.description}
-                  </p>
-                  <div className="flex items-center mb-3 text-gray-500 text-sm">
-                    <MapPin className="w-4 h-4 mr-1" />
-                    {product.location || "Nationwide Delivery"}
+      {/* Product Grid or Empty State */}
+      {filteredProducts.length > 0 ? (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredProducts.map((product) => (
+            <HoverCard key={product._id} openDelay={200} closeDelay={100}>
+              <HoverCardTrigger>
+                <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow bg-white">
+                  <div className="relative">
+                    <img
+                      src={`http://localhost:5000${product.image}`}
+                      alt={product.name}
+                      className="w-full h-64 object-cover"
+                    />
+                    <span className="absolute top-2 right-2 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                      {product.category}
+                    </span>
                   </div>
-                  <p className="text-green-600 font-semibold mb-4">
-                    {product.price} JD
-                  </p>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => addToCart(product)}
-                      className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 flex items-center justify-center gap-2"
-                    >
-                      <Plus className="w-4 h-4" />
-                      Add to Cart
-                    </button>
-                    <button
-                      onClick={() => navigate(`/product/${product._id}`)}
-                      className="px-4 py-2 border rounded-lg hover:bg-gray-50"
-                    >
-                      <Eye className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </HoverCardTrigger>
-            {/* <HoverCardContent className="w-80 p-4 z-50 absolute top-1/4 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white border shadow-lg rounded-lg transition-all opacity-0 hover:opacity-100">
-              <div className="space-y-3">
-                <h4 className="font-semibold text-lg">{product.name}</h4>
-
-                <div className="flex items-center">
-                  <MapPin className="w-4 h-4 mr-2 text-gray-500" />
-                  <span className="text-sm text-gray-500">
-                    {product.location || "Available in your region"}
-                  </span>
-                </div>
-
-                <p className="text-sm">
-                  {product.details || product.description}
-                </p>
-
-                <div className="grid grid-cols-2 gap-2 text-sm">
-                  <div>
-                    <span className="text-gray-500">Dosage:</span>
-                    <p>{product.dosage || "See product details"}</p>
-                  </div>
-                  <div>
-                    <span className="text-gray-500">Storage:</span>
-                    <p>{product.storage || "Room temperature"}</p>
-                  </div>
-                  <div>
-                    <span className="text-gray-500">Application:</span>
-                    <p>{product.application || "Professional use"}</p>
-                  </div>
-                  <div>
-                    <span className="text-gray-500">Stock:</span>
-                    <p className="text-green-600">
-                      {product.stock || "In stock"}
+                  <div className="p-4">
+                    <h3 className="font-semibold text-lg mb-2">
+                      {product.name}
+                    </h3>
+                    <p className="text-gray-600 mb-2 line-clamp-2">
+                      {product.description}
                     </p>
+                    <div className="flex items-center mb-3 text-gray-500 text-sm">
+                      <MapPin className="w-4 h-4 mr-1" />
+                      {product.location || "Nationwide Delivery"}
+                    </div>
+                    <p className="text-green-600 font-semibold mb-4">
+                      {product.price} JD
+                    </p>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => addToCart(product)}
+                        className="flex-1 bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 flex items-center justify-center gap-2"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Add to Cart
+                      </button>
+                      <button
+                        onClick={() => navigate(`/product/${product._id}`)}
+                        className="px-4 py-2 border rounded-lg hover:bg-gray-50"
+                      >
+                        <Eye className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 </div>
-
-                <div className="pt-2 flex flex-wrap gap-2">
-                  <span className="text-xs bg-green-100 text-green-600 px-2 py-1 rounded-full">
-                    {product.category}
-                  </span>
-                  {product.tags &&
-                    product.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
-                </div>
-              </div>
-            </HoverCardContent> */}
-          </HoverCard>
-        ))}
-      </div>
+              </HoverCardTrigger>
+            </HoverCard>
+          ))}
+        </div>
+      ) : (
+        <div className="text-center py-16">
+          <div className="mx-auto h-24 w-24 text-gray-400 mb-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              className="w-full h-full"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+          </div>
+          <h3 className="text-lg font-medium text-gray-900">No items found</h3>
+          <p className="mt-2 text-gray-500">
+            {searchQuery || selectedCategory !== "all"
+              ? "No items match your search or filter criteria. Please try different keywords or categories."
+              : "No items available now. Please check back later."}
+          </p>
+          <div className="mt-6">
+            <button
+              onClick={() => {
+                setSearchQuery("");
+                setSelectedCategory("all");
+              }}
+              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700"
+            >
+              Reset Filters
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

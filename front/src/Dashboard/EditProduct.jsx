@@ -78,7 +78,7 @@ const EditProduct = () => {
         }
       );
       alert("Product updated successfully");
-      navigate("/EditProductList"); // العودة إلى صفحة الداشبورد بعد التحديث
+      navigate("/Dashboard/products"); // العودة إلى صفحة الداشبورد بعد التحديث
     } catch (err) {
       console.error("Error updating product:", err);
       alert("Error updating product");

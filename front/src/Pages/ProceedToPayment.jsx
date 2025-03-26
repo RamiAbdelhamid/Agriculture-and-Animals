@@ -1,16 +1,6 @@
 import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
-
-
-
-
-  /************************************************************************************************ */
-  /************************************************************************************************ */
-
-
-
-
 const ProceedToPayment = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -28,9 +18,6 @@ const ProceedToPayment = () => {
     navigate("/"); // Redirect to homepage
   };
 
-  /************************************************************************************************ */
-  /************************************************************************************************ */
-
   return (
     <div className="max-w-4xl mx-auto p-6">
       <h2 className="text-xl font-semibold mb-6">Payment</h2>
@@ -41,8 +28,17 @@ const ProceedToPayment = () => {
         <ul className="space-y-4">
           {cartItems.map((item) => (
             <li key={item.id} className="flex justify-between">
-              <span>{item.name}</span>
-              <span>${item.price.toFixed(2)}</span>
+              <span>
+                {item.name}
+                {item.quantity > 1 && ` (x${item.quantity})`}
+              </span>
+              <span>
+                ${item.price.toFixed(2)}
+                {item.quantity > 1 &&
+                  ` × ${item.quantity} = $${(
+                    item.price * item.quantity
+                  ).toFixed(2)}`}
+              </span>
             </li>
           ))}
         </ul>
