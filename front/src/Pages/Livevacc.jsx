@@ -18,42 +18,40 @@ import {
   HoverCardTrigger,
 } from "../Component/ui/hover-card";
 import { useNavigate } from "react-router-dom";
+import { useCart } from "../Component/Shared/CartContext";
 
 const Livevacc = () => {
-  const [showCart, setShowCart] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [products, setProducts] = useState([]);
   const [categoryCounts, setCategoryCounts] = useState({});
   const [loading, setLoading] = useState(true);
-  const [cartItems, setCartItems] = useState(() => {
-    try {
-      const savedCart = localStorage.getItem("cartItems");
-      return savedCart ? JSON.parse(savedCart) : [];
-    } catch (error) {
-      console.error("Error parsing cart items:", error);
-      return [];
-    }
-  });
+
+  // استخدام context السلة
+  const {
+    cartItems,
+    addToCart,
+    removeFromCart,
+    updateQuantity,
+    clearCart,
+    totalItems,
+    cartTotal,
+    showCart,
+    setShowCart,
+  } = useCart();
 
   const navigate = useNavigate();
 
-  // Save cart to localStorage whenever it changes
-  useEffect(() => {
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
-  }, [cartItems]);
-
-  // Fetch products from API
-  // Fetch products from API
+  // جلب المنتجات من API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        setLoading(true); // بدء التحميل
+        setLoading(true);
         const response = await axios.get("http://localhost:5000/api/products");
         setProducts(response.data);
 
-        // Calculate category counts
+        // حساب عدد المنتجات في كل فئة
         const counts = response.data.reduce((acc, product) => {
           const category = product.category;
           acc[category] = (acc[category] || 0) + 1;
@@ -63,54 +61,14 @@ const Livevacc = () => {
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
-        setLoading(false); // انتهاء التحميل بغض النظر عن النتيجة
+        setLoading(false);
       }
     };
 
     fetchProducts();
   }, []);
 
-  // Add to cart with quantity
-  const addToCart = (product) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find((item) => item._id === product._id);
-
-      if (existingItem) {
-        return prevItems.map((item) =>
-          item._id === product._id
-            ? { ...item, quantity: item.quantity + 1 }
-            : item
-        );
-      } else {
-        return [...prevItems, { ...product, quantity: 1 }];
-      }
-    });
-  };
-
-  const removeFromCart = (productId) => {
-    setCartItems((prevItems) =>
-      prevItems.filter((item) => item._id !== productId)
-    );
-  };
-
-  const updateQuantity = (productId, newQuantity) => {
-    if (newQuantity < 1) {
-      removeFromCart(productId);
-      return;
-    }
-
-    setCartItems((prevItems) =>
-      prevItems.map((item) =>
-        item._id === productId ? { ...item, quantity: newQuantity } : item
-      )
-    );
-  };
-
-  const clearCart = () => {
-    setCartItems([]);
-  };
-
-  // Filtered products based on search and category
+  // تصفية المنتجات بناء على البحث والفئة
   const filteredProducts = products.filter((product) => {
     const matchesSearch = product.name
       .toLowerCase()
@@ -122,16 +80,6 @@ const Livevacc = () => {
     return matchesSearch && matchesCategory && isNotDeleted;
   });
 
-  // Calculate total items in cart (counting quantities)
-  const totalItemsInCart = cartItems.reduce(
-    (total, item) => total + (item.quantity || 1),
-    0
-  );
-
-  // Calculate total price in cart
-  const cartTotal = cartItems
-    .reduce((sum, item) => sum + item.price * (item.quantity || 1), 0)
-    .toFixed(2);
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto p-6 min-h-screen flex items-center justify-center">
@@ -142,6 +90,7 @@ const Livevacc = () => {
       </div>
     );
   }
+
   return (
     <div className="max-w-6xl mx-auto p-6 relative">
       {/* Header with Search and Cart */}
@@ -167,14 +116,14 @@ const Livevacc = () => {
           </button>
 
           <button
-            onClick={() => setShowCart(!showCart)}
+            onClick={() => setShowCart(true)}
             className="relative flex items-center gap-2 px-4 py-2 border rounded-lg hover:bg-gray-50"
           >
             <ShoppingCart className="w-5 h-5" />
             Cart
-            {totalItemsInCart > 0 && (
+            {totalItems > 0 && (
               <span className="absolute -top-2 -right-2 bg-green-600 text-white w-5 h-5 rounded-full flex items-center justify-center text-xs">
-                {totalItemsInCart}
+                {totalItems}
               </span>
             )}
           </button>
@@ -345,7 +294,10 @@ const Livevacc = () => {
                     </p>
                     <div className="mt-6">
                       <button
-                        onClick={() => navigate("/checkout")}
+                        onClick={() => {
+                          setShowCart(false);
+                          navigate("/checkout");
+                        }}
                         className="w-full flex justify-center items-center px-6 py-3 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-green-600 hover:bg-green-700"
                       >
                         Checkout
