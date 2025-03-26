@@ -20,9 +20,10 @@ const navigation = [
   { name: "Home", to: "/", icon: "🏡" },
   { name: "Shop", to: "/Shop", icon: "🛍️" },
   { name: "Veterinarians", to: "/veterinarians", icon: "🩺" },
+  { name: "HealthGuide", to: "/HealthGuide", icon: "🚜" }, 
+  // { name: "Image Analytic", to: "/HealthGuide", icon: "🚜" }, 
   { name: "About", to: "/about", icon: "🌱" },
   { name: "Contact", to: "/contact", icon: "📞" },
-  // { name: "Farm Products", to: "/products", icon: "🚜" },
 ];
 
 export default function Navbar() {
