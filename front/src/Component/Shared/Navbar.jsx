@@ -16,6 +16,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { ShoppingCart, X, Plus, Minus, Trash2 } from "lucide-react";
 import { useCart } from "../Shared/CartContext";
+import { useWishlist } from "../Shared/WishlistContext";
+import { Heart as HeartOutline, Heart as HeartFilled } from "lucide-react";
 
 // Navigation items configuration
 const navigation = [
@@ -37,6 +39,7 @@ export default function Navbar() {
   const [user, setUser] = useState(null);
   const [updatedUser, setUpdatedUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const { wishlist } = useWishlist();
 
   // Cart context
   const {
@@ -174,9 +177,9 @@ export default function Navbar() {
                       <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center shadow-md transform hover:scale-110 transition-transform duration-200">
                         <span className="text-2xl">🌿</span>
                       </div>
-                      <span className="font-bold text-white text-xl hidden md:block">
+                      {/* <span className="font-bold text-white text-xl hidden md:block">
                         FarmFusion
-                      </span>
+                      </span> */}
                     </div>
                   </div>
 
@@ -228,7 +231,22 @@ export default function Navbar() {
                       </span>
                     )}
                   </button>
-
+                  {/* زر الـ Wishlist */}
+                  <Link
+                    to="/wishlist"
+                    className="relative p-2 mr-4 text-green-100 hover:text-white transition-colors duration-200"
+                  >
+                    {wishlist.length > 0 ? (
+                      <HeartFilled className="h-6 w-6 text-red-500 fill-red-500" />
+                    ) : (
+                      <HeartOutline className="h-6 w-6" />
+                    )}
+                    {wishlist.length > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-white text-red-500 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                        {wishlist.length}
+                      </span>
+                    )}
+                  </Link>
                   {isLoggedIn ? (
                     <Menu as="div" className="relative ml-3">
                       <div>

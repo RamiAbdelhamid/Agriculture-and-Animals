@@ -11,6 +11,8 @@ import {
   ArrowRight,
 } from "lucide-react";
 import axios from "axios";
+import { Heart as HeartOutline, Heart as HeartFilled } from "lucide-react";
+import { useWishlist } from "../Component/Shared/WishlistContext";
 
 const ProductDetails = () => {
   const { id } = useParams();
@@ -20,6 +22,7 @@ const ProductDetails = () => {
   const [quantity, setQuantity] = useState(1);
   const [activeTab, setActiveTab] = useState("description");
   const [relatedProducts, setRelatedProducts] = useState([]);
+  const { isInWishlist, toggleWishlist } = useWishlist();
 
 
 
@@ -202,9 +205,20 @@ const ProductDetails = () => {
               <div className="flex justify-between items-start">
                 <h2 className="text-2xl font-bold mb-2">{product.name}</h2>
                 <div className="flex gap-2">
-                  <button className="p-2 rounded-full hover:bg-gray-100">
-                    <Heart className="w-5 h-5 text-gray-500" />
-                  </button>
+                  {/* زر القلب */}
+                  <div>
+                    {/* زر القلب */}
+                    <button
+                      className="p-2 rounded-full hover:bg-gray-100"
+                      onClick={() => toggleWishlist(product)}
+                    >
+                      {isInWishlist(product._id) ? (
+                        <HeartFilled className="w-5 h-5 text-red-500 fill-red-500" />
+                      ) : (
+                        <HeartOutline className="w-5 h-5 text-gray-500" />
+                      )}
+                    </button>
+                  </div>
                   <button className="p-2 rounded-full hover:bg-gray-100">
                     <Share2 className="w-5 h-5 text-gray-500" />
                   </button>
@@ -259,10 +273,7 @@ const ProductDetails = () => {
             {/* Add to Cart Section */}
             <div className="mt-auto">
               <div className="flex flex-col sm:flex-row gap-4 items-center">
-             
-
                 {/* Add to Cart Button */}
-             
               </div>
             </div>
           </div>
@@ -453,7 +464,6 @@ const ProductDetails = () => {
       </div>
 
       {/* Cart Toggle Button */}
- 
 
       {/* Background Overlay for Cart */}
       {cartOpen && (

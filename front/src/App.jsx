@@ -21,10 +21,10 @@ import { GoogleOAuthProvider } from "@react-oauth/google";
 import MainDash from "./Dashboard/MainDashboard";
 import Shop from "./Pages/Shop";
 import HealthGuide from "./Pages/HealthGuide";
+import Wishlist from "./Pages/Wishlist";
 function App() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   return (
-
     <GoogleOAuthProvider clientId="708338751810-vs4526i07didjadt2vhqgrgu1vnr3ib8.apps.googleusercontent.com">
       <Router>
         <Navbar />
@@ -45,6 +45,7 @@ function App() {
           <Route path="/edit-product/:id" element={<EditProduct />} />
           <Route path="/Shop" element={<Shop />} />
           <Route path="/HealthGuide" element={<HealthGuide />} />
+          <Route path="/Wishlist" element={<Wishlist />} />
         </Routes>
         <Footer />
       </Router>
