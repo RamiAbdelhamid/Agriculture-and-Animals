@@ -13,9 +13,11 @@ const {
   getUserProfile,
   updateUserProfile,
   logoutUser,
-  getUserFromToken, getUserRoleFromToken,
+  getUserFromToken,
+  getUserRoleFromToken,
+  updateUserRole,
+  getAllUsers,
 } = require("../controller/userController");
-
 
 const verifyToken = require("../middleware/authMiddleware");
 
@@ -37,5 +39,19 @@ router.post("/logout", logoutUser);
 router.get("/get-user", getUserFromToken);
 
 router.get("/bookings/user", verifyToken, bookingController.getUserBookings);
+
+
+
+
+// Route to get all users (protected route)
+router.get("/users", verifyToken, getAllUsers);
+
+// Route to update user role (protected route)
+router.put("/:userId/role", verifyToken, updateUserRole);
+
+
+
+
+
 
 module.exports = router;

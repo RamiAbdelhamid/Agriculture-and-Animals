@@ -7,7 +7,7 @@ const userSchema = new Schema({
   googleId: { type: String },
   role: {
     type: String,
-    enum: ["Doctor", "user", "admin"],
+    enum: ["veterinarian", "user", "admin"], // Note: singular "veterinarian"
     default: "user",
   },
   name: { type: String, required: true },

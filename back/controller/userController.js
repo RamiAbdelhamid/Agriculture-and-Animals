@@ -234,6 +234,62 @@ exports.getUserFromToken = async (req, res) => {
 };
 
 
+
+
+
+
+// controllers/userController.js
+
+
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (err) {
+    res.status(500).json({ message: "Error fetching users", error: err });
+  }
+};
+exports.updateUserRole = async (req, res) => {
+  try {
+    const { userId } = req.params; // Get userId from URL params
+    const { newRole } = req.body; // Get newRole from request body
+
+    // Validate the role
+    const validRoles = ["veterinarian", "user", "admin"];
+    if (!validRoles.includes(newRole)) {
+      return res.status(400).json({ message: "Invalid role specified" });
+    }
+
+    const user = await User.findByIdAndUpdate(
+      userId,
+      { role: newRole },
+      { new: true }
+    );
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({
+      message: "User role updated successfully",
+      user: {
+        _id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (err) {
+    console.error("Error updating user role:", err);
+    res.status(500).json({
+      message: "Error updating user role",
+      error: err.message,
+    });
+  }
+};
+
+
 exports.getUserRoleFromToken = async (req, res) => {
   try {
     const token = req.cookies.authToken;

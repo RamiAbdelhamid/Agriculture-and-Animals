@@ -9,6 +9,9 @@ import {
   Heart,
   Share2,
   ArrowRight,
+  Facebook,
+  Instagram,
+  MessageSquare,
 } from "lucide-react";
 import axios from "axios";
 import { Heart as HeartOutline, Heart as HeartFilled } from "lucide-react";
@@ -23,24 +26,47 @@ const ProductDetails = () => {
   const [activeTab, setActiveTab] = useState("description");
   const [relatedProducts, setRelatedProducts] = useState([]);
   const { isInWishlist, toggleWishlist } = useWishlist();
+  const [showShareOptions, setShowShareOptions] = useState(false);
 
+  const [cart, setCart] = useState(() => {
+    // Initialize cart with localStorage value if exists
+    const savedCart = localStorage.getItem("cart");
+    return savedCart ? JSON.parse(savedCart) : [];
+  });
+  const [cartOpen, setCartOpen] = useState(false);
+  const navigate = useNavigate();
 
+  // إنشاء رابط المشاركة
+  const productUrl = `${window.location.origin}/products/${id}`;
+  const shareMessage = `Check out this product: ${product?.name} - ${productUrl}`;
 
- const [cart, setCart] = useState(() => {
-   // Initialize cart with localStorage value if exists
-   const savedCart = localStorage.getItem("cart");
-   return savedCart ? JSON.parse(savedCart) : [];
- });
- const [cartOpen, setCartOpen] = useState(false);
- const navigate = useNavigate();
+  // وظائف المشاركة على المنصات المختلفة
+  const shareOnFacebook = () => {
+    window.open(
+      `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+        productUrl
+      )}`,
+      "_blank"
+    );
+    setShowShareOptions(false);
+  };
 
+  const shareOnWhatsApp = () => {
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(shareMessage)}`,
+      "_blank"
+    );
+    setShowShareOptions(false);
+  };
 
-
-
-
-
-
-
+  const shareOnInstagram = () => {
+    // Instagram doesn't have a direct sharing API for web, so we'll open the app or website
+    window.open(
+      `https://www.instagram.com/?url=${encodeURIComponent(productUrl)}`,
+      "_blank"
+    );
+    setShowShareOptions(false);
+  };
 
   // Fetch product details
   useEffect(() => {
@@ -79,15 +105,12 @@ const ProductDetails = () => {
     fetchProductDetails();
   }, [id]);
 
-
-// Save cart to localStorage whenever it changes
+  // Save cart to localStorage whenever it changes
   useEffect(() => {
     if (cart.length > 0) {
       localStorage.setItem("cart", JSON.stringify(cart));
     }
   }, [cart]);
-
-  
 
   const handleQuantityChange = (change) => {
     const newQuantity = quantity + change;
@@ -219,9 +242,40 @@ const ProductDetails = () => {
                       )}
                     </button>
                   </div>
-                  <button className="p-2 rounded-full hover:bg-gray-100">
-                    <Share2 className="w-5 h-5 text-gray-500" />
-                  </button>
+                  <div className="relative">
+                    <button
+                      className="p-2 rounded-full hover:bg-gray-100"
+                      onClick={() => setShowShareOptions(!showShareOptions)}
+                    >
+                      <Share2 className="w-5 h-5 text-gray-500" />
+                    </button>
+
+                    {showShareOptions && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 py-1">
+                        <button
+                          onClick={shareOnFacebook}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        >
+                          <Facebook className="w-4 h-4 mr-2 text-blue-600" />
+                          Share on Facebook
+                        </button>
+                        <button
+                          onClick={shareOnWhatsApp}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        >
+                          <MessageSquare className="w-4 h-4 mr-2 text-green-500" />
+                          Share on WhatsApp
+                        </button>
+                        <button
+                          onClick={shareOnInstagram}
+                          className="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 w-full text-left"
+                        >
+                          <Instagram className="w-4 h-4 mr-2 text-pink-500" />
+                          Share on Instagram
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 

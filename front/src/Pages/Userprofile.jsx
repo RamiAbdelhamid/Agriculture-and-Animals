@@ -127,7 +127,7 @@ const Profile = () => {
         {},
         { withCredentials: true }
       );
-      window.location.href = "/auth";
+      window.location.href = "/";
     } catch (error) {
       toast.error("Logout failed");
     }

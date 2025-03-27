@@ -13,6 +13,9 @@ import InventoryTracking from "./InventoryTracking";
 import OrderManagement from "./OrderManagement";
 import AddVeterinarians from "./AddVeterinarians";
 import DoctorReservations from "./DoctorReservations";
+import UserManagement from "./UserManagement";
+
+
 
 const MainDash = () => {
   return (
@@ -24,17 +27,15 @@ const MainDash = () => {
           <Route path="/products" element={<EditProductList />} />
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/categories" element={<CategoryManagement />} />
-          {/* <Route path="/vet" element={<VetDashboard />} /> */}
           <Route path="/analytics" element={<Analytics />} />
           <Route path="/settings" element={<Settings />} />
-          {/* Add more nested routes as needed */}
           <Route path="/edit-product/:id" element={<EditProduct />} />
           <Route path="/inventory" element={<InventoryTracking />} />
           <Route path="/orders" element={<OrderManagement />} />
-
           <Route path="/AddVeterinarians" element={<AddVeterinarians />} />
           <Route path="/vet" element={<VetDashboard />} />
           <Route path="/DoctorReservations" element={<DoctorReservations />} />
+          <Route path="/UserManagement" element={<UserManagement />} />
         </Routes>
       </div>
     </div>
