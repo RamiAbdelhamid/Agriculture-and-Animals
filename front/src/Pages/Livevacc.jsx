@@ -19,6 +19,8 @@ import {
 } from "../Component/ui/hover-card";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../Component/Shared/CartContext";
+import { Heart as HeartOutline, Heart as HeartFilled } from "lucide-react";
+import { useWishlist } from "../Component/Shared/WishlistContext";
 
 const Livevacc = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -27,6 +29,7 @@ const Livevacc = () => {
   const [products, setProducts] = useState([]);
   const [categoryCounts, setCategoryCounts] = useState({});
   const [loading, setLoading] = useState(true);
+  const { isInWishlist, toggleWishlist } = useWishlist();
 
   // استخدام context السلة
   const {
@@ -326,15 +329,31 @@ const Livevacc = () => {
             <HoverCard key={product._id} openDelay={200} closeDelay={100}>
               <HoverCardTrigger>
                 <div className="border rounded-lg overflow-hidden hover:shadow-lg transition-shadow bg-white">
+                  <div className="relative flex items-center">
+                    <button
+                      className="p-2 rounded-full hover:bg-gray-100"
+                      onClick={() => toggleWishlist(product)}
+                    >
+                      {isInWishlist(product._id) ? (
+                        <HeartFilled className="w-5 h-5 text-red-500 fill-red-500" />
+                      ) : (
+                        <HeartOutline className="w-5 h-5 text-gray-500" />
+                      )}
+                    </button>
+
+                    <span className="absolute top-2 right-2 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                      {product.category}
+                    </span>
+                  </div>
+
                   <div className="relative">
                     <img
                       src={`http://localhost:5000${product.image}`}
                       alt={product.name}
+                      onClick={() => navigate(`/product/${product._id}`)}
                       className="w-full h-64 object-cover"
                     />
-                    <span className="absolute top-2 right-2 bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                      {product.category}
-                    </span>
+                  
                   </div>
                   <div className="p-4">
                     <h3 className="font-semibold text-lg mb-2">
@@ -413,3 +432,4 @@ const Livevacc = () => {
 };
 
 export default Livevacc;
+

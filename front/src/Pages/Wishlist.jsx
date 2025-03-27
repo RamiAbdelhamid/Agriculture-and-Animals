@@ -1,12 +1,82 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeft, Heart as HeartFilled } from "lucide-react";
+import {
+  ArrowLeft,
+  Heart as HeartFilled,
+  Heart,
+  ShoppingCart,
+  Info,
+} from "lucide-react";
 import { useWishlist } from "../Component/Shared/WishlistContext";
 import { useCart } from "../Component/Shared/CartContext";
+import { motion, AnimatePresence } from "framer-motion";
+
+const WishlistItem = ({
+  product,
+  onMoveToCart,
+  onToggleWishlist,
+  onViewDetails,
+}) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.3 }}
+      className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 group"
+    >
+      <div className="relative overflow-hidden rounded-t-xl">
+        <div className="h-56 bg-gray-50 flex items-center justify-center relative">
+          <img
+            src={`http://localhost:5000${product.image}`}
+            alt={product.name}
+            className="max-w-full max-h-full object-contain p-4 transition-transform duration-300 group-hover:scale-105"
+            onClick={onViewDetails}
+          />
+          <button
+            onClick={onToggleWishlist}
+            className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full shadow-md hover:bg-white transition-all duration-300"
+          >
+            <HeartFilled className="w-5 h-5 text-red-500 fill-red-500" />
+          </button>
+        </div>
+      </div>
+
+      <div className="p-4 space-y-3">
+        <div>
+          <h3
+            className="font-semibold text-lg text-gray-800 mb-1 line-clamp-2 hover:text-blue-600 transition-colors cursor-pointer"
+            onClick={onViewDetails}
+          >
+            {product.name}
+          </h3>
+          <p className="text-green-600 font-bold text-xl">{product.price} JD</p>
+        </div>
+
+        <div className="flex space-x-2">
+          <button
+            onClick={onViewDetails}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-md text-sm font-medium text-gray-700 transition-colors"
+          >
+            <Info className="w-4 h-4" />
+            View Details
+          </button>
+          <button
+            onClick={onMoveToCart}
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 bg-green-600 text-white rounded-md text-sm font-medium hover:bg-green-700 transition-colors"
+          >
+            <ShoppingCart className="w-4 h-4" />
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </motion.div>
+  );
+};
 
 const Wishlist = () => {
   const navigate = useNavigate();
-  const { wishlist, isInWishlist, toggleWishlist } = useWishlist();
+  const { wishlist, toggleWishlist } = useWishlist();
   const { addToCart } = useCart();
 
   const moveToCart = (product) => {
@@ -17,90 +87,80 @@ const Wishlist = () => {
       image: product.image,
       quantity: 1,
     });
+    // Optional: Remove from wishlist after adding to cart
+    toggleWishlist(product);
+  };
+
+  const handleViewDetails = (productId) => {
+    navigate(`/product/${productId}`);
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-6">
-      <div className="flex items-center gap-4 mb-6">
-        <button
-          onClick={() => navigate(-1)}
-          className="flex items-center gap-2 text-gray-600 hover:text-blue-600 transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-        <h1 className="text-2xl font-bold">My Wishlist</h1>
-        <span className="text-gray-500">({wishlist.length} items)</span>
-      </div>
-
-      {wishlist.length === 0 ? (
-        <div className="text-center py-12">
-          <HeartFilled className="w-16 h-16 mx-auto text-gray-300 mb-4" />
-          <h2 className="text-xl font-medium mb-2">Your wishlist is empty</h2>
-          <p className="text-gray-500 mb-6">
-            Save your favorite items here to view them later
-          </p>
-          <Link
-            to="/Shop"
-            className="px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors inline-block"
+    <div className="bg-gray-50 min-h-screen py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center space-x-4 mb-8">
+          <motion.button
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            onClick={() => navigate(-1)}
+            className="text-gray-600 hover:text-blue-600 transition-colors"
           >
-            Continue Shopping
-          </Link>
+            <ArrowLeft className="w-6 h-6" />
+          </motion.button>
+
+          <div className="flex items-center space-x-3">
+            <h1 className="text-3xl font-bold text-gray-800">My Wishlist</h1>
+            <span className="text-gray-500 bg-gray-100 px-3 py-1 rounded-full text-sm">
+              {wishlist.length} items
+            </span>
+          </div>
         </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-          {wishlist.map((product) => (
-            <div
-              key={product._id}
-              className="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow"
+
+        {wishlist.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-center py-16 bg-white rounded-xl shadow-sm"
+          >
+            <HeartFilled className="w-20 h-20 mx-auto text-gray-300 mb-6" />
+            <h2 className="text-2xl font-semibold text-gray-800 mb-3">
+              Your wishlist is empty
+            </h2>
+            <p className="text-gray-500 mb-6 max-w-md mx-auto">
+              Explore our collection and save your favorite items to view them
+              later
+            </p>
+            <Link
+              to="/Shop"
+              className="inline-flex items-center gap-2 px-8 py-3.5 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
             >
-              <div className="h-48 bg-gray-50 relative">
-                <img
-                  src={`http://localhost:5000${product.image}`}
-                  alt={product.name}
-                  className="w-full h-full object-contain p-4"
-                  onClick={() => navigate(`/products/${product._id}`)}
-                  style={{ cursor: "pointer" }}
+              <ShoppingCart className="w-5 h-5" />
+              Continue Shopping
+            </Link>
+          </motion.div>
+        ) : (
+          <AnimatePresence>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6"
+            >
+              {wishlist.map((product) => (
+                <WishlistItem
+                  key={product._id}
+                  product={{
+                    ...product,
+                    isInWishlist: true,
+                  }}
+                  onMoveToCart={() => moveToCart(product)}
+                  onToggleWishlist={() => toggleWishlist(product)}
+                  onViewDetails={() => handleViewDetails(product._id)}
                 />
-                <button
-                  onClick={() => toggleWishlist(product)}
-                  className="absolute top-2 right-2 p-2 bg-white rounded-full shadow hover:bg-gray-100"
-                >
-                  {isInWishlist(product._id) ? (
-                    <HeartFilled className="w-5 h-5 text-red-500 fill-red-500" />
-                  ) : (
-                    <HeartOutline className="w-5 h-5 text-gray-500" />
-                  )}
-                </button>
-              </div>
-              <div className="p-4">
-                <h3
-                  className="font-medium mb-1 truncate hover:text-blue-600 cursor-pointer"
-                  onClick={() => navigate(`/products/${product._id}`)}
-                >
-                  {product.name}
-                </h3>
-                <p className="text-blue-600 font-semibold mb-3">
-                  {product.price} JD
-                </p>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => navigate(`/products/${product._id}`)}
-                    className="flex-1 py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm font-medium transition-colors"
-                  >
-                    View Details
-                  </button>
-                  <button
-                    onClick={() => moveToCart(product)}
-                    className="flex-1 py-2 bg-blue-600 text-white rounded text-sm font-medium hover:bg-blue-700 transition-colors"
-                  >
-                    Add to Cart
-                  </button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+              ))}
+            </motion.div>
+          </AnimatePresence>
+        )}
+      </div>
     </div>
   );
 };

@@ -62,9 +62,10 @@ function Carousel() {
               <p className="text-xl max-w-2xl mx-auto mb-6 drop-shadow-lg">
                 Vaccines, equipment, and expertise for optimal poultry farming
               </p>
+              <a href="/shop">
               <button className="px-6 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300">
                 View Solutions
-              </button>
+              </button></a>
             </div>
 
             <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between z-20">
@@ -108,9 +109,10 @@ function Carousel() {
               <p className="text-xl max-w-2xl mx-auto mb-6 drop-shadow-lg">
                 Modern solutions for traditional farming challenges
               </p>
+              <a href="/shop">
               <button className="px-6 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300">
                 Explore Products
-              </button>
+              </button></a>
             </div>
 
             <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between z-20">
