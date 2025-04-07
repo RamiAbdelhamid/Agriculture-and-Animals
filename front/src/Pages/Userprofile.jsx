@@ -101,6 +101,7 @@ const Profile = () => {
     if (updatedUser.profilePicture) {
       formData.append("profilePicture", updatedUser.profilePicture);
     }
+
     try {
       const res = await axios.put(
         "http://localhost:5000/api/users/profile",
@@ -114,11 +115,13 @@ const Profile = () => {
       setIsEditing(false);
       toast.success("Information updated successfully");
     } catch (error) {
+      console.error(error.response?.data?.message || error.message); // Log error
       toast.error(
         error.response?.data?.message || "Failed to update information"
       );
     }
   };
+
 
   const handleLogout = async () => {
     try {
@@ -127,7 +130,7 @@ const Profile = () => {
         {},
         { withCredentials: true }
       );
-      window.location.href = "/";
+      window.location.href = "/login";
     } catch (error) {
       toast.error("Logout failed");
     }

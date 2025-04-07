@@ -83,6 +83,7 @@ import MainDash from "./Dashboard/MainDashboard";
 import Shop from "./Pages/Shop";
 import HealthGuide from "./Pages/HealthGuide";
 import Wishlist from "./Pages/Wishlist";
+import Reservations from "./Pages/Reservations";
 
 function AppContent() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
@@ -126,6 +127,7 @@ function AppContent() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/healthguide" element={<HealthGuide />} />
         <Route path="/wishlist" element={<Wishlist />} />
+        <Route path="/Reservations" element={<Reservations />} />
       </Routes>
       {showNavbarFooter && <Footer />}{" "}
       {/* عرض الـFooter فقط في المسارات غير المذكورة */}

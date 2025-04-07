@@ -1,3 +1,5 @@
+
+
 import { Fragment, useState, useEffect } from "react";
 import {
   Disclosure,
@@ -24,11 +26,22 @@ const navigation = [
   { name: "Home", to: "/", icon: "🏡" },
   { name: "Shop", to: "/Shop", icon: "🛍️" },
   { name: "Veterinarians", to: "/veterinarians", icon: "🩺" },
+
+ {
+    name: "Reservations",
+    to: "./Reservations",
+    icon: "📅", // Updated icon for Reservations
+    hideFor: "user",
+  },
+
   { name: "HealthGuide", to: "/HealthGuide", icon: "🚜" },
   { name: "About", to: "/about", icon: "🌱" },
   { name: "Contact", to: "/contact", icon: "📞" },
+ 
 ];
 
+
+// Navbar component
 export default function Navbar() {
   // State declarations
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -89,6 +102,32 @@ export default function Navbar() {
     }
   };
 
+  // Filter navigation based on user role
+  const filteredNavigation = navigation.filter((item) => {
+    if (!isAuthenticated) {
+      return (
+        item.name === "Home" ||
+        item.name === "Shop" ||
+        item.name === "Veterinarians" ||
+        item.name === "HealthGuide" ||
+        item.name === "About" ||
+        item.name === "Contact"
+      );
+    } else if (userRole === "user") {
+      return (
+        item.name === "Home" ||
+        item.name === "Shop" ||
+        item.name === "Veterinarians" ||
+        item.name === "HealthGuide" ||
+        item.name === "About" ||
+        item.name === "Contact"
+      );
+    } else if (userRole === "veterinarian") {
+      return true; // Show all items for veterinarians
+    }
+    return false;
+  });
+
   //***********************************************************************//
   // Fetch user profile data
   //***********************************************************************//
@@ -106,7 +145,7 @@ export default function Navbar() {
         });
       } catch (error) {
         toast.error(
-          error.response?.data?.message || "فشل في جلب بيانات المستخدم"
+          error.response?.data?.message || "Failed to fetch user data"
         );
       } finally {
         setLoading(false);
@@ -175,17 +214,17 @@ export default function Navbar() {
                   <div className="flex flex-shrink-0 items-center">
                     <div className="flex items-center space-x-2">
                       <div className="h-10 w-10 bg-white rounded-full flex items-center justify-center shadow-md transform hover:scale-110 transition-transform duration-200">
-                        <span className="text-2xl">🌿</span>
+                        <a href="/">
+                          {" "}
+                          <span className="text-2xl cursor-pointer">🌿</span>
+                        </a>
                       </div>
-                      {/* <span className="font-bold text-white text-xl hidden md:block">
-                        FarmFusion
-                      </span> */}
                     </div>
                   </div>
 
                   <div className="hidden sm:ml-6 sm:block">
                     <div className="flex space-x-4">
-                      {navigation.map((item) => {
+                      {filteredNavigation.map((item) => {
                         const isCurrent = location.pathname === item.to;
                         return (
                           <Link
@@ -222,7 +261,7 @@ export default function Navbar() {
                   {/* Cart Button */}
                   <button
                     onClick={() => setShowCart(true)}
-                    className="relative p-2 mr-4 text-green-100 hover:text-white transition-colors duration-200"
+                    className="relative p-2 mr-4 text-green-100 hover:text-white transition-colors duration-200 cursor-pointer"
                   >
                     <ShoppingCart className="h-6 w-6" />
                     {totalItems > 0 && (
@@ -231,18 +270,18 @@ export default function Navbar() {
                       </span>
                     )}
                   </button>
-                  {/* زر الـ Wishlist */}
+                  {/* Wishlist Button */}
                   <Link
                     to="/wishlist"
                     className="relative p-2 mr-4 text-green-100 hover:text-white transition-colors duration-200"
                   >
                     {wishlist.length > 0 ? (
-                      <HeartFilled className="h-6 w-6 text-red-500 fill-red-500" />
+                      <HeartFilled className="h-6 w-6 text-white-500 " />
                     ) : (
                       <HeartOutline className="h-6 w-6" />
                     )}
                     {wishlist.length > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-white text-red-500 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                      <span className="absolute -top-1 -right-1 bg-white text-green-800 text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
                         {wishlist.length}
                       </span>
                     )}
@@ -253,7 +292,7 @@ export default function Navbar() {
                         <MenuButton className="flex rounded-full bg-green-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-green-700 transition-all duration-200 hover:ring-2 transform hover:scale-105">
                           <span className="sr-only">Open user menu</span>
                           <img
-                            className="h-13 w-13 rounded-full border-2 border-white"
+                            className="h-13 w-13 rounded-full border-2 border-white cursor-pointer"
                             src={
                               user
                                 ? `http://localhost:5000${user.profilePicture}`
@@ -272,14 +311,14 @@ export default function Navbar() {
                         leaveFrom="transform opacity-100 scale-100"
                         leaveTo="transform opacity-0 scale-95"
                       >
-                        <MenuItems className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                        <MenuItems className="absolute right-0 z-50 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                           <MenuItem>
                             {({ active }) => (
                               <Link
                                 to="/userprofile"
                                 className={`${
                                   active ? "bg-green-100" : ""
-                                } block px-4 py-2 text-sm text-gray-700 transition-colors duration-200`}
+                                } block px-4 py-2 text-sm text-gray-700 transition-colors duration-200 `}
                               >
                                 Your Profile
                               </Link>
@@ -291,7 +330,7 @@ export default function Navbar() {
                                 onClick={handleLogout}
                                 className={`${
                                   active ? "bg-green-100" : ""
-                                } block w-full text-left px-4 py-2 text-sm text-gray-700 transition-colors duration-200`}
+                                } block w-full text-left px-4 py-2 text-sm text-gray-700 transition-colors duration-200 cursor-pointer`}
                               >
                                 Sign out
                               </button>
@@ -334,7 +373,7 @@ export default function Navbar() {
             >
               <DisclosurePanel className="sm:hidden bg-green-700 shadow-inner">
                 <div className="space-y-1 px-3 pb-3 pt-2">
-                  {navigation.map((item) => {
+                  {filteredNavigation.map((item) => {
                     const isCurrent = location.pathname === item.to;
                     return (
                       <DisclosureButton

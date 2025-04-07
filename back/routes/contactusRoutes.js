@@ -1,16 +1,13 @@
 const express = require("express");
-const {
-  addContact,
-  getContact,
-} = require("../controller/contactusController");
-
+const { addContact, getContact } = require("../controller/contactusController");
+const verifyToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
 // Route to add a new department
-router.post("/add", addContact);
+router.post("/add", verifyToken, addContact);
 
 // Route to get all departments
-router.get("/", getContact);
+router.get("/", verifyToken, getContact);
 
 module.exports = router;

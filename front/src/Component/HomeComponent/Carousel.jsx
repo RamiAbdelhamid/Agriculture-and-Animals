@@ -63,9 +63,10 @@ function Carousel() {
                 Vaccines, equipment, and expertise for optimal poultry farming
               </p>
               <a href="/shop">
-              <button className="px-6 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300">
-                View Solutions
-              </button></a>
+                <button className="px-6 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300 cursor-pointer">
+                  View Solutions
+                </button>
+              </a>
             </div>
 
             <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between z-20">
@@ -110,9 +111,10 @@ function Carousel() {
                 Modern solutions for traditional farming challenges
               </p>
               <a href="/shop">
-              <button className="px-6 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300">
-                Explore Products
-              </button></a>
+                <button className="px-6 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-30 cursor-pointer">
+                  Explore Products
+                </button>
+              </a>
             </div>
 
             <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between z-20">
@@ -143,7 +145,7 @@ function Carousel() {
               loop
             >
               <source
-                src="/src/assets/videos/poultry-farming.mp4"
+                src="../../../src/assets/videos/e0ec37cb8c7b8a43ca796912f8593f05.mp4"
                 type="video/mp4"
               />
               Your browser does not support the video tag.
@@ -155,9 +157,11 @@ function Carousel() {
               <p className="text-xl max-w-2xl mx-auto mb-6 drop-shadow-lg">
                 Providing farmers with the best products for sustainable growth
               </p>
-              <button className="px-6 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300">
-                Shop Now
-              </button>
+              <a href="/shop">
+                <button className="px-6 py-3 bg-green-600 text-white text-lg font-semibold rounded-lg shadow-md hover:bg-green-700 transition duration-300 cursor-pointer">
+                  Shop Now
+                </button>
+              </a>
             </div>
 
             <div className="absolute left-5 right-5 top-1/2 flex -translate-y-1/2 transform justify-between z-20">

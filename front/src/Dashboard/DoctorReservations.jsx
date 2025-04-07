@@ -7,20 +7,38 @@ import {
   ClipboardList,
   User,
   Clock,
+  Leaf,
+  PawPrint,
+  X,
+  Check,
+  RefreshCw,
 } from "lucide-react";
 
-const DoctorReservations = () => {
+const Reservations = () => {
   const [doctors, setDoctors] = useState([]);
   const [reservations, setReservations] = useState([]);
   const [selectedDoctor, setSelectedDoctor] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeTab, setActiveTab] = useState("pending"); // pending, completed, all
+  const [user, setUser] = useState(null); // State to store the current user data
+
+  // Fetch user data (assuming it's stored in localStorage or via context)
+  useEffect(() => {
+    const currentUser = JSON.parse(localStorage.getItem("currentUser")); // Assuming the current user is stored in localStorage
+    if (currentUser) {
+      setUser(currentUser);
+    }
+  }, []);
 
   // Fetch all doctors and their reservations
   useEffect(() => {
-    fetchDoctorsAndReservations();
-  }, []);
+    if (user && user.role === "veterinarian") {
+      fetchDoctorReservations(user.name);
+    } else {
+      fetchDoctorsAndReservations();
+    }
+  }, [user]);
 
   const fetchDoctorsAndReservations = async () => {
     try {
@@ -55,6 +73,28 @@ const DoctorReservations = () => {
     }
   };
 
+  const fetchDoctorReservations = async (doctorName) => {
+    try {
+      setLoading(true);
+      // Fetch reservations for the specific doctor
+      const response = await axios.get("http://localhost:5000/bookings");
+
+      const doctorReservations = response.data.filter(
+        (booking) => booking.vet === doctorName && booking.notified
+      );
+      setReservations(doctorReservations);
+
+      // Set the doctor as the selected one
+      setSelectedDoctor(doctorName);
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      setError("Failed to load reservations. Please try again later.");
+      setLoading(false);
+    }
+  };
+
   // Mark reservation as completed
   const markAsCompleted = async (bookingId) => {
     try {
@@ -78,6 +118,54 @@ const DoctorReservations = () => {
     }
   };
 
+  // Approve booking
+  const approveBooking = async (bookingId) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/bookings/${bookingId}/status`,
+        {
+          status: "approved",
+        }
+      );
+      // Update the local state to mark this booking as approved
+      setReservations(
+        reservations.map((reservation) =>
+          reservation._id === bookingId
+            ? { ...reservation, status: "approved" }
+            : reservation
+        )
+      );
+      alert("Booking approved successfully!");
+    } catch (error) {
+      console.error("Error approving booking:", error);
+      alert("Failed to approve booking. Please try again.");
+    }
+  };
+
+  // Reject booking
+  const rejectBooking = async (bookingId) => {
+    try {
+      const response = await axios.put(
+        `http://localhost:5000/bookings/${bookingId}/status`,
+        {
+          status: "rejected",
+        }
+      );
+      // Update the local state to mark this booking as rejected
+      setReservations(
+        reservations.map((reservation) =>
+          reservation._id === bookingId
+            ? { ...reservation, status: "rejected" }
+            : reservation
+        )
+      );
+      alert("Booking rejected successfully!");
+    } catch (error) {
+      console.error("Error rejecting booking:", error);
+      alert("Failed to reject booking. Please try again.");
+    }
+  };
+
   // Filter reservations based on selected doctor and active tab
   const filteredReservations = reservations.filter((reservation) => {
     const matchesDoctor = reservation.vet === selectedDoctor;
@@ -85,7 +173,11 @@ const DoctorReservations = () => {
     if (activeTab === "all") {
       return matchesDoctor;
     } else if (activeTab === "pending") {
-      return matchesDoctor && !reservation.completed;
+      return (
+        matchesDoctor &&
+        !reservation.completed &&
+        reservation.status !== "rejected"
+      );
     } else if (activeTab === "completed") {
       return matchesDoctor && reservation.completed;
     }
@@ -106,13 +198,15 @@ const DoctorReservations = () => {
 
     if (status === "approved") {
       return (
-        <span className="px-2 py-1 bg-green-100 text-green-600 rounded-full text-sm">
+        <span className="px-2 py-1 bg-green-100 text-green-600 rounded-full text-sm flex items-center">
+          <Check className="w-4 h-4 mr-1" />
           Approved
         </span>
       );
     } else if (status === "rejected") {
       return (
-        <span className="px-2 py-1 bg-red-100 text-red-600 rounded-full text-sm">
+        <span className="px-2 py-1 bg-red-100 text-red-600 rounded-full text-sm flex items-center">
+          <X className="w-4 h-4 mr-1" />
           Rejected
         </span>
       );
@@ -125,10 +219,23 @@ const DoctorReservations = () => {
       );
     } else {
       return (
-        <span className="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-sm">
+        <span className="px-2 py-1 bg-yellow-100 text-yellow-600 rounded-full text-sm flex items-center">
+          <Clock className="w-4 h-4 mr-1" />
           Pending
         </span>
       );
+    }
+  };
+
+  // Determine animal type icon
+  const getAnimalIcon = (department) => {
+    if (
+      department.toLowerCase().includes("farm") ||
+      department.toLowerCase().includes("livestock")
+    ) {
+      return <Leaf className="w-5 h-5 text-green-600" />;
+    } else {
+      return <PawPrint className="w-5 h-5 text-amber-600" />;
     }
   };
 
@@ -136,19 +243,26 @@ const DoctorReservations = () => {
     <div className="max-w-6xl mx-auto p-6">
       <div className="bg-white rounded-xl shadow-lg">
         {/* Header */}
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 p-6 rounded-t-xl">
-          <h1 className="text-2xl font-bold text-white">Doctor Reservations</h1>
-          <p className="text-indigo-100 mt-2">
-            View and manage all appointments assigned to doctors
-          </p>
+        <div className="bg-gradient-to-r from-green-700 to-emerald-600 p-6 rounded-t-xl">
+          <div className="flex items-center">
+            <PawPrint className="w-8 h-8 text-white mr-3" />
+            <div>
+              <h1 className="text-2xl font-bold text-white">
+                Veterinary Appointments
+              </h1>
+              <p className="text-green-100 mt-2">
+                Manage animal care appointments and treatment schedules
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Content */}
-        <div className="p-6">
+        <div className="p-6 bg-green-50 rounded-b-xl">
           {loading ? (
             <div className="text-center py-10">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-indigo-500 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Loading reservations...</p>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto"></div>
+              <p className="mt-4 text-gray-600">Loading appointments...</p>
             </div>
           ) : error ? (
             <div className="text-center py-10 text-red-500">
@@ -158,11 +272,12 @@ const DoctorReservations = () => {
           ) : doctors.length === 0 ? (
             <div className="text-center py-10 text-gray-500">
               <User className="w-12 h-12 mx-auto mb-4" />
-              <p>No doctors with reservations found.</p>
+              <p>No veterinarians with appointments found.</p>
               <button
                 onClick={fetchDoctorsAndReservations}
-                className="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors"
+                className="mt-4 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center mx-auto"
               >
+                <RefreshCw className="w-4 h-4 mr-2" />
                 Refresh
               </button>
             </div>
@@ -170,8 +285,8 @@ const DoctorReservations = () => {
             <div>
               {/* Doctor Selection */}
               <div className="mb-6">
-                <label className="block text-gray-700 mb-2 font-medium">
-                  Select Doctor:
+                <label className="block text-green-800 mb-2 font-medium">
+                  Select Veterinarian:
                 </label>
                 <div className="flex flex-wrap gap-3">
                   {doctors.map((doctor) => (
@@ -180,8 +295,8 @@ const DoctorReservations = () => {
                       onClick={() => setSelectedDoctor(doctor)}
                       className={`px-4 py-2 rounded-lg transition-colors flex items-center ${
                         selectedDoctor === doctor
-                          ? "bg-indigo-100 text-indigo-600 border-2 border-indigo-300"
-                          : "bg-gray-100 text-gray-600 hover:bg-gray-200 border-2 border-transparent"
+                          ? "bg-green-100 text-green-800 border-2 border-green-300"
+                          : "bg-white text-gray-600 hover:bg-gray-100 border-2 border-transparent"
                       }`}
                     >
                       <User className="w-4 h-4 mr-2" />
@@ -192,12 +307,12 @@ const DoctorReservations = () => {
               </div>
 
               {/* Tabs */}
-              <div className="flex border-b mb-6">
+              <div className="flex border-b mb-6 border-green-200">
                 <button
                   onClick={() => setActiveTab("pending")}
                   className={`px-4 py-2 font-medium ${
                     activeTab === "pending"
-                      ? "text-indigo-600 border-b-2 border-indigo-600"
+                      ? "text-green-700 border-b-2 border-green-600"
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
@@ -207,7 +322,7 @@ const DoctorReservations = () => {
                   onClick={() => setActiveTab("completed")}
                   className={`px-4 py-2 font-medium ${
                     activeTab === "completed"
-                      ? "text-indigo-600 border-b-2 border-indigo-600"
+                      ? "text-green-700 border-b-2 border-green-600"
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
@@ -217,20 +332,20 @@ const DoctorReservations = () => {
                   onClick={() => setActiveTab("all")}
                   className={`px-4 py-2 font-medium ${
                     activeTab === "all"
-                      ? "text-indigo-600 border-b-2 border-indigo-600"
+                      ? "text-green-700 border-b-2 border-green-600"
                       : "text-gray-500 hover:text-gray-700"
                   }`}
                 >
-                  All Reservations
+                  All Appointments
                 </button>
               </div>
 
               {/* Reservations List */}
               {filteredReservations.length === 0 ? (
-                <div className="text-center py-10 text-gray-500">
-                  <ClipboardList className="w-12 h-12 mx-auto mb-4" />
+                <div className="text-center py-10 text-gray-500 bg-white rounded-lg p-8">
+                  <ClipboardList className="w-12 h-12 mx-auto mb-4 text-green-500" />
                   <p>
-                    No reservations found for Dr. {selectedDoctor} with the
+                    No appointments found for Dr. {selectedDoctor} with the
                     selected filter.
                   </p>
                 </div>
@@ -239,22 +354,23 @@ const DoctorReservations = () => {
                   {filteredReservations.map((reservation) => (
                     <div
                       key={reservation._id}
-                      className={`border rounded-lg p-4 ${
+                      className={`border rounded-lg p-5 shadow-sm ${
                         reservation.completed
                           ? "border-green-200 bg-green-50"
                           : reservation.status === "approved"
-                          ? "border-indigo-200 bg-indigo-50"
+                          ? "border-green-200 bg-white"
                           : reservation.status === "rejected"
                           ? "border-red-200 bg-red-50"
                           : reservation.emergency
                           ? "border-yellow-200 bg-yellow-50"
-                          : "border-gray-200"
+                          : "border-gray-200 bg-white"
                       }`}
                     >
                       <div className="flex flex-wrap justify-between items-start gap-4">
                         {/* Left Side - Reservation Details */}
-                        <div className="space-y-3">
+                        <div className="space-y-3 flex-1">
                           <div className="flex items-center gap-2">
+                            {getAnimalIcon(reservation.department)}
                             <span className="text-lg font-medium text-gray-800">
                               Appointment with Dr. {reservation.vet}
                             </span>
@@ -266,7 +382,7 @@ const DoctorReservations = () => {
                           </div>
 
                           <div className="flex items-center gap-2 text-gray-600">
-                            <Calendar className="w-5 h-5" />
+                            <Calendar className="w-5 h-5 text-green-600" />
                             <span>
                               {new Date(reservation.date).toLocaleDateString(
                                 undefined,
@@ -280,30 +396,32 @@ const DoctorReservations = () => {
                             </span>
                           </div>
 
-                       
-                          <div>
+                          <div className="flex flex-wrap gap-2 items-center">
                             <span className="font-medium text-gray-700">
                               Department:
                             </span>
-                            <span className="ml-2 px-2 py-1 bg-indigo-100 text-indigo-600 rounded-full text-sm">
+                            <span className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm">
                               {reservation.department}
                             </span>
                           </div>
 
-                          <div>
+                          <div className="flex flex-wrap gap-2 items-center">
                             <span className="font-medium text-gray-700">
                               Customer Phone:
                             </span>
-                            <span className="ml-2 px-2 py-1 bg-indigo-100 text-indigo-600 rounded-full text-sm">
+                            <a
+                              href={`tel:${reservation.phoneNumber}`}
+                              className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm hover:bg-green-200"
+                            >
                               {reservation.phoneNumber}
-                            </span>
+                            </a>
                           </div>
 
                           <div>
-                            <h3 className="font-medium text-gray-700">
+                            <h3 className="font-medium text-gray-700 mb-2">
                               Reason for Visit:
                             </h3>
-                            <p className="mt-1 text-gray-600 bg-white p-3 rounded border">
+                            <p className="text-gray-600 bg-white p-3 rounded border border-gray-200">
                               {reservation.reason}
                             </p>
                           </div>
@@ -317,15 +435,45 @@ const DoctorReservations = () => {
                             </span>
                           </div>
 
-                          {!reservation.completed && (
-                            <button
-                              onClick={() => markAsCompleted(reservation._id)}
-                              className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 mt-4"
-                            >
-                              <CheckCircle className="w-4 h-4" />
-                              Mark as Completed
-                            </button>
-                          )}
+                          <div className="flex flex-col gap-2 mt-2">
+                            {!reservation.completed &&
+                              reservation.status !== "approved" &&
+                              reservation.status !== "rejected" && (
+                                <>
+                                  <button
+                                    onClick={() =>
+                                      approveBooking(reservation._id)
+                                    }
+                                    className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-green-600 text-white hover:bg-green-700 transition-colors"
+                                  >
+                                    <Check className="w-4 h-4" />
+                                    Approve
+                                  </button>
+                                  <button
+                                    onClick={() =>
+                                      rejectBooking(reservation._id)
+                                    }
+                                    className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-red-600 text-white hover:bg-red-700 transition-colors"
+                                  >
+                                    <X className="w-4 h-4" />
+                                    Reject
+                                  </button>
+                                </>
+                              )}
+
+                            {reservation.status === "approved" &&
+                              !reservation.completed && (
+                                <button
+                                  onClick={() =>
+                                    markAsCompleted(reservation._id)
+                                  }
+                                  className="flex items-center justify-center gap-2 px-4 py-2 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition-colors"
+                                >
+                                  <CheckCircle className="w-4 h-4" />
+                                  Mark as Completed
+                                </button>
+                              )}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -340,4 +488,4 @@ const DoctorReservations = () => {
   );
 };
 
-export default DoctorReservations;
+export default Reservations;

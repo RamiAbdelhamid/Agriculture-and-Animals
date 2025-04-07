@@ -166,9 +166,11 @@ const ChickenSection = () => {
             </div>
 
             {/* CTA Button */}
-            <button className="px-6 py-3 bg-orange-500 text-white rounded-lg shadow-lg hover:bg-orange-600 transition-all duration-300 font-medium">
-              Explore Poultry Solutions
-            </button>
+            <a href="/shop">
+              <button className="px-6 py-3 bg-orange-500 text-white rounded-lg shadow-lg hover:bg-orange-600 transition-all duration-300 font-medium cursor-pointer">
+                Explore Poultry Solutions
+              </button>
+            </a>
           </div>
 
           {/* Right Column - Gallery with Improved Layout */}

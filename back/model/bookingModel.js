@@ -20,7 +20,7 @@ const bookingSchema = new mongoose.Schema({
     required: true,
   },
 
-  notified: { type: Boolean, default: false },
+  notified: { type: Boolean, default: true },
   completed: {
     type: Boolean,
     default: false,

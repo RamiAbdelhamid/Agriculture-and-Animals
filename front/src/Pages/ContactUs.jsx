@@ -67,7 +67,10 @@ const ContactUs = () => {
     try {
       const response = await axios.post(
         "http://localhost:5000/contact/add",
-        formData
+        formData,
+        {
+          withCredentials: true,
+        }
       );
 
       // Show success SweetAlert
@@ -90,11 +93,16 @@ const ContactUs = () => {
     } catch (error) {
       // Show error SweetAlert
       Swal.fire({
-        title: "Oops!",
-        text: "Failed to send message. Please try again later.",
-        icon: "error",
-        confirmButtonText: "OK",
+        title: "Please login first",
+        text: "You need to log in before sending a message.",
+        icon: "warning",
+        confirmButtonText: "Login",
         confirmButtonColor: "#16a34a",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Redirect to login page or show login modal
+          window.location.href = "/login"; // Or your login logic here
+        }
       });
 
       setError("Failed to send message. Please try again.");
@@ -344,7 +352,7 @@ const ContactUs = () => {
                 <div>
                   <h3 className="font-medium text-gray-800">Our Location</h3>
                   <p className="text-gray-600">
-                    123 Farm Road, Rural County, State 12345
+                    Jordan, Zarqa
                   </p>
                 </div>
               </div>
@@ -353,7 +361,7 @@ const ContactUs = () => {
                 <Phone className="text-green-600 mt-1 mr-3" size={22} />
                 <div>
                   <h3 className="font-medium text-gray-800">Phone</h3>
-                  <p className="text-gray-600">(555) 123-4567</p>
+                  <p className="text-gray-600">(+962) 785956180</p>
                 </div>
               </div>
 
@@ -361,7 +369,7 @@ const ContactUs = () => {
                 <Mail className="text-green-600 mt-1 mr-3" size={22} />
                 <div>
                   <h3 className="font-medium text-gray-800">Email</h3>
-                  <p className="text-gray-600">info@farmanimalcare.com</p>
+                  <p className="text-gray-600">info@farmfusion.com</p>
                 </div>
               </div>
 
@@ -497,5 +505,3 @@ const ContactUs = () => {
 };
 
 export default ContactUs;
-
-

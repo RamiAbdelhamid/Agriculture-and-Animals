@@ -207,7 +207,7 @@ const Footer = () => {
             </p>
 
             {/* Newsletter subscription */}
-            <div className="mt-6">
+            {/* <div className="mt-6">
               <h4 className="text-lg font-semibold mb-3">
                 Join Our Newsletter
               </h4>
@@ -236,7 +236,7 @@ const Footer = () => {
                   </button>
                 </form>
               )}
-            </div>
+            </div> */}
           </div>
 
           {/* Quick Links */}
@@ -288,7 +288,7 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Contact and social section */}
+        {/* Contact and social section
         <div className="mt-12 border-t border-green-700 pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-6 md:mb-0">
@@ -329,7 +329,7 @@ const Footer = () => {
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Copyright */}
         <div className="mt-8 pt-6 border-t border-green-700 text-center">

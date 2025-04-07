@@ -1,5 +1,3 @@
-
-
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -30,6 +28,7 @@ import {
   Sidebar,
 } from "lucide-react";
 
+import Analytics from "./Analytics";
 const Dashboard = () => {
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
@@ -107,7 +106,7 @@ const Dashboard = () => {
         setCompletedReservations(completedBookings.length);
 
         // Calculate estimated revenue (you can adjust this calculation based on your business logic)
-        const estimatedRevenue = completedBookings.length * 50; // Assuming 50 JOD per booking
+        const estimatedRevenue = completedBookings.length * 10; // Assuming 50 JOD per booking
 
         setBookingStats({
           total: allBookings.length,
@@ -249,75 +248,10 @@ const Dashboard = () => {
     return conditions[condition] || "sun";
   };
 
-  // Farm Tasks with actual state management
-  const [farmTasks, setFarmTasks] = useState([
-    {
-      id: 1,
-      name: "Fertilizing the cucumber field",
-      due: "Today",
-      priority: "High",
-      status: "Pending",
-      completed: false,
-    },
-    {
-      id: 2,
-      name: "Tomato harvesting",
-      due: "Tomorrow",
-      priority: "Medium",
-      status: "Pending",
-      completed: false,
-    },
-    {
-      id: 3,
-      name: "Restocking animal feed",
-      due: "March 23",
-      priority: "High",
-      status: "Pending",
-      completed: false,
-    },
-    {
-      id: 4,
-      name: "Checking irrigation system",
-      due: "March 24",
-      priority: "Medium",
-      status: "Pending",
-      completed: false,
-    },
-  ]);
-
-  // Fetch farm tasks
-  const fetchFarmTasks = async () => {
-    try {
-      const response = await axios.get("http://localhost:5000/api/tasks");
-      if (response.data) {
-        setFarmTasks(response.data);
-      }
-    } catch (error) {
-      console.error("Error fetching farm tasks:", error);
-    }
-  };
-
-  const handleTaskToggle = async (taskId) => {
-    try {
-      await axios.put(`http://localhost:5000/api/tasks/${taskId}/toggle`);
-      setFarmTasks((prevTasks) =>
-        prevTasks.map((task) =>
-          task.id === taskId ? { ...task, completed: !task.completed } : task
-        )
-      );
-    } catch (error) {
-      console.error("Error toggling task:", error);
-    }
-  };
-
-  const handleAddTask = () => {
-    navigate("/tasks/new");
-  };
-
   const handleQuickAction = (action) => {
     switch (action) {
       case "addProduct":
-        navigate("/products/new");
+        navigate("/add-product");
         break;
       case "newBooking":
         navigate("/bookings/new");
@@ -333,66 +267,10 @@ const Dashboard = () => {
     }
   };
 
-  const handleNotifyDoctor = async (bookingId) => {
-    try {
-      await axios.post(
-        `http://localhost:5000/api/bookings/${bookingId}/notify`
-      );
-      setRecentBookings((prevBookings) =>
-        prevBookings.map((booking) =>
-          booking._id === bookingId ? { ...booking, notified: true } : booking
-        )
-      );
-      alert("Doctor has been notified about this booking");
-    } catch (error) {
-      console.error("Error notifying doctor:", error);
-      alert("Failed to notify doctor");
-    }
-  };
 
-  const updateBookingStatus = async (bookingId, status) => {
-    try {
-      await axios.put(
-        `http://localhost:5000/api/bookings/${bookingId}/status`,
-        { status }
-      );
-      setRecentBookings((prevBookings) =>
-        prevBookings.map((booking) =>
-          booking._id === bookingId ? { ...booking, status } : booking
-        )
-      );
-      alert(`Booking status updated to ${status}`);
-    } catch (error) {
-      console.error("Error updating booking status:", error);
-      alert("Failed to update booking status");
-    }
-  };
 
-  const markBookingComplete = async (bookingId, completed) => {
-    try {
-      await axios.put(
-        `http://localhost:5000/api/bookings/${bookingId}/complete`,
-        { completed }
-      );
-      setRecentBookings((prevBookings) =>
-        prevBookings.map((booking) =>
-          booking._id === bookingId ? { ...booking, completed } : booking
-        )
-      );
 
-      // Update stats to reflect the change
-      if (completed) {
-        setCompletedReservations((prev) => prev + 1);
-      } else {
-        setCompletedReservations((prev) => prev - 1);
-      }
 
-      alert(`Booking marked as ${completed ? "completed" : "incomplete"}`);
-    } catch (error) {
-      console.error("Error updating booking completion:", error);
-      alert("Failed to update booking completion status");
-    }
-  };
 
   // Get today's date for the calendar highlight
   const currentDate = new Date();
@@ -453,11 +331,8 @@ const Dashboard = () => {
   return (
     <div className="max-w-7xl mx-auto p-4">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6 rounded-xl mb-6">
-        <h1 className="text-2xl font-bold text-white">Dashboard</h1>
-        <p className="text-blue-100 mt-2">
-          Welcome back to the farm management system
-        </p>
+      <div className="bg-gradient-to-r from-green-700 p-6 rounded-xl mb-6">
+        <h1 className="text-2xl font-bold text-white">Welcome Back, Admin</h1>
       </div>
 
       {/* Stats Cards */}
@@ -534,7 +409,7 @@ const Dashboard = () => {
                 Recent Bookings
               </h2>
               <Link
-                to="./vet"
+                to="./DoctorReservations"
                 className="text-blue-600 text-sm hover:text-blue-800 flex items-center"
               >
                 View All <ChevronRight size={16} />
@@ -565,9 +440,6 @@ const Dashboard = () => {
                         </th>
                         <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Emergency
-                        </th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Actions
                         </th>
                       </tr>
                     </thead>
@@ -608,58 +480,7 @@ const Dashboard = () => {
                               {booking.emergency ? "Emergency" : "Regular"}
                             </span>
                           </td>
-                          <td className="px-4 py-3 text-sm space-x-2">
-                            <button
-                              onClick={() => handleNotifyDoctor(booking._id)}
-                              disabled={booking.notified}
-                              className={`px-2 py-1 text-xs rounded ${
-                                booking.notified
-                                  ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                                  : "bg-blue-100 text-blue-800 hover:bg-blue-200"
-                              }`}
-                            >
-                              {booking.notified ? "Notified" : "Notify"}
-                            </button>
-
-                            {booking.status === "pending" && (
-                              <>
-                                <button
-                                  onClick={() =>
-                                    updateBookingStatus(booking._id, "approved")
-                                  }
-                                  className="px-2 py-1 text-xs rounded bg-green-100 text-green-800 hover:bg-green-200"
-                                >
-                                  Approve
-                                </button>
-                                <button
-                                  onClick={() =>
-                                    updateBookingStatus(booking._id, "rejected")
-                                  }
-                                  className="px-2 py-1 text-xs rounded bg-red-100 text-red-800 hover:bg-red-200"
-                                >
-                                  Reject
-                                </button>
-                              </>
-                            )}
-
-                            {booking.status === "approved" &&
-                              !booking.completed && (
-                                <button
-                                  onClick={() =>
-                                    markBookingComplete(booking._id, true)
-                                  }
-                                  className="px-2 py-1 text-xs rounded bg-purple-100 text-purple-800 hover:bg-purple-200"
-                                >
-                                  Complete
-                                </button>
-                              )}
-
-                            {booking.completed && (
-                              <span className="px-2 py-1 text-xs rounded bg-green-100 text-green-800">
-                                Completed
-                              </span>
-                            )}
-                          </td>
+                          <td className="px-4 py-3 text-sm space-x-2"></td>
                         </tr>
                       ))}
                     </tbody>
@@ -702,12 +523,6 @@ const Dashboard = () => {
                         <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Price
                         </th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Stock
-                        </th>
-                        <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Status
-                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
@@ -730,20 +545,6 @@ const Dashboard = () => {
                           </td>
                           <td className="px-4 py-3 text-sm text-gray-500">
                             {product.price} JOD
-                          </td>
-                          <td className="px-4 py-3 text-sm text-gray-500">
-                            {product.stock}
-                          </td>
-                          <td className="px-4 py-3">
-                            <span
-                              className={`px-2 py-1 text-xs rounded-full ${
-                                product.stock > 10
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-red-100 text-red-800"
-                              }`}
-                            >
-                              {product.stock > 10 ? "Available" : "Low Stock"}
-                            </span>
                           </td>
                         </tr>
                       ))}
@@ -878,167 +679,19 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
-
-          {/* Farm Tasks */}
-          <div className="bg-white rounded-lg shadow hover:shadow-md transition-shadow">
-            <div className="p-4 border-b bg-gradient-to-r from-blue-50 to-blue-100 rounded-t-lg flex justify-between items-center">
-              <h2 className="font-semibold text-lg text-blue-800">
-                Farm Tasks
-              </h2>
-              <button
-                onClick={handleAddTask}
-                className="text-blue-600 hover:text-blue-800"
-              >
-                <PlusCircle size={20} />
-              </button>
-            </div>
-            <div className="p-4">
-              {farmTasks.length === 0 ? (
-                <div className="text-center py-6 text-gray-500">
-                  <Clipboard className="w-12 h-12 mx-auto mb-2" />
-                  <p>No tasks found</p>
-                </div>
-              ) : (
-                <ul className="divide-y divide-gray-200">
-                  {farmTasks.map((task) => (
-                    <li key={task.id} className="py-3">
-                      <div className="flex items-start">
-                        <div className="flex-1">
-                          <div className="flex items-center">
-                            <span
-                              className={`inline-block w-2 h-2 rounded-full mr-2 ${
-                                task.priority === "High"
-                                  ? "bg-red-500"
-                                  : task.priority === "Medium"
-                                  ? "bg-yellow-500"
-                                  : "bg-green-500"
-                              }`}
-                            ></span>
-                            <p
-                              className={`font-medium ${
-                                task.completed
-                                  ? "text-gray-400 line-through"
-                                  : "text-gray-800"
-                              }`}
-                            >
-                              {task.name}
-                            </p>
-                          </div>
-                          <p className="text-xs text-gray-500 mt-1">
-                            Due: {task.due}
-                          </p>
-                        </div>
-                        <button
-                          onClick={() => handleTaskToggle(task.id)}
-                          className={`ml-2 p-1 rounded ${
-                            task.completed
-                              ? "bg-green-100 text-green-600"
-                              : "bg-gray-100 text-gray-600"
-                          }`}
-                        >
-                          {task.completed ? (
-                            <Check size={16} />
-                          ) : (
-                            <X size={16} />
-                          )}
-                        </button>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-          </div>
-
-          {/* Calendar for Doctor Availability */}
-          <div className="bg-white rounded-lg shadow hover:shadow-md transition-shadow">
-            <div className="p-4 border-b bg-gradient-to-r from-blue-50 to-blue-100 rounded-t-lg">
-              <h2 className="font-semibold text-lg text-blue-800">
-                Doctor Availability
-              </h2>
-            </div>
-            <div className="p-4">
-              {/* Doctor selector */}
-              <div className="mb-4">
-                <label
-                  htmlFor="doctorSelect"
-                  className="block text-sm font-medium text-gray-700 mb-1"
-                >
-                  Select Doctor
-                </label>
-                <select
-                  id="doctorSelect"
-                  value={selectedDoctor}
-                  onChange={(e) => setSelectedDoctor(e.target.value)}
-                  className="block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                >
-                  {doctors.map((doctor) => (
-                    <option key={doctor.id} value={doctor.id}>
-                      {doctor.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Simple calendar grid */}
-              <div className="text-center mb-2">
-                <h3 className="font-medium text-gray-700 mb-2">
-                  {currentDate.toLocaleString("default", {
-                    month: "long",
-                    year: "numeric",
-                  })}
-                </h3>
-              </div>
-              <div className="grid grid-cols-7 gap-1 text-center text-xs">
-                {["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"].map(
-                  (day, index) => (
-                    <div key={index} className="font-medium text-gray-500 py-1">
-                      {day}
-                    </div>
-                  )
-                )}
-
-                {/* Empty cells for days before the first day of month */}
-                {Array.from({ length: firstDayOfMonth }).map((_, index) => (
-                  <div key={`empty-${index}`} className="py-2"></div>
-                ))}
-
-                {/* Calendar days */}
-                {Array.from({ length: daysInMonth }).map((_, index) => {
-                  const day = index + 1;
-                  const isToday = day === currentDay;
-                  const isReserved = parsedReservedDays.includes(day);
-
-                  return (
-                    <div
-                      key={day}
-                      className={`py-2 rounded-full w-8 h-8 mx-auto flex items-center justify-center ${
-                        isToday
-                          ? "bg-blue-500 text-white"
-                          : isReserved
-                          ? "bg-red-100 text-red-800"
-                          : ""
-                      }`}
-                    >
-                      {day}
-                    </div>
-                  );
-                })}
-              </div>
-              <div className="flex justify-between mt-4 text-xs">
-                <div className="flex items-center">
-                  <div className="w-3 h-3 rounded-full bg-blue-500 mr-1"></div>
-                  <span>Today</span>
-                </div>
-                <div className="flex items-center">
-                  <div className="w-3 h-3 rounded-full bg-red-100 mr-1"></div>
-                  <span>Booked</span>
-                </div>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
+
+
+
+
+
+
+
+
+
+
+
 
       {/* Quick Action Buttons */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6">

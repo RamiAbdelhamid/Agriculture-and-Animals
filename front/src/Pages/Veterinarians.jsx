@@ -1,3 +1,5 @@
+
+
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
@@ -10,7 +12,8 @@ import {
   Leaf,
   Phone,
 } from "lucide-react";
-import cookies from "js-cookie";
+import Swal from "sweetalert2";
+
 const VetBooking = () => {
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [selectedDate, setSelectedDate] = useState("");
@@ -22,37 +25,75 @@ const VetBooking = () => {
   const [departments, setDepartments] = useState([]);
   const [vets, setVets] = useState([]);
 
-  // Fetch departments and vets on load
+  // Alert functions
+  const showSuccessAlert = (message) => {
+    Swal.fire({
+      title: "Success!",
+      text: message,
+      icon: "success",
+      confirmButtonColor: "#16a34a",
+    });
+  };
+
+  const showErrorAlert = (message) => {
+    Swal.fire({
+      title: "Error!",
+      text: message,
+      icon: "error",
+      confirmButtonColor: "#dc2626",
+    });
+  };
+
+  const showWarningAlert = (message) => {
+    Swal.fire({
+      title: "Warning!",
+      text: message,
+      icon: "warning",
+      confirmButtonColor: "#d97706",
+    });
+  };
+
+  // Fetch departments
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
         const response = await axios.get(
           "http://localhost:5000/api/departments",
-          {
-            withCredentials: true,
-          }
+          { withCredentials: true }
         );
         setDepartments(response.data);
       } catch (error) {
         console.error("Error fetching departments:", error);
+        if (error.response?.status === 401) {
+          showErrorAlert("Please login to access veterinary services");
+        } else {
+          showErrorAlert("Failed to load departments. Please try again later.");
+        }
       }
     };
 
     fetchDepartments();
   }, []);
 
+  // Fetch vets when department is selected
   useEffect(() => {
     if (selectedDepartment) {
       const fetchVets = async () => {
         try {
           const response = await axios.get(
             `http://localhost:5000/api/vets/by-department/${selectedDepartment}`,
-              {
-        withCredentials: true,}
+            { withCredentials: true }
           );
           setVets(response.data);
         } catch (error) {
           console.error("Error fetching vets:", error);
+          if (error.response?.status === 401) {
+            showErrorAlert("Please login to view available veterinarians");
+          } else {
+            showErrorAlert(
+              "Failed to load veterinarians. Please try again later."
+            );
+          }
         }
       };
 
@@ -60,7 +101,7 @@ const VetBooking = () => {
     }
   }, [selectedDepartment]);
 
-  // Fetch reserved dates when a vet is selected
+  // Fetch reserved dates when vet is selected
   useEffect(() => {
     if (selectedVet) {
       fetchReservedDates(selectedVet.name);
@@ -69,37 +110,36 @@ const VetBooking = () => {
     }
   }, [selectedVet]);
 
-  // Function to fetch reserved dates for a specific vet
   const fetchReservedDates = async (vetName) => {
     try {
       const response = await axios.get(
         `http://localhost:5000/bookings/vet/${vetName}`,
-        {
-        withCredentials: true,}
+        { withCredentials: true }
       );
       setReservedDates(response.data);
     } catch (error) {
       console.error("Error fetching reserved dates:", error);
+      if (error.response?.status === 401) {
+        showErrorAlert("Please login to view available dates");
+      } else {
+        showErrorAlert(
+          "Failed to load reserved dates. Please try again later."
+        );
+      }
     }
   };
 
-  // Function to get the next available date
   const getNextAvailableDate = (vetName) => {
     if (!reservedDates || reservedDates.length === 0) {
       return new Date().toLocaleDateString();
     }
 
-    // Convert reserved dates to Date objects
     const reservedDateObjects = reservedDates.map((date) => new Date(date));
-
-    // Start with tomorrow
     let nextDate = new Date();
     nextDate.setDate(nextDate.getDate() + 1);
 
-    // Find a date that's not in the reserved dates
-    let daysToCheck = 30; // Limit the search to prevent infinite loop
+    let daysToCheck = 30;
     while (daysToCheck > 0) {
-      // Check if this date is reserved
       const isReserved = reservedDateObjects.some(
         (reservedDate) =>
           reservedDate.toDateString() === nextDate.toDateString()
@@ -109,7 +149,6 @@ const VetBooking = () => {
         return nextDate.toLocaleDateString();
       }
 
-      // Move to next day
       nextDate.setDate(nextDate.getDate() + 1);
       daysToCheck--;
     }
@@ -127,22 +166,20 @@ const VetBooking = () => {
       !reason ||
       !phoneNumber
     ) {
-      alert("Please fill in all fields!");
+      showWarningAlert("Please fill in all required fields!");
       return;
     }
 
-    // Check if the selected date is already reserved
     if (reservedDates.includes(selectedDate)) {
-      alert(
+      showWarningAlert(
         "This date is already booked for the selected veterinarian. Please choose another date."
       );
       return;
     }
 
-    // Validate phone number
     const phoneRegex = /^\+?[0-9]{10,15}$/;
     if (!phoneRegex.test(phoneNumber.replace(/\s/g, ""))) {
-      alert("Please enter a valid phone number (10-15 digits)");
+      showWarningAlert("Please enter a valid phone number (10-15 digits)");
       return;
     }
 
@@ -156,31 +193,45 @@ const VetBooking = () => {
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/bookings",bookingData,
-        {
-withCredentials: true,
-       }
+      Swal.fire({
+        title: "Processing...",
+        text: "Please wait while we book your appointment",
+        allowOutsideClick: false,
+        didOpen: () => Swal.showLoading(),
+      });
 
-      );
-      alert("Booking successful!");
-      // After successful booking, refresh the reserved dates
+      await axios.post("http://localhost:5000/bookings", bookingData, {
+        withCredentials: true,
+      });
+
+      Swal.close();
+      showSuccessAlert("Your appointment has been booked successfully!");
+
       fetchReservedDates(selectedVet.name);
-      // Clear form
       setSelectedDate("");
       setReason("");
       setPhoneNumber("");
     } catch (error) {
       console.error(error);
-      if (error.response && error.response.data.message) {
-        alert(error.response.data.message);
+      Swal.close();
+
+      if (error.response) {
+        if (error.response.status === 401) {
+          showErrorAlert("Please login to book an appointment");
+        } else {
+          showErrorAlert(
+            error.response.data.message ||
+              "An error occurred while saving your booking. Please try again."
+          );
+        }
       } else {
-        alert("Error saving booking.");
+        showErrorAlert(
+          "Network error. Please check your connection and try again."
+        );
       }
     }
   };
-console.log(cookies.get("authToken"));
-  // Custom date input component to highlight reserved dates
+
   const DatePicker = () => {
     return (
       <div className="relative">
@@ -196,13 +247,12 @@ console.log(cookies.get("authToken"));
         {selectedVet && (
           <div className="mt-4">
             <h3 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-              <Clock className="w-4 h-4 text-green-600 mr-2" />
               Reserved Dates:
             </h3>
             <div className="flex overflow-x-auto gap-2">
               {reservedDates.length > 0 ? (
                 reservedDates
-                  .sort((a, b) => new Date(b) - new Date(a)) // ترتيب التواريخ من الأحدث إلى الأقدم
+                  .sort((a, b) => new Date(b) - new Date(a))
                   .map((date, index) => (
                     <span
                       key={index}
@@ -226,7 +276,6 @@ console.log(cookies.get("authToken"));
   return (
     <div className="max-w-6xl mx-auto p-6 bg-green-50 min-h-screen">
       <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-green-100">
-        {/* Header */}
         <div className="bg-gradient-to-r from-green-600 to-green-700 p-8 relative">
           <div className="absolute top-0 right-0 w-64 h-64 bg-green-500 rounded-full opacity-20 transform translate-x-1/2 -translate-y-1/2"></div>
           <div className="absolute bottom-0 left-0 w-32 h-32 bg-green-500 rounded-full opacity-10 transform -translate-x-1/2 translate-y-1/2"></div>
@@ -253,7 +302,6 @@ console.log(cookies.get("authToken"));
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Left Column - Department Selection */}
             <div className="space-y-6">
               <h2 className="text-xl font-semibold text-gray-800 flex items-center">
                 <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 mr-2">
@@ -266,7 +314,7 @@ console.log(cookies.get("authToken"));
                   <button
                     key={dept.id}
                     onClick={() => setSelectedDepartment(dept.id)}
-                    className={`w-full p-4 rounded-lg border-2 transition-all duration-200 flex items-center gap-3 shadow-sm hover:shadow
+                    className={`w-full p-4 rounded-lg border-2 transition-all duration-200 flex items-center gap-3 shadow-sm hover:shadow cursor-pointer
                       ${
                         selectedDepartment === dept.id
                           ? "border-green-500 bg-green-50"
@@ -281,11 +329,10 @@ console.log(cookies.get("authToken"));
                 ))}
               </div>
 
-              {/* Emergency Toggle */}
               <div className="mt-8">
                 <button
                   onClick={() => setEmergency(!emergency)}
-                  className={`w-full p-4 rounded-lg border-2 transition-all duration-200 flex items-center gap-3 shadow-sm
+                  className={`w-full p-4 rounded-lg border-2 transition-all duration-200 flex items-center gap-3 shadow-sm cursor-pointer
                     ${
                       emergency
                         ? "border-red-500 bg-red-50"
@@ -309,10 +356,9 @@ console.log(cookies.get("authToken"));
               </div>
             </div>
 
-            {/* Middle Column - Vet Selection */}
             <div className="space-y-6">
               <h2 className="text-xl font-semibold text-gray-800 flex items-center">
-                <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 mr-2">
+                <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 mr-2 ">
                   2
                 </span>
                 Choose Veterinarian
@@ -325,7 +371,7 @@ console.log(cookies.get("authToken"));
                       <button
                         key={vet.name}
                         onClick={() => setSelectedVet(vet)}
-                        className={`w-full p-5 rounded-lg border-2 transition-all duration-200 hover:shadow-md
+                        className={`w-full p-5 rounded-lg border-2 transition-all duration-200 hover:shadow-md cursor-pointer
                           ${
                             selectedVet?.name === vet.name
                               ? "border-green-500 bg-green-50"
@@ -341,15 +387,6 @@ console.log(cookies.get("authToken"));
                               <h3 className="font-semibold text-gray-800 text-lg">
                                 Dr. {vet.name}
                               </h3>
-                              {/* <div className="flex items-center gap-1">
-                                <Star className="w-4 h-4 text-yellow-500" />
-                                <span className="text-gray-600 text-sm">
-                                  {vet.rating}{" "}
-                                  <span className="text-gray-400">
-                                    ({vet.reviewCount} reviews)
-                                  </span>
-                                </span>
-                              </div> */}
                             </div>
                           </div>
                         </div>
@@ -399,7 +436,6 @@ console.log(cookies.get("authToken"));
               )}
             </div>
 
-            {/* Right Column - Booking Details */}
             <div className="space-y-6">
               <h2 className="text-xl font-semibold text-gray-800 flex items-center">
                 <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 mr-2">
@@ -483,8 +519,7 @@ console.log(cookies.get("authToken"));
                 </div>
               </form>
 
-              {/* Additional Info Card */}
-              {selectedVet && (
+              {/* {selectedVet && (
                 <div className="bg-green-50 p-4 rounded-lg border border-green-200 mt-4">
                   <h3 className="text-sm font-semibold text-green-800">
                     Booking Information
@@ -496,12 +531,11 @@ console.log(cookies.get("authToken"));
                     <li>• We'll send a confirmation to your phone</li>
                   </ul>
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </div>
 
-        {/* Footer */}
         <div className="bg-green-50 p-4 text-center text-sm text-gray-600 border-t border-green-100">
           Farm Vet Services - Providing quality care to farm animals since 2010
         </div>

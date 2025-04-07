@@ -6,8 +6,7 @@ import EditProductList from "./EditProductList";
 import AddProduct from "./AddProduct";
 import CategoryManagement from "./CategoryManagement";
 import Analytics from "./Analytics";
-import { Settings } from "./Settings";
-import VetDashboard from './VetDashboard';
+import  Profile  from "./Profile";
 import EditProduct from "./EditProduct";
 import InventoryTracking from "./InventoryTracking";
 import OrderManagement from "./OrderManagement";
@@ -28,12 +27,11 @@ const MainDash = () => {
           <Route path="/add-product" element={<AddProduct />} />
           <Route path="/categories" element={<CategoryManagement />} />
           <Route path="/analytics" element={<Analytics />} />
-          <Route path="/settings" element={<Settings />} />
+          <Route path="/Profile" element={<Profile />} />
           <Route path="/edit-product/:id" element={<EditProduct />} />
           <Route path="/inventory" element={<InventoryTracking />} />
           <Route path="/orders" element={<OrderManagement />} />
           <Route path="/AddVeterinarians" element={<AddVeterinarians />} />
-          <Route path="/vet" element={<VetDashboard />} />
           <Route path="/DoctorReservations" element={<DoctorReservations />} />
           <Route path="/UserManagement" element={<UserManagement />} />
         </Routes>

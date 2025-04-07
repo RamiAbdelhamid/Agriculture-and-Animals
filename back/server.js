@@ -9,6 +9,8 @@ const vetRoutes = require("./routes/vetRoutes");
 const departmentRoutes = require('./routes/departmentRoutes'); // Import department routes
 const contactusRoutes = require("./routes/contactusRoutes"); // Import contact routes
 const userRoutes = require("./routes/userRoutes");
+const orderRoutes = require("./routes/orderRoutes");
+const path = require("path");
 
 
 //************************************************************************************************** */
@@ -38,6 +40,19 @@ app.use("/api/vets", vetRoutes);
 app.use('/api/departments', departmentRoutes); // Use department routes
 app.use("/contact", contactusRoutes); // Use contact routes
 app.use("/api/users", userRoutes);
+
+app.use("/api", orderRoutes);
+
+app.use('/pdf', express.static(path.join(__dirname, 'pdfs')));  // Serve PDFs at /pdf URL
+
+
+
+
+
+
+
+
+
 //************************************************************************************************** */
 mongoose
   .connect(process.env.MONGODB_URI, {

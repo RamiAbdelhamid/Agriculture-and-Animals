@@ -130,12 +130,11 @@ const ThymeCrop = () => {
 
         {/* CTA Buttons */}
         <div className="flex flex-wrap gap-4">
-          <button className="px-6 py-3 text-white bg-green-600 rounded-lg shadow-lg hover:bg-green-700 transition-all duration-300 font-medium">
-            Shop Thyme Products
-          </button>
-          <button className="px-6 py-3 text-green-700 border-2 border-green-600 rounded-lg hover:bg-green-50 transition-all duration-300 font-medium">
-            Learn More
-          </button>
+          <a href="/shop" className="w-full lg:w-auto">
+            <button className="px-6 py-3 text-white bg-green-600 rounded-lg shadow-lg hover:bg-green-700 transition-all duration-300 font-medium cursor-pointer">
+              Shop Thyme Products
+            </button>
+          </a>
         </div>
       </div>
     </div>

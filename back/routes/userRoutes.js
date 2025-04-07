@@ -29,17 +29,24 @@ router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.post("/google-login", googleLogin);
 router.get("/profile", verifyToken, getUserProfile);
+
+
 router.put(
   "/profile",
   verifyToken,
   upload.single("profilePicture"),
   updateUserProfile
-);router.get("/get-role", getUserRoleFromToken);
+);
+
+
+
+router.get("/get-role", getUserRoleFromToken);
 router.post("/logout", logoutUser);
 router.get("/get-user", getUserFromToken);
 
 router.get("/bookings/user", verifyToken, bookingController.getUserBookings);
 
+// ... الرواوت الأخرى
 
 
 

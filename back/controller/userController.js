@@ -168,7 +168,6 @@ const profileUpdateSchema = Joi.object({
     }),
   file: Joi.any().optional(),
 });
-
 exports.updateUserProfile = async (req, res) => {
   const { name, email } = req.body;
   const profilePicture = req.file ? `/uploads/${req.file.filename}` : null;
@@ -180,7 +179,7 @@ exports.updateUserProfile = async (req, res) => {
 
   if (error) {
     return res.status(400).json({
-      message: "خطأ في التحقق",
+      message: "Validation error",
       errors: error.details.map((err) => err.message),
     });
   }
@@ -196,21 +195,23 @@ exports.updateUserProfile = async (req, res) => {
     }
 
     await user.save();
-
     res.status(200).json({
-      message: "تم تحديث بيانات المستخدم بنجاح",
+      message: "User data updated successfully",
       user: {
         _id: user._id,
         name: user.name,
         email: user.email,
         profilePicture: user.profilePicture,
-        savedArticles: user.savedArticles,
-        comments: user.comments,
-        readingHistory: user.readingHistory,
       },
     });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error during profile update:", error); // Log detailed error
+    res
+      .status(500)
+      .json({
+        message: "Server error during profile update",
+        error: error.message,
+      });
   }
 };
 
@@ -233,6 +234,21 @@ exports.getUserFromToken = async (req, res) => {
   }
 };
 
+
+exports.getUserRoleFromToken = async (req, res) => {
+  try {
+    const token = req.cookies.authToken;
+
+    if (!token) {
+      return res.status(401).json({ message: "No token found" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    res.status(200).json({ userId: decoded.id, role: decoded.role });
+  } catch (error) {
+    res.status(401).json({ message: "Invalid or expired token" });
+  }
+};
 
 
 
@@ -277,30 +293,14 @@ exports.updateUserRole = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role,
-      },
+        role: user.role
+      }
     });
   } catch (err) {
     console.error("Error updating user role:", err);
-    res.status(500).json({
-      message: "Error updating user role",
-      error: err.message,
+    res.status(500).json({ 
+      message: "Error updating user role", 
+      error: err.message 
     });
-  }
-};
-
-
-exports.getUserRoleFromToken = async (req, res) => {
-  try {
-    const token = req.cookies.authToken;
-
-    if (!token) {
-      return res.status(401).json({ message: "No token found" });
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    res.status(200).json({ userId: decoded.id, role: decoded.role });
-  } catch (error) {
-    res.status(401).json({ message: "Invalid or expired token" });
   }
 };
