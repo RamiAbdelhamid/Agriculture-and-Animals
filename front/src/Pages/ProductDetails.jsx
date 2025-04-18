@@ -279,26 +279,11 @@ const ProductDetails = () => {
                 </div>
               </div>
 
-              {/* Rating */}
-              <div className="flex items-center gap-1 mb-4">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <Star
-                    key={star}
-                    className={`w-4 h-4 ${
-                      star <= 4
-                        ? "text-yellow-400 fill-yellow-400"
-                        : "text-gray-300"
-                    }`}
-                  />
-                ))}
-                <span className="text-sm text-gray-500 ml-2">
-                  (120 reviews)
-                </span>
-              </div>
+            
 
               {/* Price */}
               <div className="mb-6">
-                <p className="text-3xl font-bold text-blue-600">
+                <p className="text-3xl font-bold text-green-600">
                   {product.price} JD
                 </p>
                 {product.oldPrice && (

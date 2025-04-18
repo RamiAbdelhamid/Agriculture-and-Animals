@@ -52,8 +52,6 @@ const Livevacc = () => {
       try {
         setLoading(true);
         const response = await axios.get("http://localhost:5000/api/products");
-
-
         setProducts(response.data);
 
         // حساب عدد المنتجات في كل فئة
@@ -433,4 +431,3 @@ const Livevacc = () => {
 };
 
 export default Livevacc;
-

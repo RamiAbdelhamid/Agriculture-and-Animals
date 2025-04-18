@@ -422,9 +422,9 @@ export default function Navbar() {
 
       {/* Cart Sidebar */}
       {showCart && (
-        <div className="fixed inset-0 z-50 overflow-hidden">
+        <div className="fixed inset-0 z-150 overflow-hidden">
           <div
-            className="absolute inset-0 bg-black bg-opacity-50 transition-opacity"
+            className="absolute inset-0 backdrop-blur-sm bg-black/30 transition-opacity "
             onClick={() => setShowCart(false)}
           ></div>
           <div className="absolute inset-y-0 right-0 max-w-full flex">

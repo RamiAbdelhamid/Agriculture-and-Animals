@@ -429,7 +429,7 @@ const ContactUs = () => {
       </div>
 
       {/* Chat Bot */}
-      <div
+      {/* <div
         className={`fixed bottom-20 right-6 z-20 ${
           chatOpen ? "w-80" : "w-auto"
         }`}
@@ -489,17 +489,17 @@ const ContactUs = () => {
             <MessageSquare size={24} />
           </button>
         )}
-      </div>
+      </div> */}
 
       {/* Back to Top Button */}
-      {showBackToTop && (
+      {/* {showBackToTop && (
         <button
           onClick={scrollToTop}
           className="fixed bottom-6 right-6 bg-green-600 text-white p-3 rounded-full shadow-lg hover:bg-green-700 transition-colors z-10"
         >
           <ArrowUp size={24} />
         </button>
-      )}
+      )} */}
     </div>
   );
 };

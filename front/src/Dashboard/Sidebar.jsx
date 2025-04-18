@@ -45,16 +45,8 @@ const Sidebar = ({ isOpen }) => {
       icon: <Package size={20} />,
       path: "/Dashboard/products",
     },
-    {
-      name: "Categories",
-      icon: <List size={20} />,
-      path: "/Dashboard/categories",
-    },
-    {
-      name: "Veterinarians",
-      icon: <Layers size={20} />,
-      path: "/Dashboard/vet",
-    },
+   
+ 
     {
       name: "DoctorReservations",
       icon: <Layers size={20} />,

@@ -1,60 +1,3 @@
-// import React from "react";
-// import { useState } from "react";
-// import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-// import Navbar from "./Component/Shared/Navbar";
-// import Home from "./Pages/Home";
-// import AboutUs from "./Pages/AboutUs";
-// import ContactUs from "./Pages/ContactUs";
-// import Footer from "./Component/Shared/Footer";
-// import Login from "./Pages/Login";
-// import Userprofile from "./Pages/Userprofile";
-// import Veterinarians from "./Pages/Veterinarians";
-// import Livevacc from "./Pages/Livevacc";
-// import ProductDetails from "./Pages/ProductDetails";
-// import Checkout from "./Pages/Checkout";
-// import SignUp from "./Pages/SignUp";
-// import ProceedToPayment from "./Pages/ProceedToPayment";
-// import AddProduct from "../src/Dashboard/AddProduct";
-// import Dashboard from "../src/Dashboard/Dashboard";
-// import EditProduct from "../src/Dashboard/EditProduct";
-// import { GoogleOAuthProvider } from "@react-oauth/google";
-// import MainDash from "./Dashboard/MainDashboard";
-// import Shop from "./Pages/Shop";
-// import HealthGuide from "./Pages/HealthGuide";
-// import Wishlist from "./Pages/Wishlist";
-// function App() {
-//   const [sidebarOpen, setSidebarOpen] = useState(true);
-//   return (
-//     <GoogleOAuthProvider clientId="708338751810-vs4526i07didjadt2vhqgrgu1vnr3ib8.apps.googleusercontent.com">
-//       <Router>
-//         <Navbar />
-//         <Routes>
-//           <Route path="/" element={<Home />} />
-//           <Route path="/about" element={<AboutUs />} />
-//           <Route path="/contact" element={<ContactUs />} />
-//           <Route path="/Login" element={<Login />} />
-//           <Route path="/Userprofile" element={<Userprofile />} />
-//           <Route path="/Veterinarians" element={<Veterinarians />} />
-//           <Route path="/Livevacc" element={<Livevacc />} />
-//           <Route path="/product/:id" element={<ProductDetails />} />
-//           <Route path="/checkout" element={<Checkout />} />
-//           <Route path="/SignUp" element={<SignUp />} />
-//           <Route path="/proceed-to-payment" element={<ProceedToPayment />} />
-//           <Route path="/add-product" element={<AddProduct />} />
-//           <Route path="/Dashboard/*" element={<MainDash />} />
-//           <Route path="/edit-product/:id" element={<EditProduct />} />
-//           <Route path="/Shop" element={<Shop />} />
-//           <Route path="/HealthGuide" element={<HealthGuide />} />
-//           <Route path="/Wishlist" element={<Wishlist />} />
-//         </Routes>
-//         <Footer />
-//       </Router>
-//     </GoogleOAuthProvider>
-//   );
-// }
-
-// export default App;
-
 import React, { useState } from "react";
 import {
   BrowserRouter as Router,
@@ -84,12 +27,15 @@ import Shop from "./Pages/Shop";
 import HealthGuide from "./Pages/HealthGuide";
 import Wishlist from "./Pages/Wishlist";
 import Reservations from "./Pages/Reservations";
+// import WhatsAppIcon from "./Component/Shared/WhatsAppIcon";
+import AgriChatBot from "./Component/Shared/AgriChatBot";
+import BackToTopButton from "./Component/Shared/BackToTopButton"; // Import the BackToTopButton
 
 function AppContent() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const location = useLocation(); // الآن داخل Router
+  const location = useLocation();
 
-  // تحديد المسارات التي لا يجب أن يظهر فيها الـNavbar والـFooter
+  // Routes where Navbar and Footer shouldn't appear
   const noNavbarFooterRoutes = [
     "/login",
     "/signup",
@@ -97,18 +43,28 @@ function AppContent() {
     "/edit-product",
     "/Dashboard",
     "/dashboard",
-
   ];
 
-  // تحديد إذا كان يجب إخفاء الـNavbar والـFooter بناءً على المسار
+  // Routes where chat widgets shouldn't appear
+  const noChatRoutes = [
+    "/Dashboard",
+    "/dashboard",
+    // Add other routes where you don't want chat widgets to appear
+  ];
+
+  // Determine if Navbar and Footer should be shown based on the route
   const showNavbarFooter = !noNavbarFooterRoutes.some((route) =>
+    location.pathname.startsWith(route)
+  );
+
+  // Determine if chat widgets should be shown
+  const showChatWidgets = !noChatRoutes.some((route) =>
     location.pathname.startsWith(route)
   );
 
   return (
     <>
-      {showNavbarFooter && <Navbar />}{" "}
-      {/* عرض الـNavbar فقط في المسارات غير المذكورة */}
+      {showNavbarFooter && <Navbar />}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<AboutUs />} />
@@ -129,8 +85,32 @@ function AppContent() {
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/Reservations" element={<Reservations />} />
       </Routes>
-      {showNavbarFooter && <Footer />}{" "}
-      {/* عرض الـFooter فقط في المسارات غير المذكورة */}
+      {showNavbarFooter && <Footer />}
+
+      {/* Back to top button - shown on all pages except dashboard */}
+      {showNavbarFooter && <BackToTopButton />}
+
+      {/* Agriculture themed chatbot with chicken/rooster icon */}
+      {showChatWidgets && (
+        <AgriChatBot
+          position={{ bottom: "20px", right: "20px" }}
+          profileName="Farm Helper"
+          welcomeText="Hello! 🐓 Welcome to our farm and pet care website. How can I assist you today?"
+          phoneNumber="+962785956180" // Replace with your actual WhatsApp number
+        />
+      )}
+
+      {/* WhatsApp icon - positioned to avoid overlap with the chatbot
+         Note: Only include this if you want both widgets */}
+      {/* {showChatWidgets && (
+        <WhatsAppIcon
+          position={{ bottom: "20px", right: "100px" }} // Offset to avoid overlap with chatbot
+          phoneNumber="+962785956180" // Replace with your actual WhatsApp number
+          profileName="Farm Support Team"
+          profileImage="../src/assets/pic/User-Icon.jpg" // Replace with your actual profile image URL
+          welcomeText="Need direct assistance? Our farm experts are ready to help!"
+        />
+      )} */}
     </>
   );
 }
