@@ -24,4 +24,6 @@ router.get("/products/:id", productController.getProductById);
 // Soft delete product by id
 router.patch("/products/:id/soft-delete", productController.softDeleteProduct); // استخدم PATCH بدلاً من DELETE لعمل soft delete
 
+
+
 module.exports = router;

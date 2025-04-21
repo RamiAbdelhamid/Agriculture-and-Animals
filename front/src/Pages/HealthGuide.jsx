@@ -1284,25 +1284,6 @@ const HealthGuide = () => {
             </div>
           </div>
 
-          <div className="bg-green-50 p-4 rounded-lg cursor-pointer">
-            <h2 className="text-xl font-semibold text-green-800 mb-4 cursor-pointer">
-              Resources
-            </h2>
-            <div className="space-y-2">
-              <button className="flex items-center w-full p-3 rounded-lg text-gray-700 hover:bg-gray-100 cursor-pointer">
-                <BookOpen className="mr-3 cursor-pointer" />
-                Disease Handbook
-              </button>
-              <button className="flex items-center w-full p-3 rounded-lg text-gray-700 hover:bg-gray-100 cursor-pointer">
-                <Clipboard className="mr-3 cursor-pointer" />
-                Reporting Tools
-              </button>
-              <button className="flex items-center w-full p-3 rounded-lg text-gray-700 hover:bg-gray-100 cursor-pointer">
-                <Archive className="mr-3 cursor-pointer" />
-                Case Studies
-              </button>
-            </div>
-          </div>
         </div>
 
         <div className="w-full md:w-3/4">

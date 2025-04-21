@@ -11,6 +11,7 @@ const contactusRoutes = require("./routes/contactusRoutes"); // Import contact r
 const userRoutes = require("./routes/userRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const path = require("path");
+const reviewRoutes = require('./routes/reviewRoutes');
 
 
 //************************************************************************************************** */
@@ -46,10 +47,10 @@ app.use("/api", orderRoutes);
 app.use('/pdf', express.static(path.join(__dirname, 'pdfs')));  // Serve PDFs at /pdf URL
 
 
+app.use("/api/reviews", reviewRoutes);
 
 
-
-
+app.use("/vets", vetRoutes); // This creates the /vets endpoint
 
 
 
@@ -62,6 +63,10 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log("MongoDB connection error:", err));
 //************************************************************************************************** */
+
+
+
+
 
 
 

@@ -170,6 +170,31 @@ const AddVeterinarians = ({ onBack, onDataUpdate, initialDepartments }) => {
     }
   };
 
+  // Handle deleting vet
+const handleDeleteVet = async (vetName) => {
+  if (
+    window.confirm(`Are you sure you want to delete veterinarian ${vetName}?`)
+  ) {
+    try {
+      await axios.patch(`http://localhost:5000/api/vets/${vetName}`, {
+        isDeleted: true,
+      });
+
+      setVets(vets.filter((vet) => vet.name !== vetName));
+
+      if (onDataUpdate) {
+        onDataUpdate({
+          vets: vets.filter((vet) => vet.name !== vetName),
+          departments,
+        });
+      }
+    } catch (error) {
+      console.error("Error soft deleting vet:", error);
+      alert("Error soft deleting vet");
+    }
+  }
+};
+
   // Handle deleting department
   const handleDeleteDepartment = async (id) => {
     if (window.confirm("Are you sure you want to delete this department?")) {

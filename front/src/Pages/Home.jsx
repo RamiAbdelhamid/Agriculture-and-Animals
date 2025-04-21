@@ -8,6 +8,7 @@ import Reviews from "../Component/HomeComponent/Reviews";
 import Carousel from "../Component/HomeComponent/Carousel";
 import Footer from "../Component/Shared/Footer";
 import { useRef } from "react";
+import PartnerAnimation from "./PartnerAnimation";
 
 const Home = () => {
   const categorySectionRef = useRef(null);
@@ -262,153 +263,13 @@ const Home = () => {
         </div>
       </section>
 
-      {/* NEW: Latest News & Agricultural Tips */}
-      <section className="py-16 container mx-auto px-4">
-        <div className="text-center mb-12">
-          <span className="text-emerald-600 font-semibold text-sm uppercase tracking-wider">
-            Stay Informed
-          </span>
-          <h2 className="text-4xl font-bold text-gray-800 mt-2">
-            Latest Agricultural News
-          </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto mt-4">
-            Updates on agricultural practices, market trends, and seasonal tips
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white rounded-lg overflow-hidden shadow-md">
-            <div className="h-48 bg-gray-300">
-              <div className="h-full w-full flex items-center justify-center text-gray-500">
-                <span>Farm Image</span>
-              </div>
-            </div>
-            <div className="p-6">
-              <p className="text-emerald-600 text-sm font-semibold">
-                April 2, 2025
-              </p>
-              <h3 className="text-xl font-bold text-gray-800 mt-2 mb-3">
-                Sustainable Farming Practices for Long-term Soil Health
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Discover how implementing regenerative agriculture techniques
-                can improve soil quality and crop yields over time...
-              </p>
-              <a
-                href="/blog/sustainable-farming"
-                className="text-emerald-600 font-semibold hover:text-emerald-700"
-              >
-                Read More →
-              </a>
-            </div>
-          </div>
-          <div className="bg-white rounded-lg overflow-hidden shadow-md">
-            <div className="h-48 bg-gray-300">
-              <div className="h-full w-full flex items-center justify-center text-gray-500">
-                <span>Cattle Image</span>
-              </div>
-            </div>
-            <div className="p-6">
-              <p className="text-emerald-600 text-sm font-semibold">
-                March 28, 2025
-              </p>
-              <h3 className="text-xl font-bold text-gray-800 mt-2 mb-3">
-                Cattle Nutrition: Optimizing Feed for Better Production
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Learn about the latest research in cattle nutrition and how
-                adjusting feed composition can lead to healthier animals...
-              </p>
-              <a
-                href="/blog/cattle-nutrition"
-                className="text-emerald-600 font-semibold hover:text-emerald-700"
-              >
-                Read More →
-              </a>
-            </div>
-          </div>
-          <div className="bg-white rounded-lg overflow-hidden shadow-md">
-            <div className="h-48 bg-gray-300">
-              <div className="h-full w-full flex items-center justify-center text-gray-500">
-                <span>Technology Image</span>
-              </div>
-            </div>
-            <div className="p-6">
-              <p className="text-emerald-600 text-sm font-semibold">
-                March 15, 2025
-              </p>
-              <h3 className="text-xl font-bold text-gray-800 mt-2 mb-3">
-                Smart Farming: How Technology is Transforming Agriculture
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Explore the latest technological advancements helping farmers
-                increase efficiency and reduce environmental impact...
-              </p>
-              <a
-                href="/blog/smart-farming"
-                className="text-emerald-600 font-semibold hover:text-emerald-700"
-              >
-                Read More →
-              </a>
-            </div>
-          </div>
-        </div>
-      </section>
-
+ 
       {/* NEW: Partners & Suppliers */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-10">
-            <span className="text-gray-600 font-semibold text-sm uppercase tracking-wider">
-              Trusted By
-            </span>
-            <h2 className="text-3xl font-bold text-gray-800 mt-2">
-              Our Partners & Suppliers
-            </h2>
-          </div>
-          <div className="flex flex-wrap justify-center items-center gap-10 max-w-4xl mx-auto">
-            {/* Partner logos */}
-            <div className="w-32 h-16 bg-white shadow-sm rounded flex items-center justify-center">
-              <img
-                src="../../src/assets/pic/AWP-Animal-Wellness-Product-Logo.svg"
-                alt="Partner 1"
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <div className="w-32 h-16 bg-white shadow-sm rounded flex items-center justify-center">
-              <img
-                src="../../src/assets/pic/biochem-logo-white.svg"
-                alt="Partner 2"
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <div className="w-32 h-16 bg-white shadow-sm rounded flex items-center justify-center">
-              <img
-                src="../../src/assets/pic/logo (1).png"
-                alt="Partner 3"
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <div className="w-32 h-16 bg-white shadow-sm rounded flex items-center justify-center">
-              <img
-                src="../../src/assets/pic/logo-fatro.png"
-                alt="Partner 4"
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <div className="w-32 h-16 bg-white shadow-sm rounded flex items-center justify-center">
-              <img
-                src="../../src/assets/pic/Sut-Sagim-Makineleri2.png"
-                alt="Partner 5"
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <div className="w-32 h-16 bg-white shadow-sm rounded flex items-center justify-center">
-              <img
-                src="../../src/assets/pic/LOGO_CEVA_SANTE_ANIMALE.webp"
-                alt="Partner 6"
-                className="w-full h-full object-contain"
-              />
-            </div>
+          <div className="text-center mb-10"></div>
+          <div className="relative h-[800px] perspective-[1500px] mx-auto max-w-7xl">
+            <PartnerAnimation />
           </div>
         </div>
       </section>

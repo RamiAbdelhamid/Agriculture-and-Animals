@@ -17,15 +17,9 @@ const Profile = () => {
     currentPage: 1,
     totalPages: 1,
     totalBookings: 0,
-    pageSize: 2,
+    pageSize: 3,
   });
-
-
-
-
-
-
-
+  const [activeTab, setActiveTab] = useState(0); // For tracking active booking tab
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -75,14 +69,9 @@ const Profile = () => {
     }
   }, [user, pagination.currentPage]);
 
-
   const handlePageChange = (newPage) => {
     setPagination((prev) => ({ ...prev, currentPage: newPage }));
   };
-
-
-
-
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -121,7 +110,6 @@ const Profile = () => {
       );
     }
   };
-
 
   const handleLogout = async () => {
     try {
@@ -188,7 +176,6 @@ const Profile = () => {
             <div className="text-center md:text-left flex-grow">
               <h1 className="text-3xl font-bold mb-2">{user.name}</h1>
               <p className="text-green-200 mb-2">{user.email}</p>
-             
             </div>
             <button
               onClick={handleLogout}
@@ -342,11 +329,12 @@ const Profile = () => {
             )}
           </div>
 
-          {/* Bookings Section */}
+          {/* Bookings Section with Tabs */}
           <div>
             <h2 className="text-2xl font-bold text-green-800 mb-6">
               Veterinary Bookings
             </h2>
+
             {bookings.length === 0 ? (
               <div className="bg-green-50 p-6 rounded-lg text-center">
                 <svg
@@ -366,95 +354,98 @@ const Profile = () => {
                 <p className="text-green-800">No veterinary bookings yet</p>
               </div>
             ) : (
-              <div className="grid md:grid-cols-2 gap-6">
-                {bookings.map((booking) => (
-                  <div
-                    key={booking._id}
-                    className="bg-green-50 p-5 rounded-lg shadow-md hover:shadow-xl transition-shadow"
-                  >
-                    <div className="flex justify-between items-center mb-4">
-                      <h3 className="text-lg font-bold text-green-800">
-                        Veterinary Consultation
-                      </h3>
-                      <span
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          booking.emergency
-                            ? "bg-red-500 text-white"
-                            : "bg-green-200 text-green-800"
-                        }`}
-                      >
-                        {booking.emergency ? "Emergency" : "Routine"}
-                      </span>
+              <div className="bg-green-50 rounded-lg shadow-md">
+                {/* Tab navigation */}
+                <div className="flex border-b border-green-200">
+                  {bookings.map((booking, index) => (
+                    <button
+                      key={booking._id}
+                      className={`flex-1 py-3 px-4 focus:outline-none ${
+                        activeTab === index
+                          ? "bg-white text-green-800 font-bold border-t-2 border-r border-l border-green-300 rounded-t-lg"
+                          : "bg-green-100 text-green-600 hover:bg-green-200"
+                      }`}
+                      onClick={() => setActiveTab(index)}
+                    >
+                      {new Date(booking.date).toLocaleDateString()}
+                      {booking.emergency && (
+                        <span className="ml-2 inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                          !
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Tab content */}
+                <div className="p-6">
+                  {bookings.map((booking, index) => (
+                    <div
+                      key={booking._id}
+                      className={`${activeTab === index ? "block" : "hidden"}`}
+                    >
+                      <div className="flex justify-between items-center mb-4">
+                        <h3 className="text-lg font-bold text-green-800">
+                          Veterinary Consultation
+                        </h3>
+                        <span
+                          className={`px-3 py-1 rounded-full text-sm font-medium ${
+                            booking.emergency
+                              ? "bg-red-500 text-white"
+                              : "bg-green-200 text-green-800"
+                          }`}
+                        >
+                          {booking.emergency ? "Emergency" : "Routine"}
+                        </span>
+                      </div>
+                      <div className="grid md:grid-cols-2 gap-6">
+                        <div className="bg-white p-4 rounded-lg shadow-sm">
+                          <p className="font-semibold text-green-700">
+                            Veterinarian
+                          </p>
+                          <p className="text-green-900">{booking.vet}</p>
+                        </div>
+                        <div className="bg-white p-4 rounded-lg shadow-sm">
+                          <p className="font-semibold text-green-700">Date</p>
+                          <p className="text-green-900">
+                            {new Date(booking.date).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div className="bg-white p-4 rounded-lg shadow-sm md:col-span-2">
+                          <p className="font-semibold text-green-700">
+                            Reason for Visit
+                          </p>
+                          <p className="text-green-900">{booking.reason}</p>
+                        </div>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <p>
-                        <strong className="text-green-700">
-                          Veterinarian:
-                        </strong>{" "}
-                        {booking.vet}
-                      </p>
-                      <p>
-                        <strong className="text-green-700">Date:</strong>{" "}
-                        {new Date(booking.date).toLocaleDateString()}
-                      </p>
-                      <p>
-                        <strong className="text-green-700">Reason:</strong>{" "}
-                        {booking.reason}
-                      </p>
-                    </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
+            )}
 
-)}
-
-
-  {/* Pagination Controls */}
-            <div className="flex justify-center items-center space-x-4 mt-6">
-              <button
-                onClick={() => handlePageChange(pagination.currentPage - 1)}
-                disabled={pagination.currentPage === 1}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Previous
-              </button>
-              <span className="text-green-800">
-                Page {pagination.currentPage} of {pagination.totalPages}
-              </span>
-              <button
-                onClick={() => handlePageChange(pagination.currentPage + 1)}
-                disabled={pagination.currentPage === pagination.totalPages}
-                className="px-4 py-2 bg-green-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                Next
-              </button>
-            </div>  
-           
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            
+            {/* Pagination Controls */}
+            {bookings.length > 0 && pagination.totalPages > 1 && (
+              <div className="flex justify-center items-center space-x-4 mt-6">
+                <button
+                  onClick={() => handlePageChange(pagination.currentPage - 1)}
+                  disabled={pagination.currentPage === 1}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Previous
+                </button>
+                <span className="text-green-800">
+                  Page {pagination.currentPage} of {pagination.totalPages}
+                </span>
+                <button
+                  onClick={() => handlePageChange(pagination.currentPage + 1)}
+                  disabled={pagination.currentPage === pagination.totalPages}
+                  className="px-4 py-2 bg-green-600 text-white rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </div>

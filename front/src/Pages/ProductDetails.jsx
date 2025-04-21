@@ -16,7 +16,10 @@ import {
 import axios from "axios";
 import { Heart as HeartOutline, Heart as HeartFilled } from "lucide-react";
 import { useWishlist } from "../Component/Shared/WishlistContext";
+import ReviewForm from "../Component/ReviewForm";
 
+import ReviewsList from "../Component/ReviewsList";
+import { Link } from "react-router-dom";
 const ProductDetails = () => {
   const { id } = useParams();
   const [product, setProduct] = useState(null);
@@ -27,8 +30,10 @@ const ProductDetails = () => {
   const [relatedProducts, setRelatedProducts] = useState([]);
   const { isInWishlist, toggleWishlist } = useWishlist();
   const [showShareOptions, setShowShareOptions] = useState(false);
-
+ const [reviews, setReviews] = useState([]);
+ const [currentUserId, setCurrentUserId] = useState(null);
   const [cart, setCart] = useState(() => {
+
     // Initialize cart with localStorage value if exists
     const savedCart = localStorage.getItem("cart");
     return savedCart ? JSON.parse(savedCart) : [];
@@ -104,6 +109,80 @@ const ProductDetails = () => {
 
     fetchProductDetails();
   }, [id]);
+
+
+
+
+
+
+
+  /********************************************************************************** */
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      setLoading(true);
+
+      // Get product data
+      const productRes = await axios.get(
+        `http://localhost:5000/api/products/${id}`
+      );
+      setProduct(productRes.data);
+
+      // Get reviews data
+      const reviewsRes = await axios.get(
+        `http://localhost:5000/api/reviews/product/${id}`
+      );
+      setReviews(reviewsRes.data);
+
+      // Get current user data if authenticated
+     const userData = await axios
+       .get("http://localhost:5000/api/users/me", { withCredentials: true })
+       .catch((error) => {
+         console.log("Error fetching user data:", error);
+         return null;
+       });
+
+     if (userData) {
+       setCurrentUserId(userData.data._id);
+     } else {
+       setCurrentUserId(null);
+     }
+
+      // Get related products
+      if (productRes.data.category) {
+        const relatedResponse = await axios.get(
+          `http://localhost:5000/api/products?category=${productRes.data.category}&limit=4`
+        );
+        setRelatedProducts(
+          relatedResponse.data.filter(
+            (item) => item._id !== productRes.data._id
+          )
+        );
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, [id]);/*///////////////////////////************************************************************************** */
+
+const handleReviewAdded = (newReview) => {
+  setReviews([newReview, ...reviews]);
+};
+
+const handleReviewDeleted = (reviewId) => {
+  setReviews(reviews.filter((review) => review._id !== reviewId));
+};
+const handleReviewUpdated = (updatedReview) => {
+  setReviews((prev) =>
+    prev.map((review) =>
+      review._id === updatedReview._id ? updatedReview : review
+    )
+  );
+};
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
@@ -201,7 +280,7 @@ const ProductDetails = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto p-4 md:p-6 relative">
+    <div className="max-w-4xl mx-auto p-4 md:p-6 relative">
       {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
@@ -279,8 +358,6 @@ const ProductDetails = () => {
                 </div>
               </div>
 
-            
-
               {/* Price */}
               <div className="mb-6">
                 <p className="text-3xl font-bold text-green-600">
@@ -345,7 +422,6 @@ const ProductDetails = () => {
               <p className="text-gray-700">{product.description}</p>
             </div>
           )}
-
           {activeTab === "details" && (
             <div>
               <p className="text-gray-700">
@@ -354,10 +430,48 @@ const ProductDetails = () => {
               </p>
             </div>
           )}
-
           {activeTab === "reviews" && (
-            <div>
-              <p className="text-gray-700">Customer reviews coming soon.</p>
+            <div className="space-y-6">
+              <div className="border-b pb-6">
+
+
+    <div>
+                <h3 className="text-lg font-semibold mb-4">Customer Reviews</h3>
+                {reviews.length > 0 ? (
+                  <ReviewsList
+                    reviews={reviews}
+                    currentUserId={currentUserId}
+                    onReviewDeleted={handleReviewDeleted}   
+                                   onReviewUpdated={handleReviewUpdated}
+
+                  />
+                ) : (
+                  <p className="text-gray-600">No reviews yet.</p>
+                )}
+
+              </div>
+
+                <h3 className="text-lg font-semibold mb-4">Write a Review</h3>
+                {currentUserId ? (
+                  <ReviewForm
+                    productId={id}
+                    onReviewAdded={handleReviewAdded}
+                  />
+                ) : (
+                  <p className="text-gray-600">
+                    Please{" "}
+                    <a href="/login" className="text-blue-600 hover:underline">
+                      login
+                    </a>{" "}
+                    to write a review.
+                  </p>
+                )}
+              </div>
+
+
+
+          
+
             </div>
           )}
         </div>
@@ -368,9 +482,13 @@ const ProductDetails = () => {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
             <h3 className="text-xl font-bold">Related Products</h3>
-            <button className="text-blue-600 flex items-center gap-1 hover:underline">
+
+            <Link
+              to="/Livevacc"
+              className="text-blue-600 flex items-center gap-1 hover:underline"
+            >
               View All <ArrowRight className="w-4 h-4" />
-            </button>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -392,7 +510,7 @@ const ProductDetails = () => {
                     {related.price} JD
                   </p>
                   <button
-                    onClick={() => navigate(`/products/${related.id}`)}
+                    onClick={() => navigate(`/product/${related._id}`)}
                     className="mt-2 w-full py-2 bg-gray-100 hover:bg-gray-200 rounded text-sm font-medium transition-colors"
                   >
                     View Details

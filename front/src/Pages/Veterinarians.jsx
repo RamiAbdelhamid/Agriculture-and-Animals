@@ -131,12 +131,14 @@ const VetBooking = () => {
 
   const getNextAvailableDate = (vetName) => {
     if (!reservedDates || reservedDates.length === 0) {
-      return new Date().toLocaleDateString();
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      return tomorrow.toLocaleDateString();
     }
 
     const reservedDateObjects = reservedDates.map((date) => new Date(date));
     let nextDate = new Date();
-    nextDate.setDate(nextDate.getDate() + 1);
+    nextDate.setDate(nextDate.getDate() + 1); // نبدأ من الغد
 
     let daysToCheck = 30;
     while (daysToCheck > 0) {
@@ -232,47 +234,52 @@ const VetBooking = () => {
     }
   };
 
-  const DatePicker = () => {
-    return (
-      <div className="relative">
-        <input
-          type="date"
-          required
-          min={new Date().toISOString().split("T")[0]}
-          value={selectedDate}
-          onChange={(e) => setSelectedDate(e.target.value)}
-          className="w-full pl-10 pr-4 py-3 border-2 border-green-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
-        />
+const DatePicker = () => {
+  // حساب تاريخ الغد لتحديد الحد الأدنى
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  const minDate = tomorrow.toISOString().split("T")[0];
 
-        {selectedVet && (
-          <div className="mt-4">
-            <h3 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
-              Reserved Dates:
-            </h3>
-            <div className="flex overflow-x-auto gap-2">
-              {reservedDates.length > 0 ? (
-                reservedDates
-                  .sort((a, b) => new Date(b) - new Date(a))
-                  .map((date, index) => (
-                    <span
-                      key={index}
-                      className="px-3 py-1 bg-red-100 text-red-600 rounded-full text-sm font-medium shadow-sm"
-                    >
-                      {new Date(date).toLocaleDateString()}
-                    </span>
-                  ))
-              ) : (
-                <span className="text-sm text-gray-500 italic">
-                  No reserved dates found for this vet
-                </span>
-              )}
-            </div>
+  return (
+    <div className="relative">
+      <input
+        type="date"
+        required
+        min={minDate} // هنا نستخدم تاريخ الغد كحد أدنى
+        value={selectedDate}
+        onChange={(e) => setSelectedDate(e.target.value)}
+        className="w-full pl-10 pr-4 py-3 border-2 border-green-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
+      />
+
+      {/* باقي الكود يبقى كما هو */}
+      {selectedVet && (
+        <div className="mt-4">
+          <h3 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
+            Reserved Dates:
+          </h3>
+          <div className="flex overflow-x-auto gap-2">
+            {reservedDates.length > 0 ? (
+              reservedDates
+                .sort((a, b) => new Date(b) - new Date(a))
+                .map((date, index) => (
+                  <span
+                    key={index}
+                    className="px-3 py-1 bg-red-100 text-red-600 rounded-full text-sm font-medium shadow-sm"
+                  >
+                    {new Date(date).toLocaleDateString()}
+                  </span>
+                ))
+            ) : (
+              <span className="text-sm text-gray-500 italic">
+                No reserved dates found for this vet
+              </span>
+            )}
           </div>
-        )}
-      </div>
-    );
-  };
-
+        </div>
+      )}
+    </div>
+  );
+};
   return (
     <div className="max-w-6xl mx-auto p-6 bg-green-50 min-h-screen">
       <div className="bg-white rounded-xl shadow-xl overflow-hidden border border-green-100">

@@ -1,6 +1,40 @@
-import React from "react";
-
+import React, { useState, useEffect } from "react";
+import TotalProducts from "../Component/TotalProducts";
+import TotalBookings from "../Component/TotalBookings";
+import TotalVet from "../Component/Vet";
+import AddVeterinarians from './../Dashboard/AddVeterinarians';
 const AboutUs = () => {
+const [happyClientsCount, setHappyClientsCount] = useState(0);
+const [productsCount, setProductsCount] = useState(0);
+const [loading, setLoading] = useState(true);
+const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchHappyClients = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:5000/api/reviews/happy-clients"
+        );
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        const data = await response.json();
+        setHappyClientsCount(data.count);
+      } catch (err) {
+        setError(err.message);
+        console.error("Error fetching happy clients:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchHappyClients();
+  }, []);
+
+
+    if (loading) return <div>Loading happy clients count...</div>;
+    if (error) return <div>Error: {error}</div>;
+
   return (
     <section className="py-16 bg-gradient-to-b from-green-50 to-green-100">
       <div className="container mx-auto px-4">
@@ -146,26 +180,6 @@ const AboutUs = () => {
             </div>
 
             {/* CTA button with improved styling */}
-            <a
-              href="#"
-              className="inline-flex items-center px-6 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200"
-            >
-              Learn More
-              <svg
-                className="ml-2 w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M14 5l7 7m0 0l-7 7m7-7H3"
-                ></path>
-              </svg>
-            </a>
           </div>
 
           {/* Right image area with improved styling */}
@@ -197,7 +211,9 @@ const AboutUs = () => {
                     <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
                   </svg>
                 </div>
-                <h2 className="font-bold text-3xl mb-1 text-gray-800">500+</h2>
+                <h2 className="font-bold text-3xl mb-1 text-gray-800">
+                  {happyClientsCount}
+                </h2>{" "}
                 <p className="text-gray-500 font-medium">Happy Clients</p>
               </div>
             </div>
@@ -214,8 +230,10 @@ const AboutUs = () => {
                     <path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path>
                   </svg>
                 </div>
-                <h2 className="font-bold text-3xl mb-1 text-gray-800">1000+</h2>
-                <p className="text-gray-500 font-medium">Successful Projects</p>
+                <h2 className="font-bold text-3xl mb-1 text-gray-800">
+                  <TotalProducts />
+                </h2>
+                <p className="text-gray-500 font-medium"> Products</p>
               </div>
             </div>
 
@@ -235,8 +253,10 @@ const AboutUs = () => {
                     ></path>
                   </svg>
                 </div>
-                <h2 className="font-bold text-3xl mb-1 text-gray-800">50+</h2>
-                <p className="text-gray-500 font-medium">Industry Awards</p>
+                <h2 className="font-bold text-3xl mb-1 text-gray-800">
+                  <TotalBookings />
+                </h2>{" "}
+                <p className="text-gray-500 font-medium">Bookings</p>
               </div>
             </div>
 
@@ -256,8 +276,10 @@ const AboutUs = () => {
                     ></path>
                   </svg>
                 </div>
-                <h2 className="font-bold text-3xl mb-1 text-gray-800">20+</h2>
-                <p className="text-gray-500 font-medium">Countries Served</p>
+                <h2 className="font-bold text-3xl mb-1 text-gray-800">
+                  <TotalVet />
+                </h2>{" "}
+                <p className="text-gray-500 font-medium">Veterinarians</p>
               </div>
             </div>
           </div>

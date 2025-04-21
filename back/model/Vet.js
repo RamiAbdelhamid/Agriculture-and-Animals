@@ -8,6 +8,7 @@ const vetSchema = new mongoose.Schema(
     rating: { type: Number, default: 4.5 },
     reviewCount: { type: Number, default: 0 },
     specializations: { type: [String], required: true },
+    isDeleted: { type: Boolean, default: false },
   },
   { timestamps: true }
 );

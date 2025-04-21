@@ -30,7 +30,9 @@ import Reservations from "./Pages/Reservations";
 // import WhatsAppIcon from "./Component/Shared/WhatsAppIcon";
 import AgriChatBot from "./Component/Shared/AgriChatBot";
 import BackToTopButton from "./Component/Shared/BackToTopButton"; // Import the BackToTopButton
-
+  import Terms from "./Pages/Terms";
+import Privacy from "./Pages/Privacy";
+  import Faq from "./Pages/Faq"; // Import the FAQ component
 function AppContent() {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const location = useLocation();
@@ -84,6 +86,10 @@ function AppContent() {
         <Route path="/healthguide" element={<HealthGuide />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/Reservations" element={<Reservations />} />
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/faq" element={<Faq />} />
+        {/* Add other routes here */}
       </Routes>
       {showNavbarFooter && <Footer />}
 

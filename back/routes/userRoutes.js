@@ -17,6 +17,7 @@ const {
   getUserRoleFromToken,
   updateUserRole,
   getAllUsers,
+getMe
 } = require("../controller/userController");
 
 const verifyToken = require("../middleware/authMiddleware");
@@ -55,6 +56,7 @@ router.get("/users", verifyToken, getAllUsers);
 
 // Route to update user role (protected route)
 router.put("/:userId/role", verifyToken, updateUserRole);
+router.get("/me", verifyToken, getMe);
 
 
 

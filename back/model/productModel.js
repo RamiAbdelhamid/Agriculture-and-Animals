@@ -8,6 +8,16 @@ const productSchema = new mongoose.Schema({
   details: { type: String, required: true },
   image: { type: String, required: true },
   isDeleted: { type: Boolean, default: false }, // إضافة الحقل isDeleted
+  averageRating: {
+    type: Number,
+    default: 0,
+    min: 0,
+    max: 5,
+  },
+  reviewCount: {
+    type: Number,
+    default: 0,
+  },
 });
 
 const Product = mongoose.model("Product", productSchema);
