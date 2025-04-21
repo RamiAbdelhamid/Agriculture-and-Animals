@@ -31,6 +31,7 @@ const AgriChatBot = ({
   ]);
   const [inputText, setInputText] = useState("");
   const messagesEndRef = useRef(null);
+  const [isJumping, setIsJumping] = useState(true);
 
   // Auto-scroll to bottom of messages
   useEffect(() => {
@@ -38,6 +39,11 @@ const AgriChatBot = ({
       messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
+
+  // Toggle jumping effect when chat is opened/closed
+  useEffect(() => {
+    setIsJumping(!isOpen);
+  }, [isOpen]);
 
   const toggleChat = () => {
     setIsOpen(!isOpen);
@@ -181,7 +187,7 @@ const AgriChatBot = ({
           <div
             className="popup-header"
             style={{
-              backgroundColor: "#F7A456", // Changed to orange-brown for chicken theme
+              backgroundColor: "#F7A456",
               color: "white",
               padding: "15px",
               display: "flex",
@@ -190,7 +196,6 @@ const AgriChatBot = ({
             }}
           >
             <div style={{ display: "flex", alignItems: "center" }}>
-              {/* Chicken Icon in the header */}
               <div
                 style={{
                   marginRight: "10px",
@@ -202,7 +207,6 @@ const AgriChatBot = ({
                   justifyContent: "center",
                 }}
               >
-                {/* Simple Chicken Icon */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="24"
@@ -248,7 +252,7 @@ const AgriChatBot = ({
               padding: "15px",
               height: "300px",
               overflowY: "auto",
-              backgroundColor: "#F9F5E9", // Light egg-shell color for chicken theme
+              backgroundColor: "#F9F5E9",
               backgroundImage:
                 "url(\"data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23F7E2C0' fill-opacity='0.2' fill-rule='evenodd'%3E%3Ccircle cx='3' cy='3' r='3'/%3E%3Ccircle cx='13' cy='13' r='3'/%3E%3C/g%3E%3C/svg%3E\")",
             }}
@@ -266,7 +270,7 @@ const AgriChatBot = ({
                 <div
                   style={{
                     backgroundColor:
-                      msg.sender === "user" ? "#F2E3C6" : "white", // Changed user message color
+                      msg.sender === "user" ? "#F2E3C6" : "white",
                     borderRadius: "12px",
                     padding: "8px 12px",
                     maxWidth: "70%",
@@ -323,7 +327,7 @@ const AgriChatBot = ({
               <button
                 type="submit"
                 style={{
-                  backgroundColor: "#F7A456", // Changed to match theme
+                  backgroundColor: "#F7A456",
                   border: "none",
                   borderRadius: "50%",
                   width: "36px",
@@ -353,7 +357,7 @@ const AgriChatBot = ({
                 onClick={contactViaWhatsApp}
                 style={{
                   backgroundColor: "transparent",
-                  color: "#F7A456", // Changed to match theme
+                  color: "#F7A456",
                   border: "none",
                   fontSize: "12px",
                   cursor: "pointer",
@@ -367,7 +371,7 @@ const AgriChatBot = ({
         </div>
       )}
 
-      {/* Chicken-Shaped Chat Button */}
+      {/* Chicken-Shaped Chat Button with Jumping Animation */}
       <button
         onClick={toggleChat}
         style={{
@@ -379,6 +383,8 @@ const AgriChatBot = ({
           boxShadow: "none",
           cursor: "pointer",
           transition: "all 0.3s ease",
+          transform: isJumping ? "translateY(0)" : "translateY(0)",
+          animation: isJumping ? "jump 1.5s infinite" : "none",
         }}
         onMouseOver={(e) => {
           e.currentTarget.style.transform = "scale(1.1)";
@@ -443,6 +449,20 @@ const AgriChatBot = ({
           />
         </svg>
       </button>
+
+      {/* CSS for jumping animation */}
+      <style>
+        {`
+          @keyframes jump {
+            0%, 100% {
+              transform: translateY(0) scale(1);
+            }
+            50% {
+              transform: translateY(-20px) scale(1.05);
+            }
+          }
+        `}
+      </style>
     </div>
   );
 };

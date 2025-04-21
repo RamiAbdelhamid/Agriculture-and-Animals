@@ -94,6 +94,22 @@
 
 ---
 
-## Live URL :
+## Trello :
 
-https://ramiabdelhamid.github.io/Front-End-Masterpiece/
+https://trello.com/b/5uAFZ76g/masterpiece
+
+## Design Link :
+
+https://www.figma.com/design/DXrGlplkAg2vWR0FC5OrFL/Masterpiece?node-id=84-4365&t=PBVdgky3OUAklIsK-0
+
+## Project Documantion :
+
+https://drive.google.com/file/d/1WPJ5T4t3niWv_bcvhJx9831C9-rtm4Ci/view?usp=sharing
+
+## Project Brief :
+
+https://drive.google.com/file/d/1uBRkbTbpEiaicHPPgMOqCAUPJzU6nMp_/view?usp=sharing
+
+## Project Presentation :
+
+https://www.canva.com/design/DAGkXROz1Q4/dfZ-jsbGUNb58CUqgJzh0w/edit
