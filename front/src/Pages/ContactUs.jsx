@@ -66,7 +66,7 @@ const ContactUs = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/contact/add",
+        "http://localhost:5000/api/contact/add",
         formData,
         {
           withCredentials: true,

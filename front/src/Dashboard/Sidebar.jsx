@@ -45,8 +45,7 @@ const Sidebar = ({ isOpen }) => {
       icon: <Package size={20} />,
       path: "/Dashboard/products",
     },
-   
- 
+
     {
       name: "DoctorReservations",
       icon: <Layers size={20} />,
@@ -63,6 +62,11 @@ const Sidebar = ({ isOpen }) => {
       path: "/Dashboard/AddVeterinarians",
     },
     {
+      name: "Add Article",
+      icon: <PlusCircle size={20} />,
+      path: "/Dashboard/Add Article",
+    },
+    {
       name: "UserManagement",
       icon: <Settings size={20} />,
       path: "/Dashboard/UserManagement",
@@ -72,6 +76,12 @@ const Sidebar = ({ isOpen }) => {
       icon: <Settings size={20} />,
       path: "/Dashboard/Profile",
     },
+    {
+      name: "Messages",
+      icon: <Settings size={20} />,
+      path: "/Dashboard/ContactMessages",
+    },
+
     {
       name: "Logout",
 

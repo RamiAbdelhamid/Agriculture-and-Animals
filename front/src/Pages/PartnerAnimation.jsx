@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 const EnhancedCinematicPartnerAnimation = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [hoveredIndex, setHoveredIndex] = useState(null);
+  const [animationDirection, setAnimationDirection] = useState(1); // 1 for forward, -1 for backward
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +26,17 @@ const EnhancedCinematicPartnerAnimation = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Set up animation reversal timer
+  useEffect(() => {
+    if (isVisible) {
+      const animationTimer = setInterval(() => {
+        setAnimationDirection((prev) => prev * -1); // Toggle between 1 and -1
+      }, 30000); // Reverse direction every 30 seconds
+
+      return () => clearInterval(animationTimer);
+    }
+  }, [isVisible]);
+
   const partners = [
     { name: "Nabil", image: "../../src/assets/pic/نبيل.jpeg" },
     { name: "Tamam", image: "../../src/assets/pic/تمام.jpg" },
@@ -35,15 +47,14 @@ const EnhancedCinematicPartnerAnimation = () => {
   ];
 
   // Enhanced positions for a wider, more spaced orbital effect
-  // Increased the x and z values to create more spacing between elements
-const positions = [
-  { x: -500, y: 40, z: -300, scale: 0.7 },
-  { x: -300, y: -40, z: -100, scale: 0.8 },
-  { x: -100, y: -80, z: 200, scale: 1 },
-  { x: 100, y: -80, z: 200, scale: 1 },
-  { x: 300, y: -40, z: -100, scale: 0.8 },
-  { x: 500, y: 40, z: -300, scale: 0.7 },
-];
+  const positions = [
+    { x: -500, y: 40, z: -300, scale: 0.7 },
+    { x: -300, y: -40, z: -100, scale: 0.8 },
+    { x: -100, y: -80, z: 200, scale: 1 },
+    { x: 100, y: -80, z: 200, scale: 1 },
+    { x: 300, y: -40, z: -100, scale: 0.8 },
+    { x: 500, y: 40, z: -300, scale: 0.7 },
+  ];
 
   return (
     <section id="partners-section" className="py-24 bg-gray-50 overflow-hidden">
@@ -73,14 +84,26 @@ const positions = [
           />
         </div>
 
-        {/* Enhanced 3D Cinematic Orbit Animation */}
+        {/* Modified 180-degree Animation Container */}
         <div className="relative h-96 perspective-1000 mx-auto max-w-6xl">
           <motion.div
             initial={{ opacity: 0 }}
-            animate={isVisible ? { opacity: 1, rotateY: 360 } : {}}
+            animate={
+              isVisible
+                ? {
+                    opacity: 1,
+                    rotateY: animationDirection > 0 ? [0, 180] : [180, 0],
+                  }
+                : {}
+            }
             transition={{
               opacity: { duration: 1 },
-              rotateY: { duration: 60, repeat: Infinity, ease: "linear" },
+              rotateY: {
+                duration: 30,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "easeInOut",
+              },
             }}
             className="relative w-full h-full flex items-center justify-center"
           >
@@ -98,89 +121,102 @@ const positions = [
                     z: initialPos.z,
                     scale: initialPos.scale,
                     opacity: initialPos.z > 0 ? 1 : 0.6,
-                    rotateY: index % 2 === 0 ? 10 : -10,
+                    rotateY: 0, // No initial rotation
                   }}
                   animate={
                     isVisible
                       ? {
                           x: [
                             initialPos.x,
-                            ...Array(partners.length - 1)
+                            ...Array(Math.floor(partners.length / 2))
                               .fill(0)
                               .map((_, i) => {
                                 const newIndex =
-                                  (index + i + 1) % partners.length;
-                                return positions[newIndex % positions.length].x;
+                                  (index + (i + 1) * animationDirection) %
+                                  partners.length;
+                                return positions[
+                                  newIndex < 0
+                                    ? positions.length + newIndex
+                                    : newIndex % positions.length
+                                ].x;
                               }),
                             initialPos.x,
                           ],
                           y: [
                             initialPos.y,
-                            ...Array(partners.length - 1)
+                            ...Array(Math.floor(partners.length / 2))
                               .fill(0)
                               .map((_, i) => {
                                 const newIndex =
-                                  (index + i + 1) % partners.length;
-                                return positions[newIndex % positions.length].y;
+                                  (index + (i + 1) * animationDirection) %
+                                  partners.length;
+                                return positions[
+                                  newIndex < 0
+                                    ? positions.length + newIndex
+                                    : newIndex % positions.length
+                                ].y;
                               }),
                             initialPos.y,
                           ],
                           z: [
                             initialPos.z,
-                            ...Array(partners.length - 1)
+                            ...Array(Math.floor(partners.length / 2))
                               .fill(0)
                               .map((_, i) => {
                                 const newIndex =
-                                  (index + i + 1) % partners.length;
-                                return positions[newIndex % positions.length].z;
+                                  (index + (i + 1) * animationDirection) %
+                                  partners.length;
+                                return positions[
+                                  newIndex < 0
+                                    ? positions.length + newIndex
+                                    : newIndex % positions.length
+                                ].z;
                               }),
                             initialPos.z,
                           ],
                           scale: [
                             initialPos.scale,
-                            ...Array(partners.length - 1)
+                            ...Array(Math.floor(partners.length / 2))
                               .fill(0)
                               .map((_, i) => {
                                 const newIndex =
-                                  (index + i + 1) % partners.length;
-                                return positions[newIndex % positions.length]
-                                  .scale;
+                                  (index + (i + 1) * animationDirection) %
+                                  partners.length;
+                                return positions[
+                                  newIndex < 0
+                                    ? positions.length + newIndex
+                                    : newIndex % positions.length
+                                ].scale;
                               }),
                             initialPos.scale,
                           ],
                           opacity: [
                             initialPos.z > 0 ? 1 : 0.6,
-                            ...Array(partners.length - 1)
+                            ...Array(Math.floor(partners.length / 2))
                               .fill(0)
                               .map((_, i) => {
                                 const newIndex =
-                                  (index + i + 1) % partners.length;
-                                return positions[newIndex % positions.length]
-                                  .z > 0
+                                  (index + (i + 1) * animationDirection) %
+                                  partners.length;
+                                return positions[
+                                  newIndex < 0
+                                    ? positions.length + newIndex
+                                    : newIndex % positions.length
+                                ].z > 0
                                   ? 1
                                   : 0.6;
                               }),
                             initialPos.z > 0 ? 1 : 0.6,
                           ],
-                          rotateY: [
-                            index % 2 === 0 ? 10 : -10,
-                            index % 2 === 0 ? -10 : 10,
-                            index % 2 === 0 ? 10 : -10,
-                          ],
                         }
                       : {}
                   }
                   transition={{
-                    duration: 25,
+                    duration: 30,
                     repeat: Infinity,
+                    repeatType: "reverse",
                     ease: "easeInOut",
-                    delay: index * 1,
-                    rotateY: {
-                      duration: 8,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      repeatType: "reverse",
-                    },
+                    delay: index * 0.2,
                   }}
                   style={{
                     zIndex: isVisible
@@ -199,7 +235,6 @@ const positions = [
                     zIndex: 100,
                     filter: "none",
                     boxShadow: "0px 15px 35px rgba(0,0,0,0.2)",
-                    rotateY: 0,
                     transition: {
                       duration: 0.4,
                       type: "spring",
@@ -209,10 +244,22 @@ const positions = [
                   onHoverStart={() => setHoveredIndex(index)}
                   onHoverEnd={() => setHoveredIndex(null)}
                 >
+                  {/* Use another motion.div to prevent image flipping */}
                   <motion.div
                     className="w-full h-full p-4 flex items-center justify-center bg-white"
+                    // Counter-rotate to keep the image upright
+                    animate={{
+                      rotateY: animationDirection > 0 ? [0, -180] : [-180, 0],
+                    }}
+                    transition={{
+                      rotateY: {
+                        duration: 30,
+                        repeat: Infinity,
+                        repeatType: "reverse",
+                        ease: "easeInOut",
+                      },
+                    }}
                     whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 300 }}
                   >
                     <img
                       src={partner.image}
@@ -269,9 +316,7 @@ const positions = [
           animate={isVisible ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.5, delay: 1 }}
           className="flex justify-center mt-16 gap-6"
-        >
-     
-        </motion.div>
+        ></motion.div>
       </div>
     </section>
   );

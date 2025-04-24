@@ -13,7 +13,7 @@ import Footer from "./Component/Shared/Footer";
 import Login from "./Pages/Login";
 import Userprofile from "./Pages/Userprofile";
 import Veterinarians from "./Pages/Veterinarians";
-import Livevacc from "./Pages/Livevacc";
+import Shop from "./Pages/Shop";
 import ProductDetails from "./Pages/ProductDetails";
 import Checkout from "./Pages/Checkout";
 import SignUp from "./Pages/SignUp";
@@ -23,7 +23,6 @@ import Dashboard from "../src/Dashboard/Dashboard";
 import EditProduct from "../src/Dashboard/EditProduct";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import MainDash from "./Dashboard/MainDashboard";
-import Shop from "./Pages/Shop";
 import HealthGuide from "./Pages/HealthGuide";
 import Wishlist from "./Pages/Wishlist";
 import Reservations from "./Pages/Reservations";
@@ -74,7 +73,7 @@ function AppContent() {
         <Route path="/login" element={<Login />} />
         <Route path="/userprofile" element={<Userprofile />} />
         <Route path="/veterinarians" element={<Veterinarians />} />
-        <Route path="/livevacc" element={<Livevacc />} />
+        <Route path="/Shop" element={<Shop />} />
         <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/checkout" element={<Checkout />} />
         <Route path="/signup" element={<SignUp />} />
@@ -82,7 +81,7 @@ function AppContent() {
         <Route path="/add-product" element={<AddProduct />} />
         <Route path="/Dashboard/*" element={<MainDash />} />
         <Route path="/edit-product/:id" element={<EditProduct />} />
-        <Route path="/shop" element={<Shop />} />
+
         <Route path="/healthguide" element={<HealthGuide />} />
         <Route path="/wishlist" element={<Wishlist />} />
         <Route path="/Reservations" element={<Reservations />} />

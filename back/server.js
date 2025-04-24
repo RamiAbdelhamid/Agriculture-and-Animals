@@ -7,11 +7,14 @@ const productRoutes = require("./routes/productRoutes");
 const bookingRoutes = require("./routes/bookingRoutes");
 const vetRoutes = require("./routes/vetRoutes");
 const departmentRoutes = require('./routes/departmentRoutes'); // Import department routes
-const contactusRoutes = require("./routes/contactusRoutes"); // Import contact routes
+const contactRoutes = require("./routes/contactusRoutes"); // Import contact routes
 const userRoutes = require("./routes/userRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const path = require("path");
 const reviewRoutes = require('./routes/reviewRoutes');
+const emailRoutes = require("./routes/emailRoutes");
+const articleRoutes = require("./routes/articleRoutes");
+
 
 
 //************************************************************************************************** */
@@ -39,7 +42,10 @@ app.use('/api', userRoutes); // Ensure that this is correctly set up
 app.use(bookingRoutes);  // توجيه المسارات الخاصة بالحجز
 app.use("/api/vets", vetRoutes);
 app.use('/api/departments', departmentRoutes); // Use department routes
-app.use("/contact", contactusRoutes); // Use contact routes
+
+app.use("/api/contact", contactRoutes);
+
+
 app.use("/api/users", userRoutes);
 
 app.use("/api", orderRoutes);
@@ -48,9 +54,11 @@ app.use('/pdf', express.static(path.join(__dirname, 'pdfs')));  // Serve PDFs at
 
 
 app.use("/api/reviews", reviewRoutes);
+app.use("/api", emailRoutes);
 
 
 app.use("/vets", vetRoutes); // This creates the /vets endpoint
+app.use("/api/articles", articleRoutes);
 
 
 

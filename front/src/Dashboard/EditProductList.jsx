@@ -28,12 +28,12 @@ const EditProductList = () => {
   // Categories list
   const categories = [
     "all",
-    "Poultry",
+    "Live Vaccine",
     "vitamins",
-    "Disinfectants",
-    "Fertilizers",
-    "Agricultural seeds",
-    "Agricultural Equipment",
+    "Disinfectant",
+    "Fertilizer",
+    "Seeds",
+    "Equipment",
   ];
 
   // Fetch products when page loads

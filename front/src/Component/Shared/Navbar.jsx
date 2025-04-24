@@ -27,7 +27,7 @@ const navigation = [
   { name: "Shop", to: "/Shop", icon: "🛍️" },
   { name: "Veterinarians", to: "/veterinarians", icon: "🩺" },
 
- {
+  {
     name: "Reservations",
     to: "./Reservations",
     icon: "📅", // Updated icon for Reservations
@@ -37,7 +37,6 @@ const navigation = [
   { name: "HealthGuide", to: "/HealthGuide", icon: "🚜" },
   { name: "About", to: "/about", icon: "🌱" },
   { name: "Contact", to: "/contact", icon: "📞" },
- 
 ];
 
 

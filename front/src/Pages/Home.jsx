@@ -9,7 +9,7 @@ import Carousel from "../Component/HomeComponent/Carousel";
 import Footer from "../Component/Shared/Footer";
 import { useRef } from "react";
 import PartnerAnimation from "./PartnerAnimation";
-
+import { Link } from "react-router-dom"; // استيراد Link من react-router-dom
 const Home = () => {
   const categorySectionRef = useRef(null);
 
@@ -173,9 +173,6 @@ const Home = () => {
       {/* NEW: Services Section */}
       <section className="py-16 container mx-auto px-4">
         <div className="text-center mb-12">
-          <span className="text-blue-600 font-semibold text-sm uppercase tracking-wider">
-            How We Help
-          </span>
           <h2 className="text-4xl font-bold text-gray-800 mt-2">
             Our Agricultural Services
           </h2>
@@ -185,85 +182,90 @@ const Home = () => {
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          <div className="bg-white p-8 rounded-lg shadow-md text-center">
-            <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-blue-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                />
-              </svg>
+          <Link to="/Shop">
+            <div className="bg-white p-8 rounded-lg shadow-md text-center transform transition duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
+              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-8 w-8 text-blue-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 7M7 13l-2 5h12a2 2 0 002-2V7H5.4"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">Shop</h3>
+              <p className="text-gray-600">
+                Browse our store for farming essentials — seeds, tools,
+                supplements, and more at competitive prices.
+              </p>
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-3">
-              Farm Consultation
-            </h3>
-            <p className="text-gray-600">
-              Expert advice on farm management, crop selection, and livestock
-              breeding from our experienced agricultural specialists
-            </p>
-          </div>
-          <div className="bg-white p-8 rounded-lg shadow-md text-center">
-            <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-green-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                />
-              </svg>
+          </Link>
+
+          <Link to="/HealthGuide">
+            <div className="bg-white p-8 rounded-lg shadow-md text-center transform transition duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
+              <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-8 w-8 text-green-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 4c-2.21 0-4 1.79-4 4v2h8v-2c0-2.21-1.79-4-4-4zm0-10C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">
+                Health Guide
+              </h3>
+              <p className="text-gray-600">
+                Learn how to maintain optimal animal health with our expert
+                guides, covering nutrition, prevention, and care tips.
+              </p>
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-3">
-              Equipment Rental
-            </h3>
-            <p className="text-gray-600">
-              Access to high-quality agricultural equipment without the initial
-              investment, perfect for seasonal operations
-            </p>
-          </div>
-          <div className="bg-white p-8 rounded-lg shadow-md text-center">
-            <div className="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-8 w-8 text-red-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                />
-              </svg>
+          </Link>
+
+          <Link to="/veterinarians">
+            <div className="bg-white p-8 rounded-lg shadow-md text-center transform transition duration-300 hover:scale-105 hover:shadow-lg cursor-pointer">
+              <div className="bg-red-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-8 w-8 text-red-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                  />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-800 mb-3">
+                Veterinary Services
+              </h3>
+              <p className="text-gray-600">
+                Professional animal healthcare services, regular check-ups,
+                vaccinations, and emergency care for your livestock
+              </p>
             </div>
-            <h3 className="text-xl font-bold text-gray-800 mb-3">
-              Veterinary Services
-            </h3>
-            <p className="text-gray-600">
-              Professional animal healthcare services, regular check-ups,
-              vaccinations, and emergency care for your livestock
-            </p>
-          </div>
+          </Link>
         </div>
       </section>
 
- 
       {/* NEW: Partners & Suppliers */}
       <section className="py-16 bg-gray-50">
         <div className="container mx-auto px-4">
@@ -283,10 +285,10 @@ const Home = () => {
             your needs
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="/contact">
+            <a href="/veterinarians">
               {" "}
               <button className="px-8 py-3 bg-white text-green-700 rounded-lg font-bold text-lg hover:bg-gray-100 transition-all cursor-pointer">
-                Contact Us
+                Veterinary service
               </button>
             </a>
             <a href="/shop">

@@ -458,7 +458,7 @@ const AgriChatBot = ({
               transform: translateY(0) scale(1);
             }
             50% {
-              transform: translateY(-20px) scale(1.05);
+              transform: translateY(-15px) scale(1.05);
             }
           }
         `}

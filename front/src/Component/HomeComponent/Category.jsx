@@ -7,24 +7,24 @@ const CategoryCards = () => {
     <div className="cards-container" id="shop">
       {/* Card 1 */}
       <div className="circle-card">
-        <Link to="/Livevacc">
+        <Link to="/Shop?category=Vaccine">
           <img
             className="circle-card-img"
             src="/src/assets/pic/cat3.b197b0.webp"
             alt="Live Vaccine"
           />
           <div className="circle-card-body">
-            <h5 className="circle-card-title">Live Vaccine</h5>
+            <h5 className="circle-card-title">Vaccine</h5>
           </div>
         </Link>
       </div>
 
       {/* Card 2 */}
       <div className="circle-card">
-        <Link to="#">
+        <Link to="/Shop?category=Vitamins">
           <img
             className="circle-card-img"
-            src="/src/assets//pic/cat4-1.b197b0.webp"
+            src="/src/assets/pic/cat4-1.b197b0.webp"
             alt="Vitamins"
           />
           <div className="circle-card-body">
@@ -35,10 +35,10 @@ const CategoryCards = () => {
 
       {/* Card 3 */}
       <div className="circle-card">
-        <Link to="#">
+        <Link to="/Shop?category=Disinfectant">
           <img
             className="circle-card-img"
-            src="/src/assets//pic/cat5.b197b0.webp"
+            src="/src/assets/pic/cat5.b197b0.webp"
             alt="Disinfectants"
           />
           <div className="circle-card-body">
@@ -49,11 +49,11 @@ const CategoryCards = () => {
 
       {/* Card 4 */}
       <div className="circle-card">
-        <Link to="#">
+        <Link to="/Shop?category=Fertilizer">
           <img
             className="circle-card-img"
-            src="/src/assets//pic/سماد.jpg"
-            alt="Fertilizers"
+            src="/src/assets/pic/سماد.jpg"
+            alt="Fertilizer"
           />
           <div className="circle-card-body">
             <h5 className="circle-card-title">Fertilizers</h5>
@@ -63,10 +63,10 @@ const CategoryCards = () => {
 
       {/* Card 5 */}
       <div className="circle-card">
-        <Link to="#">
+        <Link to="/Shop?category=Seeds">
           <img
             className="circle-card-img"
-            src="/src/assets//pic/بذور زراعية.jpg"
+            src="/src/assets/pic/بذور زراعية.jpg"
             alt="Seeds"
           />
           <div className="circle-card-body">
@@ -77,7 +77,7 @@ const CategoryCards = () => {
 
       {/* Card 6 */}
       <div className="circle-card">
-        <Link to="#">
+        <Link to="/Shop?category=Equipment">
           <img
             className="circle-card-img"
             src="/src/assets//pic/معدات زراعية.webp"

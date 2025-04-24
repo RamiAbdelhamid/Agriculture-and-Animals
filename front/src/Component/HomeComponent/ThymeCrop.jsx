@@ -130,9 +130,9 @@ const ThymeCrop = () => {
 
         {/* CTA Buttons */}
         <div className="flex flex-wrap gap-4">
-          <a href="/shop" className="w-full lg:w-auto">
+          <a href="/Shop?category=Vitamins" className="w-full lg:w-auto">
             <button className="px-6 py-3 text-white bg-green-600 rounded-lg shadow-lg hover:bg-green-700 transition-all duration-300 font-medium cursor-pointer">
-              Shop Thyme Products
+              Explore Our Organic Products
             </button>
           </a>
         </div>

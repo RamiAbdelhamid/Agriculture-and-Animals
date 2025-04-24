@@ -1,9 +1,7 @@
 const express = require("express");
 const { addContact, getContact } = require("../controller/contactusController");
-const verifyToken = require("../middleware/authMiddleware");
-
 const router = express.Router();
-
+const verifyToken  = require("../middleware/authMiddleware");
 // Route to add a new department
 router.post("/add", verifyToken, addContact);
 

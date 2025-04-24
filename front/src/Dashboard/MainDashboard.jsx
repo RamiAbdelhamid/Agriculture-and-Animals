@@ -13,8 +13,8 @@ import OrderManagement from "./OrderManagement";
 import AddVeterinarians from "./AddVeterinarians";
 import DoctorReservations from "./DoctorReservations";
 import UserManagement from "./UserManagement";
-
-
+import ContactMessages from "./Conact";
+import AddArticle from "./AddArticle";
 
 const MainDash = () => {
   return (
@@ -34,6 +34,8 @@ const MainDash = () => {
           <Route path="/AddVeterinarians" element={<AddVeterinarians />} />
           <Route path="/DoctorReservations" element={<DoctorReservations />} />
           <Route path="/UserManagement" element={<UserManagement />} />
+          <Route path="/ContactMessages" element={<ContactMessages />} />
+          <Route path="/Add Article" element={<AddArticle />} />
         </Routes>
       </div>
     </div>
