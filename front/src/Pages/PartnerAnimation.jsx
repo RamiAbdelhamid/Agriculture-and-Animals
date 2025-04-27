@@ -80,7 +80,7 @@ const EnhancedCinematicPartnerAnimation = () => {
             initial={{ opacity: 0, scaleX: 0 }}
             animate={isVisible ? { opacity: 1, scaleX: 1 } : {}}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="h-1 w-24 bg-blue-600 mx-auto mt-6"
+            className="h-1 w-24 bg-green-600 mx-auto mt-6"
           />
         </div>
 

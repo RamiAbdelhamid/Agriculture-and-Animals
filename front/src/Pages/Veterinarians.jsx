@@ -235,23 +235,29 @@ const VetBooking = () => {
   };
 
 const DatePicker = () => {
-  // حساب تاريخ الغد لتحديد الحد الأدنى
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   const minDate = tomorrow.toISOString().split("T")[0];
+
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
 
   return (
     <div className="relative">
       <input
         type="date"
         required
-        min={minDate} // هنا نستخدم تاريخ الغد كحد أدنى
+        min={minDate}
         value={selectedDate}
         onChange={(e) => setSelectedDate(e.target.value)}
         className="w-full pl-10 pr-4 py-3 border-2 border-green-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
       />
 
-      {/* باقي الكود يبقى كما هو */}
       {selectedVet && (
         <div className="mt-4">
           <h3 className="text-sm font-medium text-gray-700 mb-2 flex items-center">
@@ -266,7 +272,7 @@ const DatePicker = () => {
                     key={index}
                     className="px-3 py-1 bg-red-100 text-red-600 rounded-full text-sm font-medium shadow-sm"
                   >
-                    {new Date(date).toLocaleDateString()}
+                    {formatDate(date)}
                   </span>
                 ))
             ) : (
@@ -364,6 +370,91 @@ const DatePicker = () => {
             </div>
 
             <div className="space-y-6">
+  <h2 className="text-xl font-semibold text-gray-800 flex items-center">
+    <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 mr-2">
+      2
+    </span>
+    Choose Veterinarian
+  </h2>
+
+  {selectedDepartment ? (
+    <>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-2">
+          Select a Veterinarian
+        </label>
+        <select
+          value={selectedVet ? selectedVet.name : ""}
+          onChange={(e) => {
+            const vet = vets.find((v) => v.name === e.target.value);
+            setSelectedVet(vet);
+          }}
+          className="w-full p-3 border-2 border-green-200 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-transparent shadow-sm"
+        >
+          <option value="">-- Select a Veterinarian --</option>
+          {vets
+            .filter((vet) => vet.department === selectedDepartment)
+            .map((vet) => (
+              <option key={vet.name} value={vet.name}>
+                Dr. {vet.name}
+              </option>
+            ))}
+        </select>
+      </div>
+
+      {selectedVet && (
+        <div
+          className="mt-6 p-5 rounded-lg border-2 border-green-200 bg-green-50 shadow-sm"
+        >
+          <div className="flex items-center gap-4">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold text-2xl">
+              {selectedVet.name.charAt(0)}
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-800 text-xl">
+                Dr. {selectedVet.name}
+              </h3>
+              <p className="text-sm text-gray-600">
+                {selectedVet.experience} Years Experience
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <div className="text-sm text-gray-600 mb-2">
+              Specializations:
+            </div>
+            <div className="flex flex-wrap gap-2">
+              {selectedVet.specializations.map((spec) => (
+                <span
+                  key={spec}
+                  className="px-3 py-1 bg-green-100 text-green-700 rounded-full text-sm font-medium"
+                >
+                  {spec}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <div className="mt-4">
+            <Clock className="w-4 h-4 text-green-600 inline-block mr-2" />
+            <span className="text-sm text-gray-700">
+              Next Available: {getNextAvailableDate(selectedVet.name)}
+            </span>
+          </div>
+        </div>
+      )}
+    </>
+  ) : (
+    <div className="text-center text-gray-500 p-8 bg-gray-50 rounded-lg border border-dashed border-gray-300">
+      <Leaf className="w-12 h-12 text-green-200 mx-auto mb-3" />
+      <p>Please select a department first</p>
+    </div>
+  )}
+</div>
+
+{/* 
+            <div className="space-y-6">
               <h2 className="text-xl font-semibold text-gray-800 flex items-center">
                 <span className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 mr-2 ">
                   2
@@ -441,7 +532,7 @@ const DatePicker = () => {
                   <p>Please select a department first</p>
                 </div>
               )}
-            </div>
+            </div> */}
 
             <div className="space-y-6">
               <h2 className="text-xl font-semibold text-gray-800 flex items-center">

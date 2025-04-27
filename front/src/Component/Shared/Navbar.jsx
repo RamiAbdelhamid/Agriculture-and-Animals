@@ -1,5 +1,3 @@
-
-
 import { Fragment, useState, useEffect } from "react";
 import {
   Disclosure,
@@ -39,7 +37,6 @@ const navigation = [
   { name: "Contact", to: "/contact", icon: "📞" },
 ];
 
-
 // Navbar component
 export default function Navbar() {
   // State declarations
@@ -47,6 +44,7 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [activeLink, setActiveLink] = useState("");
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+   const [gg, setgg] = useState("");
   const [userRole, setUserRole] = useState(null);
   const [user, setUser] = useState(null);
   const [updatedUser, setUpdatedUser] = useState(null);
@@ -79,30 +77,71 @@ export default function Navbar() {
     };
 
     window.addEventListener("scroll", handleScroll);
+    
+
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   //***********************************************************************//
   // Fetch user data function
   //***********************************************************************//
+
+ 
+useEffect(() => {
+  let isMounted = true;
+
   const fetchUserData = async () => {
     try {
       const response = await axios.get(
         "http://localhost:5000/api/users/get-role",
         { withCredentials: true }
       );
-      setUserRole(response.data.role);
-      setIsAuthenticated(true);
-      setIsLoggedIn(true);
+setgg(response.data.userId)
+      console.log("User role response:", response.data);
+
+      if (isMounted && response.data && response.data.userId) {
+        // فقط لما تتأكد أن في داتا
+        setIsAuthenticated(true);
+        setUserRole(response.data.role);
+        setIsLoggedIn(true);
+        setLoading(false);
+      } else {
+        // إذا ما في داتا أو مفقود userId مثلا
+        setIsAuthenticated(false);
+        setUserRole(null);
+        setIsLoggedIn(false);
+      }
     } catch (error) {
-      setUserRole(null);
-      setIsAuthenticated(false);
-      setIsLoggedIn(false);
+      if (isMounted) {
+        setIsAuthenticated(false);
+        setUserRole(null);
+        setIsLoggedIn(false);
+        setLoading(false);
+      }
+    } finally {
+      if (isMounted) {
+        setLoading(false); // ✅ نحطها هون سواء نجح أو فشل
+      }
     }
   };
 
+  fetchUserData();
+
+  return () => {
+    isMounted = false;
+  };
+}, []);
+
+useEffect(() => {
+ 
+  console.log("Updated isAuthenticated:", isAuthenticated);
+}, [isAuthenticated]);
+
   // Filter navigation based on user role
   const filteredNavigation = navigation.filter((item) => {
+    console.log("User role:", userRole);
+    console.log("Is authenticated:", isAuthenticated);
+    console.log("Item name:", gg);
     if (!isAuthenticated) {
       return (
         item.name === "Home" ||
@@ -112,7 +151,7 @@ export default function Navbar() {
         item.name === "About" ||
         item.name === "Contact"
       );
-    } else if (userRole === "user") {
+    } else if (userRole === "user"||gg) {
       return (
         item.name === "Home" ||
         item.name === "Shop" ||
@@ -122,6 +161,7 @@ export default function Navbar() {
         item.name === "Contact"
       );
     } else if (userRole === "veterinarian") {
+      
       return true; // Show all items for veterinarians
     }
     return false;
@@ -157,7 +197,7 @@ export default function Navbar() {
   // Initialize user data and active link
   //***********************************************************************//
   useEffect(() => {
-    fetchUserData();
+    // fetchUserData();
     setActiveLink(location.pathname);
   }, [location.pathname]);
 
@@ -181,6 +221,11 @@ export default function Navbar() {
       console.error("Logout error:", error);
     }
   };
+
+
+  if (loading) {
+    return null;
+  }
 
   return (
     <>

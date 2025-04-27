@@ -193,7 +193,7 @@ const Profile = () => {
                   clipRule="evenodd"
                 />
               </svg>
-              <span>Logout</span>
+              <span>Sign out</span>
             </button>
           </div>
         </div>

@@ -27,15 +27,15 @@ const ChickenSection = () => {
           {/* Left Column - Text Content */}
           <div>
             <div className="flex items-center space-x-2 mb-3">
-              <div className="h-1 w-16 bg-orange-500"></div>
-              <span className="text-orange-500 font-medium">
+              <div className="h-1 w-16 bg-green-500"></div>
+              <span className="text-green-500 font-medium">
                 Poultry Excellence
               </span>
             </div>
 
             <p className="text-xl font-semibold text-gray-800 leading-relaxed mb-6">
               We offer you the best{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-500 to-yellow-400">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-green-400">
                 broiler farming solutions
               </span>{" "}
               that guarantee you high productivity and unmatched quality! We
@@ -43,15 +43,15 @@ const ChickenSection = () => {
               their rapid growth.
             </p>
 
-            <h3 className="text-2xl font-bold text-orange-600 mb-4">
+            <h3 className="text-2xl font-bold text-green-600 mb-4">
               Why Choose Our Services?
             </h3>
 
             {/* Benefits Cards */}
             <div className="space-y-4 mb-8">
-              <div className="bg-orange-50 rounded-lg p-4 border-l-4 border-orange-500 hover:shadow-md transition-all">
+              <div className="bg-green-50 rounded-lg p-4 border-l-4 border-green-500 hover:shadow-md transition-all">
                 <div className="flex items-start">
-                  <div className="bg-orange-100 p-2 rounded-full text-orange-600 mr-4">
+                  <div className="bg-green-100 p-2 rounded-full text-green-600 mr-4">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-6 w-6"
@@ -76,9 +76,9 @@ const ChickenSection = () => {
                 </div>
               </div>
 
-              <div className="bg-orange-50 rounded-lg p-4 border-l-4 border-orange-500 hover:shadow-md transition-all">
+              <div className="bg-green-50 rounded-lg p-4 border-l-4 border-green-500 hover:shadow-md transition-all">
                 <div className="flex items-start">
-                  <div className="bg-orange-100 p-2 rounded-full text-orange-600 mr-4">
+                  <div className="bg-green-100 p-2 rounded-full text-green-600 mr-4">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-6 w-6"
@@ -106,9 +106,9 @@ const ChickenSection = () => {
                 </div>
               </div>
 
-              <div className="bg-orange-50 rounded-lg p-4 border-l-4 border-orange-500 hover:shadow-md transition-all">
+              <div className="bg-green-50 rounded-lg p-4 border-l-4 border-green-500 hover:shadow-md transition-all">
                 <div className="flex items-start">
-                  <div className="bg-orange-100 p-2 rounded-full text-orange-600 mr-4">
+                  <div className="bg-green-100 p-2 rounded-full text-green-600 mr-4">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-6 w-6"
@@ -135,9 +135,9 @@ const ChickenSection = () => {
                 </div>
               </div>
 
-              <div className="bg-orange-50 rounded-lg p-4 border-l-4 border-orange-500 hover:shadow-md transition-all">
+              <div className="bg-green-50 rounded-lg p-4 border-l-4 border-green-500 hover:shadow-md transition-all">
                 <div className="flex items-start">
-                  <div className="bg-orange-100 p-2 rounded-full text-orange-600 mr-4">
+                  <div className="bg-green-100 p-2 rounded-full text-green-600 mr-4">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
                       className="h-6 w-6"
@@ -167,7 +167,7 @@ const ChickenSection = () => {
 
             {/* CTA Button */}
             <a href="/shop">
-              <button className="px-6 py-3 bg-orange-500 text-white rounded-lg shadow-lg hover:bg-orange-600 transition-all duration-300 font-medium cursor-pointer">
+              <button className="px-6 py-3 bg-green-500 text-white rounded-lg shadow-lg hover:bg-green-600 transition-all duration-300 font-medium cursor-pointer">
                 Explore Poultry Solutions
               </button>
             </a>
@@ -201,9 +201,9 @@ const ChickenSection = () => {
       </div>
 
       {/* Stats Section - New Addition */}
-      <div className="mt-16 bg-gradient-to-r from-orange-50 to-yellow-50 py-10 px-6 rounded-xl shadow-sm">
+      <div className="mt-16 bg-green-50 to-yellow-50 py-10 px-6 rounded-xl shadow-sm">
         <div className="text-center mb-8">
-          <h3 className="text-2xl font-bold text-orange-700">
+          <h3 className="text-2xl font-bold text-green-700">
             Our Poultry Success
           </h3>
           <p className="text-gray-600">
@@ -212,19 +212,19 @@ const ChickenSection = () => {
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
           <div>
-            <div className="text-4xl font-bold text-orange-600">98%</div>
+            <div className="text-4xl font-bold text-green-600">98%</div>
             <div className="text-gray-700 font-medium mt-1">Survival Rate</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-orange-600">25%</div>
+            <div className="text-4xl font-bold text-green-600">25%</div>
             <div className="text-gray-700 font-medium mt-1">Faster Growth</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-orange-600">2.5kg</div>
+            <div className="text-4xl font-bold text-green-600">2.5kg</div>
             <div className="text-gray-700 font-medium mt-1">Average Weight</div>
           </div>
           <div>
-            <div className="text-4xl font-bold text-orange-600">45+</div>
+            <div className="text-4xl font-bold text-green-600">45+</div>
             <div className="text-gray-700 font-medium mt-1">Happy Farmers</div>
           </div>
         </div>

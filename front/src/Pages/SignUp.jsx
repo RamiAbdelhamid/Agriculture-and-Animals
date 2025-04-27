@@ -60,8 +60,18 @@ const Register = ({ switchForm }) => {
         confirmButtonColor: "#16a34a", // green-600
       });
       
-      // Navigate to home page
-      navigate("/");
+   await axios.post(
+     "http://localhost:5000/api/users/login",
+     {
+       email: formData.email,
+       password: formData.password,
+     },
+     { withCredentials: true }
+   );
+
+   // بعد تسجيل الدخول بنجاح
+   navigate("/");
+
       
     } catch (error) {
       setError(error.response?.data?.message || "Registration failed. Please try again.");

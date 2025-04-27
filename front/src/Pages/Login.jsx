@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import { GoogleLogin } from "@react-oauth/google";
 import { motion } from "framer-motion";
 import axios from "axios";
-import { Tractor, Wheat, Users, Lock, Mail } from "lucide-react";
+import { Tractor, Lock, Mail } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
 
 const Login = ({ switchForm }) => {
   const [formData, setFormData] = useState({ email: "", password: "" });
@@ -10,7 +11,8 @@ const Login = ({ switchForm }) => {
   const [error, setError] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [userRole, setUserRole] = useState(null);
-
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navigate = useNavigate();
 
   const fetchUserRole = async () => {
     try {
@@ -18,30 +20,19 @@ const Login = ({ switchForm }) => {
         "http://localhost:5000/api/users/get-role",
         { withCredentials: true }
       );
-      console.log(response.data.role);
       setUserRole(response.data.role);
+      setIsAuthenticated(true);
     } catch (error) {
-      console.error("error fetching user role");
+      console.error("Error fetching user role", error);
+      setUserRole(null);
+      setIsAuthenticated(false);
     }
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   useEffect(() => {
     const savedEmail = localStorage.getItem("email");
     if (savedEmail) {
-      setFormData({ ...formData, email: savedEmail });
+      setFormData((prev) => ({ ...prev, email: savedEmail }));
       setRememberMe(true);
     }
   }, []);
@@ -61,13 +52,13 @@ const Login = ({ switchForm }) => {
       await axios.post("http://localhost:5000/api/users/login", formData, {
         withCredentials: true,
       });
-      fetchUserRole();
 
-      console.log(userRole);
+      await fetchUserRole(); // انتظر تحديث الدور والحالة
+
       if (formData.email === "Admin@gmail.com") {
-        window.location.href = "/dashboard"; // Redirect after login
+        navigate("/dashboard"); // توجيه للوحة الإدارة
       } else {
-        window.location.href = "/"; // Redirect after login
+        navigate("/"); // توجيه للصفحة الرئيسية
       }
     } catch (error) {
       setError(error.response?.data?.message || "فشل تسجيل الدخول");
@@ -76,21 +67,22 @@ const Login = ({ switchForm }) => {
     }
   };
 
-
-
   const handleGoogleLogin = async (credentialResponse) => {
     setLoading(true);
     setError("");
+    setIsAuthenticated(true);
 
     try {
-      const res = await axios.post(
+      await axios.post(
         "http://localhost:5000/api/users/google-login",
-        {
-          token: credentialResponse.credential,
-        }
+        { token: credentialResponse.credential },
+        { withCredentials: true }
       );
-      localStorage.setItem("token", res.data.token);
-      window.location.href = "/dashboard";
+
+      setTimeout(async () => {
+        await fetchUserRole();
+        navigate("/"); // بعد التأكد من تسجيل الدخول وجلب الدور
+      }, 500);
     } catch (error) {
       setError(
         error.response?.data?.message || "فشل تسجيل الدخول باستخدام جوجل"
@@ -128,9 +120,6 @@ const Login = ({ switchForm }) => {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="sr-only">
-                Email Address
-              </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Mail className="h-5 w-5 text-green-500" />
@@ -143,16 +132,13 @@ const Login = ({ switchForm }) => {
                   className="block w-full pl-10 pr-3 py-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                   value={formData.email}
                   onChange={(e) =>
-                    setFormData({ ...formData, email: e.target.value })
+                    setFormData((prev) => ({ ...prev, email: e.target.value }))
                   }
                 />
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="sr-only">
-                Password
-              </label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <Lock className="h-5 w-5 text-green-500" />
@@ -165,7 +151,10 @@ const Login = ({ switchForm }) => {
                   className="block w-full pl-10 pr-3 py-3 border border-green-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                   value={formData.password}
                   onChange={(e) =>
-                    setFormData({ ...formData, password: e.target.value })
+                    setFormData((prev) => ({
+                      ...prev,
+                      password: e.target.value,
+                    }))
                   }
                 />
               </div>
@@ -198,29 +187,22 @@ const Login = ({ switchForm }) => {
               </div>
             </div>
 
-            <div>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                type="submit"
-                disabled={loading}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
-              >
-                {loading ? "Logging in..." : "Sign In"}
-              </motion.button>
-            </div>
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="submit"
+              disabled={loading}
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500"
+            >
+              {loading ? "Logging in..." : "Sign In"}
+            </motion.button>
           </form>
 
           <div className="mt-6">
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300"></div>
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">
-                  Or continue with
-                </span>
-              </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">
+                Or continue with
+              </span>
             </div>
 
             <div className="mt-6">
@@ -238,14 +220,12 @@ const Login = ({ switchForm }) => {
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               Don't have an account?{" "}
-              <a href="signup" className="text-green-600 hover:text-green-700">
-                <button
-                  onClick={switchForm}
-                  className="font-medium text-green-600 hover:text-green-500"
-                >
-                  Sign up
-                </button>
-              </a>
+              <Link
+                to="/signup"
+                className="text-green-600 hover:text-green-700"
+              >
+                Sign up
+              </Link>
             </p>
           </div>
         </div>

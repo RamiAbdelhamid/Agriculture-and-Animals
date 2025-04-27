@@ -26,7 +26,7 @@ const ThymeCrop = () => {
           <span className="text-green-600 font-medium">Featured Product</span>
         </div>
         <h2 className="text-4xl lg:text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-green-700 to-emerald-500 mb-6">
-          Our Premium Thyme Crop
+          Our Premium Crop
         </h2>
 
         <p className="text-lg text-gray-700 leading-relaxed mb-4">
@@ -130,7 +130,7 @@ const ThymeCrop = () => {
 
         {/* CTA Buttons */}
         <div className="flex flex-wrap gap-4">
-          <a href="/Shop?category=Vitamins" className="w-full lg:w-auto">
+          <a href="/Shop?category=Seeds" className="w-full lg:w-auto">
             <button className="px-6 py-3 text-white bg-green-600 rounded-lg shadow-lg hover:bg-green-700 transition-all duration-300 font-medium cursor-pointer">
               Explore Our Organic Products
             </button>

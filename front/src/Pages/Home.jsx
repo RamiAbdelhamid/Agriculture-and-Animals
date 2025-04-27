@@ -52,7 +52,7 @@ const Home = () => {
       {/* Chicken Farming Section */}
       <section className="py-16 container mx-auto px-4">
         <div className="text-center mb-10">
-          <span className="text-orange-600 font-semibold text-sm uppercase tracking-wider">
+          <span className="text-green-600 font-semibold text-sm uppercase tracking-wider">
             Poultry Solutions
           </span>
           <h2 className="text-4xl font-bold text-gray-800 mt-2">
@@ -63,10 +63,10 @@ const Home = () => {
       </section>
 
       {/* NEW: Seasonal Farming Calendar */}
-      <section className="py-16 bg-amber-50">
+      <section className="py-16 bg-green-50">
         <div className="container mx-auto px-4">
           <div className="text-center mb-10">
-            <span className="text-amber-600 font-semibold text-sm uppercase tracking-wider">
+            <span className="text-green-600 font-semibold text-sm uppercase tracking-wider">
               Plan Your Year
             </span>
             <h2 className="text-4xl font-bold text-gray-800 mt-2">
@@ -101,8 +101,8 @@ const Home = () => {
               </ul>
             </div>
             {/* Summer */}
-            <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-yellow-500">
-              <h3 className="text-xl font-bold text-yellow-600 mb-3">Summer</h3>
+            <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500">
+              <h3 className="text-xl font-bold text-green-600 mb-3">Summer</h3>
               <ul className="space-y-2 text-gray-700">
                 <li className="flex items-start">
                   <span className="mr-2">•</span>
@@ -123,8 +123,8 @@ const Home = () => {
               </ul>
             </div>
             {/* Fall */}
-            <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-orange-500">
-              <h3 className="text-xl font-bold text-orange-600 mb-3">Fall</h3>
+            <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500">
+              <h3 className="text-xl font-bold text-green-600 mb-3">Fall</h3>
               <ul className="space-y-2 text-gray-700">
                 <li className="flex items-start">
                   <span className="mr-2">•</span>
@@ -145,8 +145,8 @@ const Home = () => {
               </ul>
             </div>
             {/* Winter */}
-            <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-blue-500">
-              <h3 className="text-xl font-bold text-blue-600 mb-3">Winter</h3>
+            <div className="bg-white p-6 rounded-lg shadow-md border-t-4 border-green-500">
+              <h3 className="text-xl font-bold text-green-600 mb-3">Winter</h3>
               <ul className="space-y-2 text-gray-700">
                 <li className="flex items-start">
                   <span className="mr-2">•</span>

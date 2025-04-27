@@ -50,14 +50,15 @@ exports.googleLogin = async (req, res) => {
     const authToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
-
     res.cookie("authToken", authToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       maxAge: 3600000,
     });
 
-    res.status(200).json({ message: "Google login successful" });
+    res
+      .status(200)
+      .json({ message: "Google login successful", token: authToken }); // <-- أضف token هنا
   } catch (error) {
     res
       .status(500)
