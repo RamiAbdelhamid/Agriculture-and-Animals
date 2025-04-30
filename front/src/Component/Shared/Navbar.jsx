@@ -150,16 +150,23 @@ useEffect(() => {
         item.name === "HealthGuide" ||
         item.name === "About" ||
         item.name === "Contact"
+        
       );
     } else if (userRole === "user"||gg) {
+     if (userRole === "veterinarian") {
+      
+      return true; // Show all items for veterinarians
+    }
+     else{
       return (
         item.name === "Home" ||
         item.name === "Shop" ||
         item.name === "Veterinarians" ||
         item.name === "HealthGuide" ||
         item.name === "About" ||
-        item.name === "Contact"
-      );
+        item.name === "Contact" 
+        
+      );}
     } else if (userRole === "veterinarian") {
       
       return true; // Show all items for veterinarians
