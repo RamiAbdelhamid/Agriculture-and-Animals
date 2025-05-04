@@ -47,9 +47,12 @@ exports.googleLogin = async (req, res) => {
       await user.save();
     }
 
-    const authToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-      expiresIn: "1h",
-    });
+    const authToken = jwt.sign(
+      { id: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+
     res.cookie("authToken", authToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
@@ -111,7 +114,6 @@ exports.loginUser = async (req, res) => {
       {
         expiresIn: "1h",
       }
-
     );
 
     res.cookie("authToken", token, {
@@ -120,8 +122,7 @@ exports.loginUser = async (req, res) => {
       maxAge: 3600000,
     });
 
-    res.status(200).json({ message: "Login successful" });      
-
+    res.status(200).json({ message: "Login successful" });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -207,12 +208,10 @@ exports.updateUserProfile = async (req, res) => {
     });
   } catch (error) {
     console.error("Error during profile update:", error); // Log detailed error
-    res
-      .status(500)
-      .json({
-        message: "Server error during profile update",
-        error: error.message,
-      });
+    res.status(500).json({
+      message: "Server error during profile update",
+      error: error.message,
+    });
   }
 };
 
@@ -235,7 +234,6 @@ exports.getUserFromToken = async (req, res) => {
   }
 };
 
-
 exports.getUserRoleFromToken = async (req, res) => {
   try {
     const token = req.cookies.authToken;
@@ -250,8 +248,6 @@ exports.getUserRoleFromToken = async (req, res) => {
     res.status(401).json({ message: "Invalid or expired token" });
   }
 };
-
-
 
 exports.getMe = async (req, res) => {
   try {
@@ -269,8 +265,6 @@ exports.getMe = async (req, res) => {
 };
 
 // controllers/userController.js
-
-
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -307,14 +301,14 @@ exports.updateUserRole = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
-      }
+        role: user.role,
+      },
     });
   } catch (err) {
     console.error("Error updating user role:", err);
-    res.status(500).json({ 
-      message: "Error updating user role", 
-      error: err.message 
+    res.status(500).json({
+      message: "Error updating user role",
+      error: err.message,
     });
   }
 };

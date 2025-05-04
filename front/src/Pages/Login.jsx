@@ -79,10 +79,9 @@ const Login = ({ switchForm }) => {
         { withCredentials: true }
       );
 
-      setTimeout(async () => {
-        await fetchUserRole();
-        navigate("/"); // بعد التأكد من تسجيل الدخول وجلب الدور
-      }, 500);
+      await fetchUserRole();
+      navigate("/");
+
     } catch (error) {
       setError(
         error.response?.data?.message || "فشل تسجيل الدخول باستخدام جوجل"

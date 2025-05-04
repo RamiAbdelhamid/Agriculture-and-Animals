@@ -7,17 +7,21 @@ const AddArticle = () => {
     body: "",
     author: "",
   });
+
   const [imageFile, setImageFile] = useState(null);
   const [message, setMessage] = useState("");
 
+  /*************************************************************/
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  /*************************************************************/
   const handleImageChange = (e) => {
     setImageFile(e.target.files[0]);
   };
 
+  /*************************************************************/
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
@@ -34,26 +38,27 @@ const AddArticle = () => {
       const res = await axios.post("http://localhost:5000/api/articles", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+
       setMessage("✅ Article added successfully!");
       setFormData({ title: "", body: "", author: "" });
       setImageFile(null);
     } catch (err) {
       console.error("Add Article Error:", err);
-      res
-        .status(500)
-        .json({ message: "Error adding article", error: err.message });
+      setMessage("❌ Failed to add article.");
     }
-
   };
 
+  /*************************************************************/
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white shadow-xl rounded-lg mt-6">
       <h2 className="text-2xl font-bold text-green-800 mb-4">
         Add New Article
       </h2>
+
       {message && (
         <p className="mb-4 text-center text-sm text-gray-600">{message}</p>
       )}
+
       <form
         onSubmit={handleSubmit}
         className="space-y-4"
@@ -70,6 +75,7 @@ const AddArticle = () => {
             className="w-full border px-4 py-2 rounded-lg"
           />
         </div>
+
         <div>
           <label className="block font-medium">Author</label>
           <input
@@ -80,6 +86,7 @@ const AddArticle = () => {
             className="w-full border px-4 py-2 rounded-lg"
           />
         </div>
+
         <div>
           <label className="block font-medium">Body</label>
           <textarea
@@ -91,10 +98,17 @@ const AddArticle = () => {
             className="w-full border px-4 py-2 rounded-lg"
           ></textarea>
         </div>
+
         <div>
           <label className="block font-medium">Upload Image</label>
-          <input type="file" accept="image/*" onChange={handleImageChange} />
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            className="w-full"
+          />
         </div>
+
         <button
           type="submit"
           className="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition"

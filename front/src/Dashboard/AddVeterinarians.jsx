@@ -13,13 +13,13 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
+/*************************************************************/
 const AddVeterinarians = ({ onBack, onDataUpdate, initialDepartments }) => {
-  const [vets, setVets] = useState([]); // بدأنا بدون بيانات للأطباء
+  const [vets, setVets] = useState([]);
   const [departments, setDepartments] = useState(initialDepartments || []);
   const [isAddingVet, setIsAddingVet] = useState(false);
   const [isAddingDepartment, setIsAddingDepartment] = useState(false);
 
-  // New vet form state
   const [newVet, setNewVet] = useState({
     name: "",
     department: "",
@@ -29,14 +29,12 @@ const AddVeterinarians = ({ onBack, onDataUpdate, initialDepartments }) => {
     specializations: [""],
   });
 
-  // New department form state
   const [newDepartment, setNewDepartment] = useState({
     id: "",
     name: "",
     icon: "🐾",
   });
 
-  // Icons for department selection
   const availableIcons = [
     "🐔",
     "🐄",
@@ -49,7 +47,8 @@ const AddVeterinarians = ({ onBack, onDataUpdate, initialDepartments }) => {
     "🐾",
     "🦃",
   ];
-  // Fetch departments from the backend API
+
+  /*************************************************************/
   useEffect(() => {
     const fetchDepartments = async () => {
       try {
@@ -65,40 +64,44 @@ const AddVeterinarians = ({ onBack, onDataUpdate, initialDepartments }) => {
     fetchDepartments();
   }, []);
 
-  // Fetch existing vets from the backend API
+  /*************************************************************/
   useEffect(() => {
     const fetchVets = async () => {
       try {
         const response = await axios.get("http://localhost:5000/api/vets");
-        setVets(response.data); // Set the vets from the API response
+        setVets(response.data);
       } catch (error) {
         console.error("Error fetching vets:", error);
       }
     };
 
     fetchVets();
-  }, []); // This effect will run only once when the component mounts
+  }, []);
+
+  /*************************************************************/
   const addSpecialization = () => {
     setNewVet({
       ...newVet,
-      specializations: [...newVet.specializations, ""], // إضافة تخصص فارغ
+      specializations: [...newVet.specializations, ""],
     });
   };
 
+  /*************************************************************/
   const handleSpecChange = (index, value) => {
     const updatedSpecs = [...newVet.specializations];
     updatedSpecs[index] = value;
     setNewVet({ ...newVet, specializations: updatedSpecs });
   };
 
+  /*************************************************************/
   const removeSpecialization = (index) => {
     const updatedSpecs = [...newVet.specializations];
     updatedSpecs.splice(index, 1);
     setNewVet({ ...newVet, specializations: updatedSpecs });
   };
-  // Handle adding new vet
+
+  /*************************************************************/
   const handleAddVet = async () => {
-    // Validate form
     if (
       !newVet.name ||
       !newVet.department ||
@@ -110,26 +113,17 @@ const AddVeterinarians = ({ onBack, onDataUpdate, initialDepartments }) => {
     }
 
     try {
-      // Send request to backend API to add the vet
-      const response = await axios.post("http://localhost:5000/api/vets/add", {
-        name: newVet.name,
-        department: newVet.department,
-        experience: newVet.experience,
-        rating: newVet.rating,
-        reviewCount: newVet.reviewCount,
-        specializations: newVet.specializations,
-      });
-
-      // Add the vet to the list if successful
+      const response = await axios.post(
+        "http://localhost:5000/api/vets/add",
+        newVet
+      );
       const updatedVets = [...vets, response.data.vet];
       setVets(updatedVets);
 
-      // Notify parent component about the update
       if (onDataUpdate) {
         onDataUpdate({ vets: updatedVets, departments });
       }
 
-      // Reset form
       setNewVet({
         name: "",
         department: "",
@@ -145,7 +139,8 @@ const AddVeterinarians = ({ onBack, onDataUpdate, initialDepartments }) => {
       alert("Error adding vet");
     }
   };
-  // Handle adding new department
+
+  /*************************************************************/
   const handleAddDepartment = async () => {
     if (!newDepartment.id || !newDepartment.name) {
       alert("Please fill in all required fields");
@@ -157,12 +152,15 @@ const AddVeterinarians = ({ onBack, onDataUpdate, initialDepartments }) => {
         "http://localhost:5000/api/departments/add",
         newDepartment
       );
+
       setDepartments([...departments, response.data.department]);
+
       setNewDepartment({
         id: "",
         name: "",
         icon: "🐾",
       });
+
       setIsAddingDepartment(false);
     } catch (error) {
       console.error("Error adding department:", error);
@@ -170,32 +168,30 @@ const AddVeterinarians = ({ onBack, onDataUpdate, initialDepartments }) => {
     }
   };
 
-  // Handle deleting vet
-const handleDeleteVet = async (vetName) => {
-  if (
-    window.confirm(`Are you sure you want to delete veterinarian ${vetName}?`)
-  ) {
-    try {
-      await axios.patch(`http://localhost:5000/api/vets/${vetName}`, {
-        isDeleted: true,
-      });
-
-      setVets(vets.filter((vet) => vet.name !== vetName));
-
-      if (onDataUpdate) {
-        onDataUpdate({
-          vets: vets.filter((vet) => vet.name !== vetName),
-          departments,
+  /*************************************************************/
+  const handleDeleteVet = async (vetName) => {
+    if (
+      window.confirm(`Are you sure you want to delete veterinarian ${vetName}?`)
+    ) {
+      try {
+        await axios.patch(`http://localhost:5000/api/vets/${vetName}`, {
+          isDeleted: true,
         });
-      }
-    } catch (error) {
-      console.error("Error soft deleting vet:", error);
-      alert("Error soft deleting vet");
-    }
-  }
-};
 
-  // Handle deleting department
+        const updatedVets = vets.filter((vet) => vet.name !== vetName);
+        setVets(updatedVets);
+
+        if (onDataUpdate) {
+          onDataUpdate({ vets: updatedVets, departments });
+        }
+      } catch (error) {
+        console.error("Error soft deleting vet:", error);
+        alert("Error soft deleting vet");
+      }
+    }
+  };
+
+  /*************************************************************/
   const handleDeleteDepartment = async (id) => {
     if (window.confirm("Are you sure you want to delete this department?")) {
       try {

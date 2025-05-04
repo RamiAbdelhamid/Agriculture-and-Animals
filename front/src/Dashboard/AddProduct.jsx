@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+/*************************************************************/
 const AddProduct = () => {
   const [productData, setProductData] = useState({
     name: "",
@@ -10,10 +11,12 @@ const AddProduct = () => {
     details: "",
     image: null,
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState({ show: false, message: "", type: "" });
   const [showConfirmation, setShowConfirmation] = useState(false);
 
+  /*************************************************************/
   const handleChange = (e) => {
     const { name, value } = e.target;
     setProductData((prevData) => ({
@@ -22,6 +25,7 @@ const AddProduct = () => {
     }));
   };
 
+  /*************************************************************/
   const handleFileChange = (e) => {
     const { files } = e.target;
     if (files && files[0]) {
@@ -32,6 +36,7 @@ const AddProduct = () => {
     }
   };
 
+  /*************************************************************/
   const showToast = (message, type = "success") => {
     setToast({ show: true, message, type });
     setTimeout(() => {
@@ -39,15 +44,18 @@ const AddProduct = () => {
     }, 3000);
   };
 
+  /*************************************************************/
   const handleSubmitConfirmation = (e) => {
     e.preventDefault();
     setShowConfirmation(true);
   };
 
+  /*************************************************************/
   const handleCancel = () => {
     setShowConfirmation(false);
   };
 
+  /*************************************************************/
   const handleSubmit = async () => {
     setIsSubmitting(true);
     setShowConfirmation(false);
@@ -85,6 +93,8 @@ const AddProduct = () => {
       setIsSubmitting(false);
     }
   };
+
+  /*************************************************************/
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6 border border-green-100 relative">
